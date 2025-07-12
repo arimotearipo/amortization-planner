@@ -6,7 +6,9 @@ import { Form, FormField, FormLabel, FormMessage } from "@components/ui/form"
 import { Input } from "@components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import z from "zod"
+import { useMortgage } from "@/context/mortgate-context"
 
 const mortgageDetailsInputsSchema = z.object({
 	loanAmount: z.number().min(1, "Must be greater than 0"),
@@ -17,17 +19,25 @@ const mortgageDetailsInputsSchema = z.object({
 type MortgageDetailsInputs = z.infer<typeof mortgageDetailsInputsSchema>
 
 export function MortgageDetailsForm() {
+	const { setMortgageDetails } = useMortgage()
+
 	const form = useForm<MortgageDetailsInputs>({
 		resolver: zodResolver(mortgageDetailsInputsSchema),
 		defaultValues: {
-			loanAmount: 0,
-			loanTerm: 0,
-			interestRate: 0,
+			loanAmount: 480000,
+			loanTerm: 35,
+			interestRate: 3.8,
 		},
 	})
 
 	const handleSubmitForm = form.handleSubmit((data) => {
-		console.log("Form submitted with data:", data)
+		setMortgageDetails({
+			loanAmount: data.loanAmount,
+			loanTerm: data.loanTerm,
+			interestRate: data.interestRate,
+		})
+
+		toast.success("Mortgage details saved successfully!")
 	})
 
 	return (

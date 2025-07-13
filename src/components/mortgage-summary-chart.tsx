@@ -35,8 +35,8 @@ export function MortgageSummaryChart({
 						if (active && payload && payload.length) {
 							const data = payload[0].payload
 							return (
-								<div className="bg-white p-2 border rounded shadow">
-									{`Year ${data.y} : ${data.label}`}
+								<div className="bg-accent p-2 border rounded shadow">
+									<p className="text-primary">{`Year ${data.y} : ${data.label}`}</p>
 								</div>
 							)
 						}
@@ -44,7 +44,7 @@ export function MortgageSummaryChart({
 					}}
 				/>
 				<Scatter name="A school" data={data}>
-					<LabelList dataKey="label" position="top" fontSize={8} />
+					<LabelList dataKey="label" position="top" fontSize={10} />
 				</Scatter>
 			</ScatterChart>
 		</ResponsiveContainer>

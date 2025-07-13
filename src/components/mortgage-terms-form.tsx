@@ -29,17 +29,18 @@ import { calculateAmortizationSchedule } from "@/lib/amortization"
 import { ExtraPaymentIncrementFrequency } from "@/types"
 
 function getDefaultValues(): MortgageTermsInputs {
-	const loanTermYears = 35
+	const loanTermYears = 0
+	const extraPaymentEndMonth = loanTermYears > 0 ? loanTermYears * 12 - 1 : 0
 	return {
-		principalLoanAmount: 480000,
+		principalLoanAmount: 0,
 		loanTermYears,
-		annualInterestRate: 3.8,
-		extraPayment: 1000,
+		annualInterestRate: 0,
+		extraPayment: 0,
 		extraPaymentIncrement: 0,
 		extraPaymentIncrementFrequency: "yearly",
 		extraPaymentStartMonth: 0,
-		extraPaymentEndMonth: loanTermYears * 12 - 1,
-		investmentReturnRate: 5,
+		extraPaymentEndMonth,
+		investmentReturnRate: 0,
 		extraPaymentSplitRatio: 0.5, // Default split ratio for extra payments
 	}
 }
@@ -170,6 +171,13 @@ export function MortgageTermsForm() {
 						<AccordionItem value="options">
 							<AccordionTrigger>Options</AccordionTrigger>
 							<AccordionContent className="space-y-2">
+								<Alert variant={"default"}>
+									<InfoIcon />
+									<AlertTitle>Extra Payment</AlertTitle>
+									<AlertDescription>
+										{`Extra payments help you pay off your loan faster and save on interest. You can split extra funds between your mortgage and investing. Set start/end months to control when extra payments apply; use -1 to pay until the loan ends.`}
+									</AlertDescription>
+								</Alert>
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 									<FormField
 										control={form.control}
@@ -234,16 +242,6 @@ export function MortgageTermsForm() {
 
 								{!!form.watch("extraPayment") && (
 									<>
-										<Alert variant={"default"}>
-											<InfoIcon />
-											<AlertTitle>Extra Payment Term</AlertTitle>
-											<AlertDescription>
-												{`You can set when to start and end the extra
-												payments. Your loan tenure is ${form.getValues("loanTermYears")} year(s) therefore the value for start and end month should be between 0 to ${maxMonthIndex}. If you want it to continue until the end of the
-												loan term, leave the end month as -1.`}
-											</AlertDescription>
-										</Alert>
-
 										<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 											<FormField
 												control={form.control}

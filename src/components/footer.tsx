@@ -2,7 +2,7 @@ export function Footer() {
 	return (
 		<header className="w-full text-center py-1 text-sm text-muted-foreground border-t border-border">
 			<span>
-				Created by Wan Nor Adzahari &middot;{" "}
+				Created by Wan Nor Adzahari &middot; wnadzahari@gmail.com |{" "}
 				<a
 					href="https://github.com/arimotearipo"
 					target="_blank"

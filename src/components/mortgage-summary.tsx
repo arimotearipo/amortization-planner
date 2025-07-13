@@ -39,6 +39,14 @@ export function MortgageSummary() {
 				<dl className="space-y-2 text-gray-700 dark:text-gray-300">
 					<div>
 						<dt className="col-span-2 text-sm font-medium text-gray-500">
+							Monthly Payment
+						</dt>
+						<dd className="col-span-2 text-lg font-bold text-green-700 mb-2">
+							{schedule[0].paymentAmount.toLocaleString()}
+						</dd>
+					</div>
+					<div>
+						<dt className="col-span-2 text-sm font-medium text-gray-500">
 							Total Paid
 						</dt>
 						<dd className="col-span-2 text-lg font-bold text-green-700 mb-2">
@@ -64,6 +72,10 @@ export function MortgageSummary() {
 					<div>
 						<dt className="col-span-2 text-sm font-medium text-gray-500">
 							Your nett profit at the end of the mortgage
+							<span className="text-xs">
+								{" "}
+								(Investment Earned - Interest Paid)
+							</span>
 						</dt>
 						<dd className="col-span-2 text-lg">
 							<span className="font-bold text-primary">{`${totalInvestmentEarned.toLocaleString()} - ${totalInterest.toLocaleString()} = `}</span>

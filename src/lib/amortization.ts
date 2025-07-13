@@ -1,5 +1,5 @@
 import type { MortgageTermsInputs } from "@/components/models"
-import type { CalculateAmortizationScheduleReturnType, Payment } from "@/types"
+import type { AmortizationDetails, Payment } from "@/types"
 
 function getExtraPayments(mortgageArgs: MortgageTermsInputs): number[] {
 	const {
@@ -106,7 +106,7 @@ function calculateInvestmentGrowthAtEachMonth(
 
 function calculateAmortizationSchedule(
 	mortgageArgs: MortgageTermsInputs,
-): CalculateAmortizationScheduleReturnType {
+): AmortizationDetails {
 	const { loanTermYears, annualInterestRate, principalLoanAmount } =
 		mortgageArgs
 
@@ -172,11 +172,15 @@ function calculateAmortizationSchedule(
 		schedule.reduce((sum, payment) => sum + payment.interestPaid, 0).toFixed(2),
 	)
 	const totalPaid = Number((principalLoanAmount + totalInterest).toFixed(2))
+	const totalInvestmentEarned = Number(
+		investmentGrowthsAtEachMonth[numberOfPayments - 1].toFixed(2),
+	)
 
 	return {
 		schedule,
 		totalPaid,
 		totalInterest,
+		totalInvestmentEarned,
 	}
 }
 

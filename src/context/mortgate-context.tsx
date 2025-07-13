@@ -3,10 +3,15 @@
 import type React from "react"
 import { createContext, useContext, useState } from "react"
 import type { MortgageTermsInputs } from "@/components/models"
+import type { AmortizationDetails } from "@/types"
 
 type MortgageContextType = {
-	mortgageDetails: MortgageTermsInputs
-	setMortgageDetails: (details: MortgageTermsInputs) => void
+	mortgageTerms: MortgageTermsInputs
+	setMortgageTerms: (details: MortgageTermsInputs) => void
+	amortizationDetails: AmortizationDetails
+	setAmortizationDetails: (details: AmortizationDetails) => void
+	submitted: boolean
+	setSubmitted: (submitted: boolean) => void
 }
 
 const MortgageContext = createContext<MortgageContextType | undefined>(
@@ -18,7 +23,9 @@ export const MortgageProvider = ({
 }: {
 	children: React.ReactNode
 }) => {
-	const [mortgageDetails, setMortgageDetails] = useState<MortgageTermsInputs>({
+	const [submitted, setSubmitted] = useState(false)
+
+	const [mortgageTerms, setMortgageTerms] = useState<MortgageTermsInputs>({
 		principalLoanAmount: 0,
 		loanTermYears: 0,
 		annualInterestRate: 0,
@@ -27,10 +34,29 @@ export const MortgageProvider = ({
 		extraPaymentIncrementFrequency: "monthly",
 		extraPaymentEndMonth: -1,
 		extraPaymentStartMonth: 0,
+		extraPaymentSplitRatio: 0.5,
+		investmentReturnRate: 5,
 	})
 
+	const [amortizationDetails, setAmortizationDetails] =
+		useState<AmortizationDetails>({
+			schedule: [],
+			totalPaid: 0,
+			totalInterest: 0,
+			totalInvestmentEarned: 0,
+		})
+
 	return (
-		<MortgageContext.Provider value={{ mortgageDetails, setMortgageDetails }}>
+		<MortgageContext.Provider
+			value={{
+				mortgageTerms,
+				setMortgageTerms,
+				amortizationDetails,
+				setAmortizationDetails,
+				submitted,
+				setSubmitted,
+			}}
+		>
 			{children}
 		</MortgageContext.Provider>
 	)

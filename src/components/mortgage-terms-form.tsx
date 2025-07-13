@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { useMortgage } from "@/context/mortgate-context"
+import { calculateAmortizationSchedule } from "@/lib/amortization"
 import { ExtraPaymentIncrementFrequency } from "@/types"
 
 function getDefaultValues(): MortgageTermsInputs {
@@ -43,7 +44,8 @@ function getDefaultValues(): MortgageTermsInputs {
 }
 
 export function MortgageTermsForm() {
-	const { setMortgageDetails } = useMortgage()
+	const { setMortgageTerms, setAmortizationDetails, setSubmitted } =
+		useMortgage()
 
 	const form = useForm<MortgageTermsInputs>({
 		resolver: zodResolver(mortgageTermsInputsSchema),
@@ -74,9 +76,12 @@ export function MortgageTermsForm() {
 		}
 
 		console.log("Form submitted with data:", data)
-		setMortgageDetails(data)
+		setMortgageTerms(data)
+		toast.success("Amortization rates calculated successfully")
 
-		toast.success("Mortgage terms saved successfully!")
+		const amortizationDetails = calculateAmortizationSchedule(data)
+		setAmortizationDetails(amortizationDetails)
+		setSubmitted(true)
 	})
 
 	const handleLoanTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,21 +92,30 @@ export function MortgageTermsForm() {
 		form.setValue("extraPaymentEndMonth", numOfMonths - 1)
 	}
 
-	console.log("errors", form.formState.errors)
+	const handleRatioChange = (value: number[]) => {
+		const splitRatio = value[0]
+		form.setValue("extraPaymentSplitRatio", splitRatio)
+
+		const values = form.getValues()
+		setMortgageTerms(values)
+
+		const amortizationDetails = calculateAmortizationSchedule(values)
+		setAmortizationDetails(amortizationDetails)
+	}
 
 	return (
 		<Form {...form}>
-			<Card>
+			<Card className="w-full max-w-md">
 				<CardHeader>
 					<CardTitle>Mortgage Terms</CardTitle>
 				</CardHeader>
-				<CardContent className="space-y-4">
+				<CardContent className="space-y-2">
 					<FormField
 						control={form.control}
 						name="principalLoanAmount"
 						render={({ field }) => (
-							<div className="space-y-2">
-								<FormLabel>Loan Amount (MYR)</FormLabel>
+							<div className="space-y-1">
+								<FormLabel>Loan Amount</FormLabel>
 								<Input
 									{...field}
 									type="number"
@@ -111,82 +125,92 @@ export function MortgageTermsForm() {
 							</div>
 						)}
 					/>
-					<FormField
-						control={form.control}
-						name="loanTermYears"
-						render={({ field }) => (
-							<div className="space-y-2">
-								<FormLabel>Loan Term (Years)</FormLabel>
-								<Input
-									{...field}
-									type="number"
-									onChange={handleLoanTermChange}
-								/>
-								<FormMessage />
-							</div>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="annualInterestRate"
-						render={({ field }) => (
-							<div className="space-y-2">
-								<FormLabel>Annual Interest Rate (%)</FormLabel>
-								<Input
-									{...field}
-									type="number"
-									onChange={(e) => field.onChange(Number(e.target.value))}
-								/>
-								<FormMessage />
-							</div>
-						)}
-					/>
+
+					<div className="grid grid-cols-2 gap-4">
+						<FormField
+							control={form.control}
+							name="loanTermYears"
+							render={({ field }) => (
+								<div className="space-y-1">
+									<FormLabel>Loan Term (Years)</FormLabel>
+									<Input
+										{...field}
+										type="number"
+										onChange={handleLoanTermChange}
+									/>
+									<FormMessage />
+								</div>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="annualInterestRate"
+							render={({ field }) => (
+								<div className="space-y-1">
+									<FormLabel>Annual Interest Rate (%)</FormLabel>
+									<Input
+										{...field}
+										type="number"
+										onChange={(e) => field.onChange(Number(e.target.value))}
+									/>
+									<FormMessage />
+								</div>
+							)}
+						/>
+					</div>
 
 					<Accordion type="single" collapsible>
 						<AccordionItem value="options">
 							<AccordionTrigger>Options</AccordionTrigger>
-							<AccordionContent className="space-y-4">
-								<FormField
-									control={form.control}
-									name="extraPayment"
-									render={({ field }) => (
-										<div className="space-y-2">
-											<FormLabel>Extra Payment (MYR)</FormLabel>
-											<Input
-												{...field}
-												type="number"
-												onChange={(e) => field.onChange(Number(e.target.value))}
-											/>
-											<FormMessage />
-										</div>
-									)}
-								/>
+							<AccordionContent className="space-y-2">
+								<div className="grid grid-cols-2 gap-4">
+									<FormField
+										control={form.control}
+										name="extraPayment"
+										render={({ field }) => (
+											<div className="space-y-1">
+												<FormLabel>Extra Payment</FormLabel>
+												<Input
+													{...field}
+													type="number"
+													onChange={(e) =>
+														field.onChange(Number(e.target.value))
+													}
+												/>
+												<FormMessage />
+											</div>
+										)}
+									/>
 
-								<FormField
-									control={form.control}
-									name="extraPaymentIncrement"
-									render={({ field }) => (
-										<div className="space-y-2">
-											<FormLabel>Extra Payment Increment (MYR)</FormLabel>
-											<Input
-												{...field}
-												type="number"
-												onChange={(e) => field.onChange(Number(e.target.value))}
-											/>
-											<FormMessage />
-										</div>
-									)}
-								/>
+									<FormField
+										control={form.control}
+										name="extraPaymentIncrement"
+										render={({ field }) => (
+											<div className="space-y-1">
+												<FormLabel>Extra Payment Increment</FormLabel>
+												<Input
+													{...field}
+													type="number"
+													onChange={(e) =>
+														field.onChange(Number(e.target.value))
+													}
+												/>
+												<FormMessage />
+											</div>
+										)}
+									/>
+								</div>
 
 								<FormField
 									control={form.control}
 									name="extraPaymentIncrementFrequency"
 									render={({ field }) => (
-										<div className="space-y-2">
+										<div className="space-y-1">
 											<FormLabel>Extra Payment Increment Frequency</FormLabel>
 											<RadioGroup
 												value={field.value}
 												onValueChange={field.onChange}
+												className="flex flex-row space-x-2"
 											>
 												{ExtraPaymentIncrementFrequency.map((f) => (
 													<div key={f} className="flex items-center gap-3">
@@ -207,52 +231,55 @@ export function MortgageTermsForm() {
 											<InfoIcon />
 											<AlertTitle>Extra Payment Term</AlertTitle>
 											<AlertDescription>
-												{`You can set the start and end month for the extra
-												payment. Your loan tenure is ${form.getValues("loanTermYears")} year(s) therefore the value for start and end month should be between 0 to ${maxMonthIndex}. If you want it to continue until the end of the
+												{`You can set when to start and end the extra
+												payments. Your loan tenure is ${form.getValues("loanTermYears")} year(s) therefore the value for start and end month should be between 0 to ${maxMonthIndex}. If you want it to continue until the end of the
 												loan term, leave the end month as -1.`}
 											</AlertDescription>
 										</Alert>
-										<FormField
-											control={form.control}
-											name="extraPaymentStartMonth"
-											render={({ field }) => (
-												<div className="space-y-2">
-													<FormLabel>Extra Payment Start Month</FormLabel>
-													<Input
-														{...field}
-														type="number"
-														onChange={(e) =>
-															field.onChange(Number(e.target.value))
-														}
-													/>
-													<FormMessage />
-												</div>
-											)}
-										/>
 
-										<FormField
-											control={form.control}
-											name="extraPaymentEndMonth"
-											render={({ field }) => (
-												<div className="space-y-2">
-													<FormLabel>Extra Payment End Month</FormLabel>
-													<Input
-														{...field}
-														type="number"
-														onChange={(e) =>
-															field.onChange(Number(e.target.value))
-														}
-													/>
-													<FormMessage />
-												</div>
-											)}
-										/>
+										<div className="grid grid-cols-2 gap-4">
+											<FormField
+												control={form.control}
+												name="extraPaymentStartMonth"
+												render={({ field }) => (
+													<div className="space-y-1">
+														<FormLabel>Extra Payment Start Month</FormLabel>
+														<Input
+															{...field}
+															type="number"
+															onChange={(e) =>
+																field.onChange(Number(e.target.value))
+															}
+														/>
+														<FormMessage />
+													</div>
+												)}
+											/>
+
+											<FormField
+												control={form.control}
+												name="extraPaymentEndMonth"
+												render={({ field }) => (
+													<div className="space-y-1">
+														<FormLabel>Extra Payment End Month</FormLabel>
+														<Input
+															{...field}
+															type="number"
+															onChange={(e) =>
+																field.onChange(Number(e.target.value))
+															}
+														/>
+														<FormMessage />
+													</div>
+												)}
+											/>
+										</div>
 
 										<FormField
 											control={form.control}
 											name="investmentReturnRate"
 											render={({ field }) => (
-												<div className="space-y-2">
+												<div className="space-y-1">
 													<FormLabel>Investment Return Rate (%)</FormLabel>
 													<Input
 														{...field}
@@ -290,9 +317,7 @@ export function MortgageTermsForm() {
 															max={1}
 															step={0.01}
 															value={[field.value]}
-															onValueChange={(value) =>
-																field.onChange(value[0])
-															}
+															onValueChange={handleRatioChange}
 														/>
 														<span>
 															Investment: {Math.round((1 - field.value) * 100)}%
@@ -308,7 +333,7 @@ export function MortgageTermsForm() {
 					</Accordion>
 
 					<Button onClick={handleSubmitForm} type="button">
-						Submit
+						Calculate
 					</Button>
 				</CardContent>
 			</Card>

@@ -1,58 +1,96 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useMortgage } from "@/context/mortgate-context"
 import { getMonthName } from "@/lib/get-month-name"
 import { getOrdinalSuffix } from "@/lib/get-ordinal-suffix"
-import type { CalculateAmortizationScheduleReturnType } from "@/types"
+import { cn } from "@/lib/utils"
 
-type MortgageSummaryProps = Omit<
-	CalculateAmortizationScheduleReturnType,
-	"schedule"
-> & {
-	numberOfPaymentsMade: number
-	inflectionPoint: number
-}
+export function MortgageSummary() {
+	const { amortizationDetails, mortgageTerms, submitted } = useMortgage()
 
-export function MortgageSummary({
-	totalInterest,
-	totalPaid,
-	numberOfPaymentsMade,
-	inflectionPoint,
-}: MortgageSummaryProps) {
-	const { mortgageDetails } = useMortgage()
+	if (!submitted) {
+		return null
+	}
 
-	const endingYear = Math.ceil(numberOfPaymentsMade / 12)
+	const { schedule, totalPaid, totalInterest, totalInvestmentEarned } =
+		amortizationDetails
 
-	const inflectionYear = getOrdinalSuffix(inflectionPoint / 12 + 1)
-	const inflectionMonth = getMonthName((inflectionPoint % 12) + 1)
+	const { extraPayment } = mortgageTerms
+
+	const endingYear = getOrdinalSuffix(Math.ceil(schedule.length / 12))
+
+	const crossoverIndex = schedule.findIndex(
+		(p) => p.investmentGrowth >= p.remainingBalance,
+	)
+
+	const crossoverYear = getOrdinalSuffix(Math.floor(crossoverIndex / 12) + 1)
+	const crossoverMonth = getMonthName((crossoverIndex % 12) + 1)
+
+	const netProfit = totalInvestmentEarned - totalInterest
 
 	return (
-		<Card>
+		<Card className="w-full max-w-md animate-in fade-in duration-1000">
 			<CardHeader>
 				<CardTitle>Mortgage Summary</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-gray-700">
-					<dt className="col-span-2 text-sm font-medium text-gray-500">
-						Total Paid
-					</dt>
-					<dd className="col-span-2 text-lg font-bold text-green-700 mb-2">
-						{totalPaid.toLocaleString()}
-					</dd>
-					<dt className="col-span-2 text-sm font-medium text-gray-500">
-						Total Interest Paid
-					</dt>
-					<dd className="col-span-2 text-lg font-bold text-red-700">
-						{totalInterest.toLocaleString()}
-					</dd>
+				<dl className="space-y-2 text-gray-700">
+					<div>
+						<dt className="col-span-2 text-sm font-medium text-gray-500">
+							Total Paid
+						</dt>
+						<dd className="col-span-2 text-lg font-bold text-green-700 mb-2">
+							{totalPaid.toLocaleString()}
+						</dd>
+					</div>
+					<div>
+						<dt className="col-span-2 text-sm font-medium text-gray-500">
+							Total Interest Paid
+						</dt>
+						<dd className="col-span-2 text-lg font-bold text-red-700">
+							{totalInterest.toLocaleString()}
+						</dd>
+					</div>
+					<div>
+						<dt className="col-span-2 text-sm font-medium text-gray-500">
+							Total Investment Earned (by {endingYear} year)
+						</dt>
+						<dd className="col-span-2 text-lg font-bold text-green-700">
+							{totalInvestmentEarned.toLocaleString()}
+						</dd>
+					</div>
+					<div>
+						<dt className="col-span-2 text-sm font-medium text-gray-500">
+							Your nett profit at the end of the mortgage
+						</dt>
+						<dd className="col-span-2 text-lg">
+							<span className="font-bold">{`${totalInvestmentEarned.toLocaleString()} - ${totalInterest.toLocaleString()} = `}</span>
+							<span
+								className={cn("font-bold", {
+									"text-green-700": netProfit >= 0,
+									"text-red-700": netProfit < 0,
+								})}
+							>
+								{netProfit.toLocaleString()}
+							</span>
+						</dd>
+					</div>
 				</dl>
-				<p>
-					{!!mortgageDetails.extraPayment &&
-						`With the extra payments you've made, you can expect to fully amortize your mortgage by the ${getOrdinalSuffix(endingYear)} year`}
-				</p>
-				<p>
-					{inflectionPoint >= 0 &&
-						`Your investment will cover your remaining balance in ${inflectionMonth} of the ${inflectionYear} year`}
-				</p>
+				{!!extraPayment && (
+					<p className="text-sm">
+						With the extra payments you've made, you can expect to fully
+						amortize your mortgage by the{" "}
+						<span className="font-bold">{endingYear} year</span>
+					</p>
+				)}
+				{crossoverIndex >= 0 && totalInvestmentEarned > 0 && (
+					<p className="text-sm">
+						Your investment will cover your remaining balance in{" "}
+						<span className="font-bold">{crossoverMonth}</span> of the{" "}
+						<span className="font-bold">{crossoverYear}</span> year
+					</p>
+				)}
 			</CardContent>
 		</Card>
 	)

@@ -8,10 +8,11 @@ export type Payment = {
 	investmentGrowth: number
 }
 
-export type CalculateAmortizationScheduleReturnType = {
+export type AmortizationDetails = {
 	schedule: Payment[]
 	totalPaid: number
 	totalInterest: number
+	totalInvestmentEarned: number
 }
 
 export const ExtraPaymentIncrementFrequency = ["monthly", "yearly"] as const

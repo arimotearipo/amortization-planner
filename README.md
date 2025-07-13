@@ -1,8 +1,8 @@
 # Things to Build
-- [ ] Form for user to enter principal, interest rate, term
-- [ ] Table to display monthly repayment rates
-- [ ] Input to adjust the montly repayment rate
-- [ ] Input to set investment rate (should user want to split extra payments to other investments)
+- [x] Form for user to enter principal, interest rate, term
+- [x] Table to display monthly repayment rates
+- [x] Input to adjust the montly repayment rate
+- [x] Input to set investment rate (should user want to split extra payments to other investments)
 
 # Amortization Planner
 

@@ -1,9 +1,11 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
+import { Footer } from "@/components/footer"
 import { Toaster } from "@/components/ui/sonner"
 import { MortgageProvider } from "@/context/mortgate-context"
 import { ThemeProvider } from "@/context/theme-context"
+import { cn } from "@/lib/utils"
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -32,7 +34,7 @@ export default function RootLayout({
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 			</head>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				className={cn(geistSans.variable, geistMono.variable, `antialiased`)}
 			>
 				<ThemeProvider
 					attribute="class"
@@ -45,6 +47,7 @@ export default function RootLayout({
 					</MortgageProvider>
 				</ThemeProvider>
 				<Toaster theme="system" richColors />
+				<Footer />
 			</body>
 		</html>
 	)

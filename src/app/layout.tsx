@@ -32,6 +32,7 @@ export default function RootLayout({
 		<html lang="en" suppressHydrationWarning>
 			<head>
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<link rel="icon" href="/favicon.svg" />
 			</head>
 			<body
 				className={cn(geistSans.variable, geistMono.variable, `antialiased`)}

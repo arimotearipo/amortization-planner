@@ -1,15 +1,24 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useMortgage } from "@/context/mortgate-context"
+import { getOrdinalSuffix } from "@/lib/get-ordinal-suffix"
 import type { CalculateAmortizationScheduleReturnType } from "@/types"
 
 type MortgageSummaryProps = Omit<
 	CalculateAmortizationScheduleReturnType,
 	"schedule"
->
+> & {
+	numberOfPaymentsMade: number
+}
 
 export function MortgageSummary({
 	totalInterest,
 	totalPaid,
+	numberOfPaymentsMade,
 }: MortgageSummaryProps) {
+	const { mortgageDetails } = useMortgage()
+
+	const endingYear = Math.ceil(numberOfPaymentsMade / 12)
+
 	return (
 		<Card>
 			<CardHeader>
@@ -30,6 +39,10 @@ export function MortgageSummary({
 						{totalInterest.toLocaleString()}
 					</dd>
 				</dl>
+				<p>
+					{!!mortgageDetails.extraPayment &&
+						`With the extra payments you've made, you can expect to fully amortize your mortgage by the ${getOrdinalSuffix(endingYear)} year`}
+				</p>
 			</CardContent>
 		</Card>
 	)

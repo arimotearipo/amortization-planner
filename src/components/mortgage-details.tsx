@@ -21,11 +21,9 @@ export function MortgageDetails() {
 		mortgageDetails.extraPaymentIncrementFrequency,
 	)
 
-	console.log("SCHEDULE:", schedule)
-
 	return (
 		<div className="space-y-2">
-			<MortgageSummary {...rest} />
+			<MortgageSummary {...rest} numberOfPaymentsMade={schedule.length} />
 			<MortgageTable schedule={schedule || []} />
 		</div>
 	)

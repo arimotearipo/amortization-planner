@@ -32,7 +32,7 @@ function getDefaultValues(): MortgageTermsInputs {
 	const loanTermYears = 35
 	return {
 		principalLoanAmount: 480000,
-		loanTermYears: 35,
+		loanTermYears,
 		annualInterestRate: 3.8,
 		extraPayment: 1000,
 		extraPaymentIncrement: 0,
@@ -60,9 +60,12 @@ export function MortgageTermsForm() {
 			data.extraPaymentStartMonth < 0 ||
 			data.extraPaymentStartMonth > maxMonthIndex
 		) {
-			toast.error(
-				`Extra payment start month must be between 0 (inclusive) and ${maxMonthIndex} (inclusive)`,
-			)
+			const errorMessage = `Extra payment start month must be between 0 (inclusive) and ${maxMonthIndex} (inclusive)`
+			toast.error(errorMessage)
+			form.setError("extraPaymentStartMonth", {
+				type: "manual",
+				message: errorMessage,
+			})
 			return
 		}
 
@@ -70,9 +73,12 @@ export function MortgageTermsForm() {
 			data.extraPaymentEndMonth > maxMonthIndex ||
 			data.extraPaymentEndMonth < data.extraPaymentStartMonth
 		) {
-			toast.error(
-				`Extra payment end month must be between ${data.extraPaymentStartMonth} (inclusive) and ${maxMonthIndex} (inclusive)`,
-			)
+			const errorMessage = `Extra payment end month must be between ${data.extraPaymentStartMonth} (inclusive) and ${maxMonthIndex} (inclusive)`
+			toast.error(errorMessage)
+			form.setError("extraPaymentEndMonth", {
+				type: "manual",
+				message: errorMessage,
+			})
 			return
 		}
 

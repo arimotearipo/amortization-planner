@@ -1,5 +1,6 @@
 "use client"
 
+import { MortgageSummaryChart } from "@/components/mortgage-summary-chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useMortgage } from "@/context/mortgate-context"
 import { getMonthName } from "@/lib/get-month-name"
@@ -92,6 +93,11 @@ export function MortgageSummary() {
 						year
 					</p>
 				)}
+
+				<MortgageSummaryChart
+					endingYear={Math.ceil(schedule.length / 12)}
+					crossoverYear={Math.floor(crossoverIndex / 12) + 1}
+				/>
 			</CardContent>
 		</Card>
 	)

@@ -21,7 +21,8 @@
 		"paths": {
 			"@/*": ["./src/*"],
 			"@components/*": ["./src/components/*"],
-			"@context/*": ["./src/context/*"]
+			"@context/*": ["./src/context/*"],
+			"@types/*": ["./src/types/*"]
 		},
 		"sourceMap": true
 	},

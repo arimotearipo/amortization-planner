@@ -10,19 +10,19 @@ import { toast } from "sonner"
 import z from "zod"
 import { useMortgage } from "@/context/mortgate-context"
 
-const mortgageDetailsInputsSchema = z.object({
+const mortgageTermsInputsSchema = z.object({
 	loanAmount: z.number().min(1, "Must be greater than 0"),
 	loanTerm: z.number().int("Must be whole number"),
 	interestRate: z.number().min(0).max(100),
 })
 
-type MortgageDetailsInputs = z.infer<typeof mortgageDetailsInputsSchema>
+type MortgageTermsInputs = z.infer<typeof mortgageTermsInputsSchema>
 
-export function MortgageDetailsForm() {
+export function MortgageTermsForm() {
 	const { setMortgageDetails } = useMortgage()
 
-	const form = useForm<MortgageDetailsInputs>({
-		resolver: zodResolver(mortgageDetailsInputsSchema),
+	const form = useForm<MortgageTermsInputs>({
+		resolver: zodResolver(mortgageTermsInputsSchema),
 		defaultValues: {
 			loanAmount: 480000,
 			loanTerm: 35,
@@ -37,14 +37,14 @@ export function MortgageDetailsForm() {
 			interestRate: data.interestRate,
 		})
 
-		toast.success("Mortgage details saved successfully!")
+		toast.success("Mortgage terms saved successfully!")
 	})
 
 	return (
 		<Form {...form}>
 			<Card>
 				<CardHeader>
-					<CardTitle>Mortgage Details</CardTitle>
+					<CardTitle>Mortgage Terms</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-4">
 					<FormField

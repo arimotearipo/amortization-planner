@@ -1,12 +1,12 @@
-import { MortgageDetailsForm } from "@components/mortgage-details-form"
-import { MortgageTable } from "@/components/mortgate-table"
+import { MortgageDetails } from "@/components/mortgage-details"
+import { MortgageTermsForm } from "@/components/mortgage-terms-form"
 import { MortgageProvider } from "@/context/mortgate-context"
 
 export default function Home() {
 	return (
 		<MortgageProvider>
-			<MortgageDetailsForm />
-			<MortgageTable />
+			<MortgageTermsForm />
+			<MortgageDetails />
 		</MortgageProvider>
 	)
 }

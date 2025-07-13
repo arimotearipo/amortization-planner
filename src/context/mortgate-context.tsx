@@ -2,11 +2,15 @@
 
 import type React from "react"
 import { createContext, useContext, useState } from "react"
+import type { ExtraPaymentIncrementFrequency } from "@/types"
 
 type MortgageDetails = {
-	loanAmount: number
-	loanTerm: number
-	interestRate: number
+	principalLoanAmount: number
+	loanTermYears: number
+	annualInterestRate: number
+	extraPayment?: number
+	extraPaymentIncrement?: number
+	extraPaymentIncrementFrequency?: (typeof ExtraPaymentIncrementFrequency)[number]
 }
 
 type MortgageContextType = {
@@ -24,9 +28,12 @@ export const MortgageProvider = ({
 	children: React.ReactNode
 }) => {
 	const [mortgageDetails, setMortgageDetails] = useState<MortgageDetails>({
-		loanAmount: 0,
-		loanTerm: 0,
-		interestRate: 0,
+		principalLoanAmount: 0,
+		loanTermYears: 0,
+		annualInterestRate: 0,
+		extraPayment: 0,
+		extraPaymentIncrement: 0,
+		extraPaymentIncrementFrequency: "monthly",
 	})
 
 	return (

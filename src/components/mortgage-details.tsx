@@ -13,10 +13,15 @@ export function MortgageDetails() {
 	}
 
 	const { schedule, ...rest } = calculateAmortizationSchedule(
-		mortgageDetails.loanAmount,
-		mortgageDetails.interestRate,
-		mortgageDetails.loanTerm,
+		mortgageDetails.principalLoanAmount,
+		mortgageDetails.annualInterestRate,
+		mortgageDetails.loanTermYears,
+		mortgageDetails.extraPayment,
+		mortgageDetails.extraPaymentIncrement,
+		mortgageDetails.extraPaymentIncrementFrequency,
 	)
+
+	console.log("SCHEDULE:", schedule)
 
 	return (
 		<div className="space-y-2">

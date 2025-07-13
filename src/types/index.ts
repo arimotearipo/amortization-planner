@@ -1,9 +1,10 @@
 export type Payment = {
 	paymentNumber: number
 	paymentAmount: number
-	principalPaid: number
+	totalPrincipalPaid: number
 	interestPaid: number
 	remainingBalance: number
+	extraPayment: number
 }
 
 export type CalculateAmortizationScheduleReturnType = {
@@ -11,3 +12,5 @@ export type CalculateAmortizationScheduleReturnType = {
 	totalPaid: number
 	totalInterest: number
 }
+
+export const ExtraPaymentIncrementFrequency = ["monthly", "yearly"] as const

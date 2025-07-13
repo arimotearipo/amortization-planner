@@ -17,13 +17,12 @@ import {
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useMortgage } from "@/context/mortgate-context"
-
-const ExtraPaymentIncrementFrequency = ["monthly", "yearly"] as const
+import { ExtraPaymentIncrementFrequency } from "@/types"
 
 const mortgageTermsInputsSchema = z.object({
-	loanAmount: z.number().min(1, "Must be greater than 0"),
-	loanTerm: z.number().int("Must be whole number"),
-	interestRate: z.number().min(0).max(100),
+	principalLoanAmount: z.number().min(1, "Must be greater than 0"),
+	loanTermYears: z.number().int("Must be whole number"),
+	annualInterestRate: z.number().min(0).max(100),
 	extraPayment: z.number().min(0).optional(),
 	extraPaymentIncrement: z.number().min(0).optional(),
 	extraPaymentIncrementFrequency: z
@@ -39,9 +38,9 @@ export function MortgageTermsForm() {
 	const form = useForm<MortgageTermsInputs>({
 		resolver: zodResolver(mortgageTermsInputsSchema),
 		defaultValues: {
-			loanAmount: 480000,
-			loanTerm: 35,
-			interestRate: 3.8,
+			principalLoanAmount: 480000,
+			loanTermYears: 35,
+			annualInterestRate: 3.8,
 			extraPayment: 0,
 			extraPaymentIncrement: 0,
 			extraPaymentIncrementFrequency: "monthly",
@@ -51,9 +50,13 @@ export function MortgageTermsForm() {
 	const handleSubmitForm = form.handleSubmit((data) => {
 		console.log("Form submitted with data:", data)
 		setMortgageDetails({
-			loanAmount: data.loanAmount,
-			loanTerm: data.loanTerm,
-			interestRate: data.interestRate,
+			principalLoanAmount: data.principalLoanAmount,
+			loanTermYears: data.loanTermYears,
+			annualInterestRate: data.annualInterestRate,
+			extraPayment: data.extraPayment || 0,
+			extraPaymentIncrement: data.extraPaymentIncrement || 0,
+			extraPaymentIncrementFrequency:
+				data.extraPaymentIncrementFrequency || "monthly",
 		})
 
 		toast.success("Mortgage terms saved successfully!")
@@ -68,7 +71,7 @@ export function MortgageTermsForm() {
 				<CardContent className="space-y-4">
 					<FormField
 						control={form.control}
-						name="loanAmount"
+						name="principalLoanAmount"
 						render={({ field }) => (
 							<div className="space-y-2">
 								<FormLabel>Loan Amount (MYR)</FormLabel>
@@ -83,7 +86,7 @@ export function MortgageTermsForm() {
 					/>
 					<FormField
 						control={form.control}
-						name="loanTerm"
+						name="loanTermYears"
 						render={({ field }) => (
 							<div className="space-y-2">
 								<FormLabel>Loan Term (Years)</FormLabel>
@@ -98,10 +101,10 @@ export function MortgageTermsForm() {
 					/>
 					<FormField
 						control={form.control}
-						name="interestRate"
+						name="annualInterestRate"
 						render={({ field }) => (
 							<div className="space-y-2">
-								<FormLabel>Interest Rate (%)</FormLabel>
+								<FormLabel>Annual Interest Rate (%)</FormLabel>
 								<Input
 									{...field}
 									type="number"

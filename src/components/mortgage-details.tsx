@@ -12,12 +12,24 @@ export function MortgageDetails() {
 		return <div>No mortgage details available</div>
 	}
 
-	const { schedule, ...rest } = calculateAmortizationSchedule(mortgageDetails)
+	const amortization = calculateAmortizationSchedule(mortgageDetails)
+
+	const inflectionPoint = amortization.schedule.findIndex(
+		(payment) => payment.investmentGrowth > payment.remainingBalance,
+	)
 
 	return (
 		<div className="space-y-2">
-			<MortgageSummary {...rest} numberOfPaymentsMade={schedule.length} />
-			<MortgageTable schedule={schedule || []} />
+			<MortgageSummary
+				totalInterest={amortization.totalInterest}
+				numberOfPaymentsMade={amortization.schedule.length}
+				totalPaid={amortization.totalPaid}
+				inflectionPoint={inflectionPoint}
+			/>
+			<MortgageTable
+				schedule={amortization.schedule || []}
+				inflectionPoint={inflectionPoint}
+			/>
 		</div>
 	)
 }

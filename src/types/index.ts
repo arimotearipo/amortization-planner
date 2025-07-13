@@ -5,6 +5,7 @@ export type Payment = {
 	interestPaid: number
 	remainingBalance: number
 	extraPayment: number
+	investmentGrowth: number
 }
 
 export type CalculateAmortizationScheduleReturnType = {

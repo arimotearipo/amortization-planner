@@ -9,6 +9,7 @@ function getExtraPayments(mortgageArgs: MortgageTermsInputs): number[] {
 		extraPaymentIncrementFrequency = "monthly",
 		extraPaymentStartMonth = 0,
 		extraPaymentEndMonth = -1,
+		extraPaymentSplitRatio = 0.5,
 	} = mortgageArgs
 
 	if (extraPayment <= 0) {
@@ -18,7 +19,7 @@ function getExtraPayments(mortgageArgs: MortgageTermsInputs): number[] {
 	const extraPayments = []
 	const totalMonths = loanTermYears * 12
 
-	let currentExtraPayment = extraPayment
+	let currentExtraPayment = extraPayment * extraPaymentSplitRatio
 	for (let i = 0; i < totalMonths; i++) {
 		if (extraPaymentEndMonth >= 0 && i >= extraPaymentEndMonth) {
 			break // Stop adding extra payments after the end month
@@ -30,17 +31,77 @@ function getExtraPayments(mortgageArgs: MortgageTermsInputs): number[] {
 		}
 
 		if (extraPaymentIncrementFrequency === "monthly") {
-			currentExtraPayment += extraPaymentIncrement
+			currentExtraPayment += extraPaymentIncrement * extraPaymentSplitRatio
 		}
 
 		if (extraPaymentIncrementFrequency === "yearly" && (i + 1) % 12 === 0) {
-			currentExtraPayment += extraPaymentIncrement
+			currentExtraPayment += extraPaymentIncrement * extraPaymentSplitRatio
 		}
 
 		extraPayments.push(currentExtraPayment)
 	}
 
 	return extraPayments
+}
+
+function calculateInvestmentGrowthAtEachMonth(
+	mortgageArgs: MortgageTermsInputs,
+): number[] {
+	const { extraPaymentSplitRatio, loanTermYears, investmentReturnRate } =
+		mortgageArgs
+
+	const n = loanTermYears * 12
+	const r = investmentReturnRate / 12 / 100
+
+	// Get the monthly contributions for investment (portion not used for extra payment)
+	// The value returned by getExtraPayments is already factored with extraPaymentSplitRatio.
+	// So, use it directly as the investment contributions.
+
+	// Reconstruct the total extra payment for each month (before split)
+	const {
+		extraPayment = 0,
+		extraPaymentIncrement = 0,
+		extraPaymentIncrementFrequency = "monthly",
+		extraPaymentStartMonth = 0,
+		extraPaymentEndMonth = -1,
+	} = mortgageArgs
+
+	let currentExtraPayment = extraPayment
+	const totalExtraPayments: number[] = []
+	for (let i = 0; i < n; i++) {
+		if (extraPaymentEndMonth >= 0 && i >= extraPaymentEndMonth) {
+			break
+		}
+		if (i < extraPaymentStartMonth) {
+			totalExtraPayments.push(0)
+			continue
+		}
+		if (extraPaymentIncrementFrequency === "monthly") {
+			currentExtraPayment += extraPaymentIncrement
+		}
+		if (extraPaymentIncrementFrequency === "yearly" && (i + 1) % 12 === 0) {
+			currentExtraPayment += extraPaymentIncrement
+		}
+		totalExtraPayments.push(currentExtraPayment)
+	}
+
+	// Now, investment portion is (1 - extraPaymentSplitRatio) of total extra payment
+	const investmentContributions = totalExtraPayments.map(
+		(p) => p * (1 - (extraPaymentSplitRatio ?? 0.5)),
+	)
+
+	const accumulatedGrowths: number[] = []
+	for (let month = 0; month < n; month++) {
+		let sum = 0
+		for (let i = 0; i <= month; i++) {
+			const monthlyInvestment = investmentContributions[i] || 0
+			const periods = month - i
+			sum += monthlyInvestment * (1 + r) ** periods
+		}
+		accumulatedGrowths.push(Number(sum.toFixed(2)))
+	}
+
+	return accumulatedGrowths
 }
 
 function calculateAmortizationSchedule(
@@ -74,6 +135,9 @@ function calculateAmortizationSchedule(
 
 	const extraPayments = getExtraPayments(mortgageArgs)
 
+	const investmentGrowthsAtEachMonth =
+		calculateInvestmentGrowthAtEachMonth(mortgageArgs)
+
 	for (let month = 1; month <= numberOfPayments; month++) {
 		if (remainingBalance <= 0) {
 			break
@@ -100,6 +164,7 @@ function calculateAmortizationSchedule(
 			interestPaid: Number(interestPaid.toFixed(2)),
 			remainingBalance: Number(Math.max(0, remainingBalance).toFixed(2)), // Prevent negative balance due to rounding
 			extraPayment: Number(thisMonthExtraPayment.toFixed(2)),
+			investmentGrowth: investmentGrowthsAtEachMonth[month - 1],
 		})
 	}
 

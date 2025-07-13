@@ -6,9 +6,10 @@ import {
 	TableRow,
 } from "@components/ui/table"
 import { getMonthName } from "@/lib/get-month-name"
+import { cn } from "@/lib/utils"
 import type { Payment } from "@/types"
 
-const COL_COUNT = 6
+const COL_COUNT = 7
 
 function FullSpanRow({ children }: { children: React.ReactNode }) {
 	return (
@@ -20,7 +21,13 @@ function FullSpanRow({ children }: { children: React.ReactNode }) {
 	)
 }
 
-export function MortgageTable({ schedule }: { schedule: Payment[] }) {
+export function MortgageTable({
+	schedule,
+	inflectionPoint,
+}: {
+	schedule: Payment[]
+	inflectionPoint: number
+}) {
 	return (
 		<Table>
 			<TableHeader>
@@ -31,10 +38,11 @@ export function MortgageTable({ schedule }: { schedule: Payment[] }) {
 					<TableCell className="font-bold">Interest Paid</TableCell>
 					<TableCell className="font-bold">Extra Payment</TableCell>
 					<TableCell className="font-bold">Remaining Balance</TableCell>
+					<TableCell className="font-bold">Investment Growth</TableCell>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{schedule.map((payment) => {
+				{schedule.map((payment, index) => {
 					if (payment.remainingBalance <= 0) {
 						return null
 					}
@@ -49,7 +57,12 @@ export function MortgageTable({ schedule }: { schedule: Payment[] }) {
 					}
 
 					rows.push(
-						<TableRow key={payment.paymentNumber}>
+						<TableRow
+							key={payment.paymentNumber}
+							className={cn({
+								"bg-green-500 font-bold": index === inflectionPoint,
+							})}
+						>
 							<TableCell>
 								{payment.paymentNumber} - {getMonthName(payment.paymentNumber)}
 							</TableCell>
@@ -60,6 +73,9 @@ export function MortgageTable({ schedule }: { schedule: Payment[] }) {
 							<TableCell>{payment.interestPaid.toLocaleString()}</TableCell>
 							<TableCell>{payment.extraPayment.toLocaleString()}</TableCell>
 							<TableCell>{payment.remainingBalance.toLocaleString()}</TableCell>
+							<TableCell>
+								{payment.investmentGrowth?.toLocaleString() ?? "undefined"}
+							</TableCell>
 						</TableRow>,
 					)
 

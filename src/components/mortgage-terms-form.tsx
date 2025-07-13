@@ -22,24 +22,32 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Slider } from "@/components/ui/slider"
 import { useMortgage } from "@/context/mortgate-context"
 import { ExtraPaymentIncrementFrequency } from "@/types"
+
+function getDefaultValues(): MortgageTermsInputs {
+	const loanTermYears = 35
+	return {
+		principalLoanAmount: 480000,
+		loanTermYears: 35,
+		annualInterestRate: 3.8,
+		extraPayment: 1000,
+		extraPaymentIncrement: 0,
+		extraPaymentIncrementFrequency: "yearly",
+		extraPaymentStartMonth: 0,
+		extraPaymentEndMonth: loanTermYears * 12 - 1,
+		investmentReturnRate: 5,
+		extraPaymentSplitRatio: 0.5, // Default split ratio for extra payments
+	}
+}
 
 export function MortgageTermsForm() {
 	const { setMortgageDetails } = useMortgage()
 
 	const form = useForm<MortgageTermsInputs>({
 		resolver: zodResolver(mortgageTermsInputsSchema),
-		defaultValues: {
-			principalLoanAmount: 480000,
-			loanTermYears: 35,
-			annualInterestRate: 3.8,
-			extraPayment: 0,
-			extraPaymentIncrement: 0,
-			extraPaymentIncrementFrequency: "yearly",
-			extraPaymentStartMonth: 0,
-			extraPaymentEndMonth: 0,
-		},
+		defaultValues: getDefaultValues(),
 	})
 
 	const maxMonthIndex = form.watch("loanTermYears") * 12 - 1
@@ -66,17 +74,7 @@ export function MortgageTermsForm() {
 		}
 
 		console.log("Form submitted with data:", data)
-		setMortgageDetails({
-			principalLoanAmount: data.principalLoanAmount,
-			loanTermYears: data.loanTermYears,
-			annualInterestRate: data.annualInterestRate,
-			extraPayment: data.extraPayment || 0,
-			extraPaymentIncrement: data.extraPaymentIncrement || 0,
-			extraPaymentIncrementFrequency:
-				data.extraPaymentIncrementFrequency || "monthly",
-			extraPaymentStartMonth: data.extraPaymentStartMonth,
-			extraPaymentEndMonth: data.extraPaymentEndMonth,
-		})
+		setMortgageDetails(data)
 
 		toast.success("Mortgage terms saved successfully!")
 	})
@@ -88,6 +86,8 @@ export function MortgageTermsForm() {
 		form.setValue("extraPaymentStartMonth", 0)
 		form.setValue("extraPaymentEndMonth", numOfMonths - 1)
 	}
+
+	console.log("errors", form.formState.errors)
 
 	return (
 		<Form {...form}>
@@ -245,6 +245,60 @@ export function MortgageTermsForm() {
 													/>
 													<FormMessage />
 												</div>
+											)}
+										/>
+
+										<FormField
+											control={form.control}
+											name="investmentReturnRate"
+											render={({ field }) => (
+												<div className="space-y-2">
+													<FormLabel>Investment Return Rate (%)</FormLabel>
+													<Input
+														{...field}
+														type="number"
+														onChange={(e) =>
+															field.onChange(Number(e.target.value))
+														}
+													/>
+													<FormMessage />
+												</div>
+											)}
+										/>
+
+										<FormField
+											control={form.control}
+											name="extraPaymentSplitRatio"
+											render={({ field }) => (
+												<>
+													<FormLabel>
+														Extra Payment Split Ratio for Investment (%)
+													</FormLabel>
+													<Label className="text-sm text-muted-foreground">
+														This is the percentage of the extra payment that
+														will be used to pay down the principal. The rest
+														will be invested
+													</Label>
+													<div>
+														<span>
+															Principal Payment: {Math.round(field.value * 100)}
+															%
+														</span>
+														<Slider
+															{...field}
+															min={0}
+															max={1}
+															step={0.01}
+															value={[field.value]}
+															onValueChange={(value) =>
+																field.onChange(value[0])
+															}
+														/>
+														<span>
+															Investment: {Math.round((1 - field.value) * 100)}%
+														</span>
+													</div>
+												</>
 											)}
 										/>
 									</>

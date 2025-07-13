@@ -12,5 +12,7 @@ export const mortgageTermsInputsSchema = z.object({
 	extraPaymentIncrementFrequency: z
 		.enum(ExtraPaymentIncrementFrequency)
 		.optional(),
+	investmentReturnRate: z.number().min(0).max(100),
+	extraPaymentSplitRatio: z.number().min(0).max(1),
 })
 export type MortgageTermsInputs = z.infer<typeof mortgageTermsInputsSchema>

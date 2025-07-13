@@ -9,6 +9,7 @@ import { InfoIcon } from "lucide-react"
 import type React from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { ModeToggle } from "@/components/mode-toggle"
 import {
 	type MortgageTermsInputs,
 	mortgageTermsInputsSchema,
@@ -332,9 +333,12 @@ export function MortgageTermsForm() {
 						</AccordionItem>
 					</Accordion>
 
-					<Button onClick={handleSubmitForm} type="button">
-						Calculate
-					</Button>
+					<div className="flex justify-between">
+						<Button onClick={handleSubmitForm} type="button">
+							Calculate
+						</Button>
+						<ModeToggle />
+					</div>
 				</CardContent>
 			</Card>
 		</Form>

@@ -65,7 +65,7 @@ export function MortgageSummary() {
 							Your nett profit at the end of the mortgage
 						</dt>
 						<dd className="col-span-2 text-lg">
-							<span className="font-bold">{`${totalInvestmentEarned.toLocaleString()} - ${totalInterest.toLocaleString()} = `}</span>
+							<span className="font-bold text-primary">{`${totalInvestmentEarned.toLocaleString()} - ${totalInterest.toLocaleString()} = `}</span>
 							<span
 								className={cn("font-bold", {
 									"text-green-700": netProfit >= 0,
@@ -81,14 +81,15 @@ export function MortgageSummary() {
 					<p className="text-sm">
 						With the extra payments you've made, you can expect to fully
 						amortize your mortgage by the{" "}
-						<span className="font-bold">{endingYear} year</span>
+						<span className="font-bold text-primary">{endingYear} year</span>
 					</p>
 				)}
 				{crossoverIndex >= 0 && totalInvestmentEarned > 0 && (
 					<p className="text-sm">
 						Your investment will cover your remaining balance in{" "}
-						<span className="font-bold">{crossoverMonth}</span> of the{" "}
-						<span className="font-bold">{crossoverYear}</span> year
+						<span className="font-bold text-primary">{crossoverMonth}</span> of
+						the <span className="font-bold text-primary">{crossoverYear}</span>{" "}
+						year
 					</p>
 				)}
 			</CardContent>

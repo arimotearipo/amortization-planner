@@ -7,8 +7,13 @@ import {
 	TableHeader,
 	TableRow,
 } from "@components/ui/table"
+import type { ReactNode } from "react"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import { useMortgage } from "@/context/mortgate-context"
 import { getMonthName } from "@/lib/get-month-name"
 import { cn } from "@/lib/utils"
@@ -17,11 +22,36 @@ const COL_COUNT = 7
 
 function FullSpanRow({ children }: { children: React.ReactNode }) {
 	return (
-		<TableRow className="bg-gray-100">
+		<TableRow className="bg-background">
 			<TableCell colSpan={COL_COUNT} className="text-center font-bold">
 				{children}
 			</TableCell>
 		</TableRow>
+	)
+}
+
+function CrossoverPointHoverCard({
+	children,
+	isCrossoverPoint,
+}: {
+	children: ReactNode
+	isCrossoverPoint: boolean
+}) {
+	if (!isCrossoverPoint) {
+		return <>{children}</>
+	}
+
+	return (
+		<HoverCard>
+			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
+			<HoverCardContent className="w-80 bg-primary">
+				<p className="text-xs text-primary-foreground">
+					This is the point where your investment growth surpasses your
+					remaining mortgage balance. After this point, you could potentially
+					pay off your mortgage using your investment growth.
+				</p>
+			</HoverCardContent>
+		</HoverCard>
 	)
 }
 
@@ -43,9 +73,10 @@ export function MortgageTable() {
 			<CardHeader>
 				<CardTitle>Amortization Schedule</CardTitle>
 			</CardHeader>
-			<ScrollArea className="h-full">
+			{/* <ScrollArea className="h-full"> */}
+			<div className="h-full overflow-auto relative">
 				<Table>
-					<TableHeader>
+					<TableHeader className="sticky top-0 bg-background">
 						<TableRow>
 							<TableCell className="font-bold">Payment Number</TableCell>
 							<TableCell className="font-bold">Payment Amount</TableCell>
@@ -72,32 +103,42 @@ export function MortgageTable() {
 							}
 
 							rows.push(
-								<TableRow
-									key={payment.paymentNumber}
-									className={cn({
-										"bg-green-400 font-bold hover:bg-green-300":
-											index === crossoverPoint,
-									})}
+								<CrossoverPointHoverCard
+									key={`hover-${payment.paymentNumber}`}
+									isCrossoverPoint={index === crossoverPoint}
 								>
-									<TableCell>
-										{payment.paymentNumber} -{" "}
-										{getMonthName(payment.paymentNumber)}
-									</TableCell>
-									<TableCell>
-										{payment.paymentAmount.toLocaleString()}
-									</TableCell>
-									<TableCell>
-										{payment.totalPrincipalPaid.toLocaleString()}
-									</TableCell>
-									<TableCell>{payment.interestPaid.toLocaleString()}</TableCell>
-									<TableCell>{payment.extraPayment.toLocaleString()}</TableCell>
-									<TableCell>
-										{payment.remainingBalance.toLocaleString()}
-									</TableCell>
-									<TableCell>
-										{payment.investmentGrowth?.toLocaleString() ?? "undefined"}
-									</TableCell>
-								</TableRow>,
+									<TableRow
+										key={payment.paymentNumber}
+										className={cn({
+											"bg-green-400 text-black font-bold hover:bg-green-300":
+												index === crossoverPoint,
+										})}
+									>
+										<TableCell>
+											{payment.paymentNumber} -{" "}
+											{getMonthName(payment.paymentNumber)}
+										</TableCell>
+										<TableCell>
+											{payment.paymentAmount.toLocaleString()}
+										</TableCell>
+										<TableCell>
+											{payment.totalPrincipalPaid.toLocaleString()}
+										</TableCell>
+										<TableCell>
+											{payment.interestPaid.toLocaleString()}
+										</TableCell>
+										<TableCell>
+											{payment.extraPayment.toLocaleString()}
+										</TableCell>
+										<TableCell>
+											{payment.remainingBalance.toLocaleString()}
+										</TableCell>
+										<TableCell>
+											{payment.investmentGrowth?.toLocaleString() ??
+												"undefined"}
+										</TableCell>
+									</TableRow>
+								</CrossoverPointHoverCard>,
 							)
 
 							return rows
@@ -105,7 +146,8 @@ export function MortgageTable() {
 						<FullSpanRow>End</FullSpanRow>
 					</TableBody>
 				</Table>
-			</ScrollArea>
+			</div>
+			{/* </ScrollArea> */}
 		</Card>
 	)
 }

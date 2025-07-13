@@ -18,6 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
 	title: "Amortization Planner",
 	description: "Plan how to pay off your mortgage with ease",
+	viewport: "width=device-width, initial-scale=1",
 }
 
 export default function RootLayout({
@@ -27,6 +28,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
+			<head>
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
+			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>

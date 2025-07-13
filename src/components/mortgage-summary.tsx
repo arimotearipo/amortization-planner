@@ -31,12 +31,12 @@ export function MortgageSummary() {
 	const netProfit = totalInvestmentEarned - totalInterest
 
 	return (
-		<Card className="w-full max-w-md animate-in fade-in duration-1000">
+		<Card className="w-full max-w-none sm:max-w-md lg:max-w-sm lg:h-full animate-in fade-in duration-1000">
 			<CardHeader>
 				<CardTitle>Mortgage Summary</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<dl className="space-y-2 text-gray-700">
+				<dl className="space-y-2 text-gray-700 dark:text-gray-300">
 					<div>
 						<dt className="col-span-2 text-sm font-medium text-gray-500">
 							Total Paid
@@ -79,14 +79,14 @@ export function MortgageSummary() {
 					</div>
 				</dl>
 				{!!extraPayment && (
-					<p className="text-sm">
+					<p className="text-xs sm:text-sm">
 						With the extra payments you've made, you can expect to fully
 						amortize your mortgage by the{" "}
 						<span className="font-bold text-primary">{endingYear} year</span>
 					</p>
 				)}
 				{crossoverIndex >= 0 && totalInvestmentEarned > 0 && (
-					<p className="text-sm">
+					<p className="text-xs sm:text-sm">
 						Your investment will cover your remaining balance in{" "}
 						<span className="font-bold text-primary">{crossoverMonth}</span> of
 						the <span className="font-bold text-primary">{crossoverYear}</span>{" "}
@@ -94,10 +94,12 @@ export function MortgageSummary() {
 					</p>
 				)}
 
-				<MortgageSummaryChart
-					endingYear={Math.ceil(schedule.length / 12)}
-					crossoverYear={Math.floor(crossoverIndex / 12) + 1}
-				/>
+				<div className="mt-4 sm:mt-6">
+					<MortgageSummaryChart
+						endingYear={Math.ceil(schedule.length / 12)}
+						crossoverYear={Math.floor(crossoverIndex / 12) + 1}
+					/>
+				</div>
 			</CardContent>
 		</Card>
 	)

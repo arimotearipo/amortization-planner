@@ -4,10 +4,16 @@ import { MortgageTermsForm } from "@/components/mortgage-terms-form"
 
 export default function Home() {
 	return (
-		<div className="flex flex-row space-x-1 p-1 h-screen overflow-hidden">
-			<MortgageTermsForm />
-			<MortgageSummary />
-			<MortgageTable />
+		<div className="flex flex-col lg:flex-row lg:overflow-y-hidden lg:h-screen space-y-4 lg:space-y-0 lg:space-x-1 p-1 sm:p-1 lg:p-1 min-h-screen">
+			<div className="w-full lg:w-auto lg:flex-shrink-0">
+				<MortgageTermsForm />
+			</div>
+			<div className="w-full lg:w-auto lg:flex-shrink-0">
+				<MortgageSummary />
+			</div>
+			<div className="w-full lg:flex-1">
+				<MortgageTable />
+			</div>
 		</div>
 	)
 }

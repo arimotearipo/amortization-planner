@@ -112,11 +112,11 @@ export function MortgageTermsForm() {
 
 	return (
 		<Form {...form}>
-			<Card className="w-full max-w-md">
+			<Card className="w-full max-w-none sm:max-w-md lg:max-w-sm lg:h-full">
 				<CardHeader>
 					<CardTitle>Mortgage Terms</CardTitle>
 				</CardHeader>
-				<CardContent className="space-y-2">
+				<CardContent className="space-y-3 sm:space-y-2">
 					<FormField
 						control={form.control}
 						name="principalLoanAmount"
@@ -133,7 +133,7 @@ export function MortgageTermsForm() {
 						)}
 					/>
 
-					<div className="grid grid-cols-2 gap-4">
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 						<FormField
 							control={form.control}
 							name="loanTermYears"
@@ -170,7 +170,7 @@ export function MortgageTermsForm() {
 						<AccordionItem value="options">
 							<AccordionTrigger>Options</AccordionTrigger>
 							<AccordionContent className="space-y-2">
-								<div className="grid grid-cols-2 gap-4">
+								<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 									<FormField
 										control={form.control}
 										name="extraPayment"
@@ -217,7 +217,7 @@ export function MortgageTermsForm() {
 											<RadioGroup
 												value={field.value}
 												onValueChange={field.onChange}
-												className="flex flex-row space-x-2"
+												className="flex flex-col sm:flex-row flex-wrap gap-2"
 											>
 												{ExtraPaymentIncrementFrequency.map((f) => (
 													<div key={f} className="flex items-center gap-3">
@@ -244,7 +244,7 @@ export function MortgageTermsForm() {
 											</AlertDescription>
 										</Alert>
 
-										<div className="grid grid-cols-2 gap-4">
+										<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 											<FormField
 												control={form.control}
 												name="extraPaymentStartMonth"
@@ -339,11 +339,17 @@ export function MortgageTermsForm() {
 						</AccordionItem>
 					</Accordion>
 
-					<div className="flex justify-between">
-						<Button onClick={handleSubmitForm} type="button">
+					<div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-2">
+						<Button
+							onClick={handleSubmitForm}
+							type="button"
+							className="w-full sm:w-auto"
+						>
 							Calculate
 						</Button>
-						<ModeToggle />
+						<div className="flex justify-center sm:justify-end">
+							<ModeToggle />
+						</div>
 					</div>
 				</CardContent>
 			</Card>

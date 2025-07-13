@@ -69,85 +69,99 @@ export function MortgageTable() {
 	)
 
 	return (
-		<Card className="w-full h-screen animate-in fade-in duration-1000">
+		<Card className="w-full h-80 sm:h-96 lg:h-full animate-in fade-in duration-1000">
 			<CardHeader>
 				<CardTitle>Amortization Schedule</CardTitle>
 			</CardHeader>
-			{/* <ScrollArea className="h-full"> */}
 			<div className="h-full overflow-auto relative">
-				<Table>
-					<TableHeader className="sticky top-0 bg-background">
-						<TableRow>
-							<TableCell className="font-bold">Payment Number</TableCell>
-							<TableCell className="font-bold">Payment Amount</TableCell>
-							<TableCell className="font-bold">Principal Paid</TableCell>
-							<TableCell className="font-bold">Interest Paid</TableCell>
-							<TableCell className="font-bold">Extra Payment</TableCell>
-							<TableCell className="font-bold">Remaining Balance</TableCell>
-							<TableCell className="font-bold">Investment Growth</TableCell>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{schedule.map((payment, index) => {
-							if (payment.remainingBalance <= 0) {
-								return null
-							}
+				<div className="min-w-full overflow-x-auto">
+					<Table>
+						<TableHeader className="sticky top-0 bg-background">
+							<TableRow>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
+									Payment Number
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
+									Payment Amount
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
+									Principal Paid
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
+									Interest Paid
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
+									Extra Payment
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
+									Remaining Balance
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
+									Investment Growth
+								</TableCell>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{schedule.map((payment, index) => {
+								if (payment.remainingBalance <= 0) {
+									return null
+								}
 
-							const rows = []
+								const rows = []
 
-							if ((payment.paymentNumber - 1) % 12 === 0) {
-								const year = Math.floor((payment.paymentNumber - 1) / 12) + 1
+								if ((payment.paymentNumber - 1) % 12 === 0) {
+									const year = Math.floor((payment.paymentNumber - 1) / 12) + 1
+									rows.push(
+										<FullSpanRow key={`year-${year}`}>Year {year}</FullSpanRow>,
+									)
+								}
+
 								rows.push(
-									<FullSpanRow key={`year-${year}`}>Year {year}</FullSpanRow>,
-								)
-							}
-
-							rows.push(
-								<CrossoverPointHoverCard
-									key={`hover-${payment.paymentNumber}`}
-									isCrossoverPoint={index === crossoverPoint}
-								>
-									<TableRow
-										key={payment.paymentNumber}
-										className={cn({
-											"bg-green-400 text-black font-bold hover:bg-green-300":
-												index === crossoverPoint,
-										})}
+									<CrossoverPointHoverCard
+										key={`hover-${payment.paymentNumber}`}
+										isCrossoverPoint={index === crossoverPoint}
 									>
-										<TableCell>
-											{payment.paymentNumber} -{" "}
-											{getMonthName(payment.paymentNumber)}
-										</TableCell>
-										<TableCell>
-											{payment.paymentAmount.toLocaleString()}
-										</TableCell>
-										<TableCell>
-											{payment.totalPrincipalPaid.toLocaleString()}
-										</TableCell>
-										<TableCell>
-											{payment.interestPaid.toLocaleString()}
-										</TableCell>
-										<TableCell>
-											{payment.extraPayment.toLocaleString()}
-										</TableCell>
-										<TableCell>
-											{payment.remainingBalance.toLocaleString()}
-										</TableCell>
-										<TableCell>
-											{payment.investmentGrowth?.toLocaleString() ??
-												"undefined"}
-										</TableCell>
-									</TableRow>
-								</CrossoverPointHoverCard>,
-							)
+										<TableRow
+											key={payment.paymentNumber}
+											className={cn({
+												"bg-green-400 text-black font-bold hover:bg-green-300":
+													index === crossoverPoint,
+											})}
+										>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">
+												{payment.paymentNumber} -{" "}
+												{getMonthName(payment.paymentNumber)}
+											</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">
+												{payment.paymentAmount.toLocaleString()}
+											</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">
+												{payment.totalPrincipalPaid.toLocaleString()}
+											</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">
+												{payment.interestPaid.toLocaleString()}
+											</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">
+												{payment.extraPayment.toLocaleString()}
+											</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">
+												{payment.remainingBalance.toLocaleString()}
+											</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">
+												{payment.investmentGrowth?.toLocaleString() ??
+													"undefined"}
+											</TableCell>
+										</TableRow>
+									</CrossoverPointHoverCard>,
+								)
 
-							return rows
-						})}
-						<FullSpanRow>End</FullSpanRow>
-					</TableBody>
-				</Table>
+								return rows
+							})}
+							<FullSpanRow>End</FullSpanRow>
+						</TableBody>
+					</Table>
+				</div>
 			</div>
-			{/* </ScrollArea> */}
 		</Card>
 	)
 }

@@ -24,8 +24,8 @@ export function MortgageSummaryChart({
 	]
 
 	return (
-		<ResponsiveContainer width="100%" height={400}>
-			<ScatterChart margin={{ top: 100, right: 20, bottom: 20, left: 20 }}>
+		<ResponsiveContainer width="100%" height={200}>
+			<ScatterChart margin={{ top: 40, right: 5, bottom: 10, left: 5 }}>
 				<CartesianGrid />
 				<XAxis type="number" dataKey="x" hide />
 				<YAxis type="number" dataKey="y" name="year" />
@@ -44,7 +44,7 @@ export function MortgageSummaryChart({
 					}}
 				/>
 				<Scatter name="A school" data={data}>
-					<LabelList dataKey="label" position="top" fontSize={12} />
+					<LabelList dataKey="label" position="top" fontSize={8} />
 				</Scatter>
 			</ScatterChart>
 		</ResponsiveContainer>

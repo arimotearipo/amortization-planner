@@ -5,32 +5,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card"
 import { Form, FormField, FormLabel, FormMessage } from "@components/ui/form"
 import { Input } from "@components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { InfoIcon } from "lucide-react"
+import type React from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import z from "zod"
+import {
+	type MortgageTermsInputs,
+	mortgageTermsInputsSchema,
+} from "@/components/models"
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useMortgage } from "@/context/mortgate-context"
 import { ExtraPaymentIncrementFrequency } from "@/types"
-
-const mortgageTermsInputsSchema = z.object({
-	principalLoanAmount: z.number().min(1, "Must be greater than 0"),
-	loanTermYears: z.number().int("Must be whole number"),
-	annualInterestRate: z.number().min(0).max(100),
-	extraPayment: z.number().min(0).optional(),
-	extraPaymentIncrement: z.number().min(0).optional(),
-	extraPaymentIncrementFrequency: z
-		.enum(ExtraPaymentIncrementFrequency)
-		.optional(),
-})
-
-type MortgageTermsInputs = z.infer<typeof mortgageTermsInputsSchema>
 
 export function MortgageTermsForm() {
 	const { setMortgageDetails } = useMortgage()
@@ -43,11 +36,35 @@ export function MortgageTermsForm() {
 			annualInterestRate: 3.8,
 			extraPayment: 0,
 			extraPaymentIncrement: 0,
-			extraPaymentIncrementFrequency: "monthly",
+			extraPaymentIncrementFrequency: "yearly",
+			extraPaymentStartMonth: 0,
+			extraPaymentEndMonth: 0,
 		},
 	})
 
+	const maxMonthIndex = form.watch("loanTermYears") * 12 - 1
+
 	const handleSubmitForm = form.handleSubmit((data) => {
+		if (
+			data.extraPaymentStartMonth < 0 ||
+			data.extraPaymentStartMonth > maxMonthIndex
+		) {
+			toast.error(
+				`Extra payment start month must be between 0 (inclusive) and ${maxMonthIndex} (inclusive)`,
+			)
+			return
+		}
+
+		if (
+			data.extraPaymentEndMonth > maxMonthIndex ||
+			data.extraPaymentEndMonth < data.extraPaymentStartMonth
+		) {
+			toast.error(
+				`Extra payment end month must be between ${data.extraPaymentStartMonth} (inclusive) and ${maxMonthIndex} (inclusive)`,
+			)
+			return
+		}
+
 		console.log("Form submitted with data:", data)
 		setMortgageDetails({
 			principalLoanAmount: data.principalLoanAmount,
@@ -57,10 +74,20 @@ export function MortgageTermsForm() {
 			extraPaymentIncrement: data.extraPaymentIncrement || 0,
 			extraPaymentIncrementFrequency:
 				data.extraPaymentIncrementFrequency || "monthly",
+			extraPaymentStartMonth: data.extraPaymentStartMonth,
+			extraPaymentEndMonth: data.extraPaymentEndMonth,
 		})
 
 		toast.success("Mortgage terms saved successfully!")
 	})
+
+	const handleLoanTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const numOfMonths = Number(e.target.value) * 12
+		form.setValue("loanTermYears", Number(e.target.value))
+
+		form.setValue("extraPaymentStartMonth", 0)
+		form.setValue("extraPaymentEndMonth", numOfMonths - 1)
+	}
 
 	return (
 		<Form {...form}>
@@ -93,7 +120,7 @@ export function MortgageTermsForm() {
 								<Input
 									{...field}
 									type="number"
-									onChange={(e) => field.onChange(Number(e.target.value))}
+									onChange={handleLoanTermChange}
 								/>
 								<FormMessage />
 							</div>
@@ -173,6 +200,55 @@ export function MortgageTermsForm() {
 										</div>
 									)}
 								/>
+
+								{!!form.watch("extraPayment") && (
+									<>
+										<Alert variant={"default"}>
+											<InfoIcon />
+											<AlertTitle>Extra Payment Term</AlertTitle>
+											<AlertDescription>
+												{`You can set the start and end month for the extra
+												payment. Your loan tenure is ${form.getValues("loanTermYears")} year(s) therefore the value for start and end month should be between 0 to ${maxMonthIndex}. If you want it to continue until the end of the
+												loan term, leave the end month as -1.`}
+											</AlertDescription>
+										</Alert>
+										<FormField
+											control={form.control}
+											name="extraPaymentStartMonth"
+											render={({ field }) => (
+												<div className="space-y-2">
+													<FormLabel>Extra Payment Start Month</FormLabel>
+													<Input
+														{...field}
+														type="number"
+														onChange={(e) =>
+															field.onChange(Number(e.target.value))
+														}
+													/>
+													<FormMessage />
+												</div>
+											)}
+										/>
+
+										<FormField
+											control={form.control}
+											name="extraPaymentEndMonth"
+											render={({ field }) => (
+												<div className="space-y-2">
+													<FormLabel>Extra Payment End Month</FormLabel>
+													<Input
+														{...field}
+														type="number"
+														onChange={(e) =>
+															field.onChange(Number(e.target.value))
+														}
+													/>
+													<FormMessage />
+												</div>
+											)}
+										/>
+									</>
+								)}
 							</AccordionContent>
 						</AccordionItem>
 					</Accordion>

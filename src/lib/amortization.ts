@@ -1,15 +1,16 @@
-import type {
-	CalculateAmortizationScheduleReturnType,
-	ExtraPaymentIncrementFrequency,
-	Payment,
-} from "@/types"
+import type { MortgageTermsInputs } from "@/components/models"
+import type { CalculateAmortizationScheduleReturnType, Payment } from "@/types"
 
-function getExtraPayments(
-	loanTermYears: number,
-	extraPayment: number = 0,
-	extraPaymentIncrement: number = 0,
-	extraPaymentIncrementFrequency: (typeof ExtraPaymentIncrementFrequency)[number] = "monthly",
-): number[] {
+function getExtraPayments(mortgageArgs: MortgageTermsInputs): number[] {
+	const {
+		loanTermYears,
+		extraPayment = 0,
+		extraPaymentIncrement = 0,
+		extraPaymentIncrementFrequency = "monthly",
+		extraPaymentStartMonth = 0,
+		extraPaymentEndMonth = -1,
+	} = mortgageArgs
+
 	if (extraPayment <= 0) {
 		return []
 	}
@@ -19,6 +20,15 @@ function getExtraPayments(
 
 	let currentExtraPayment = extraPayment
 	for (let i = 0; i < totalMonths; i++) {
+		if (extraPaymentEndMonth >= 0 && i >= extraPaymentEndMonth) {
+			break // Stop adding extra payments after the end month
+		}
+
+		if (i < extraPaymentStartMonth) {
+			extraPayments.push(0) // No extra payment before the start month
+			continue
+		}
+
 		if (extraPaymentIncrementFrequency === "monthly") {
 			currentExtraPayment += extraPaymentIncrement
 		}
@@ -34,13 +44,11 @@ function getExtraPayments(
 }
 
 function calculateAmortizationSchedule(
-	principalLoanAmount: number,
-	annualInterestRate: number,
-	loanTermYears: number,
-	extraPayment: number = 0,
-	extraPaymentIncrement: number = 0,
-	extraPaymentIncrementFrequency: (typeof ExtraPaymentIncrementFrequency)[number] = "monthly",
+	mortgageArgs: MortgageTermsInputs,
 ): CalculateAmortizationScheduleReturnType {
+	const { loanTermYears, annualInterestRate, principalLoanAmount } =
+		mortgageArgs
+
 	/**
 	 * Calculate monthly payment using PMT formula:
 	 * M = P[r(1 + r)^n] / [(1 + r)^n - 1]
@@ -64,12 +72,7 @@ function calculateAmortizationSchedule(
 
 	const schedule: Payment[] = []
 
-	const extraPayments = getExtraPayments(
-		loanTermYears,
-		extraPayment,
-		extraPaymentIncrement,
-		extraPaymentIncrementFrequency,
-	)
+	const extraPayments = getExtraPayments(mortgageArgs)
 
 	for (let month = 1; month <= numberOfPayments; month++) {
 		if (remainingBalance <= 0) {

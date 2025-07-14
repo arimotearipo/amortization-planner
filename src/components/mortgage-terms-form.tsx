@@ -7,6 +7,7 @@ import { Input } from "@components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { InfoIcon } from "lucide-react"
 import type React from "react"
+import type { ReactNode } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { ModeToggle } from "@/components/mode-toggle"
@@ -20,7 +21,11 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
@@ -43,6 +48,22 @@ function getDefaultValues(): MortgageTermsInputs {
 		investmentReturnRate: 0,
 		extraPaymentSplitRatio: 0.5, // Default split ratio for extra payments
 	}
+}
+
+function ExtraPaymentInfoHoverCard({ children }: { children: ReactNode }) {
+	return (
+		<HoverCard>
+			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
+			<HoverCardContent className="w-80 bg-primary">
+				<p className="text-xs text-primary-foreground">
+					Extra payments can significantly reduce the total interest paid over
+					the life of the loan. You can specify the amount, frequency, and how
+					much of the extra payment goes towards the principal versus
+					investments.
+				</p>
+			</HoverCardContent>
+		</HoverCard>
+	)
 }
 
 export function MortgageTermsForm() {
@@ -117,7 +138,7 @@ export function MortgageTermsForm() {
 				<CardHeader>
 					<CardTitle>Mortgage Terms</CardTitle>
 				</CardHeader>
-				<CardContent className="space-y-3 sm:space-y-2">
+				<CardContent className="space-y-1">
 					<FormField
 						control={form.control}
 						name="principalLoanAmount"
@@ -171,13 +192,12 @@ export function MortgageTermsForm() {
 						<AccordionItem value="options">
 							<AccordionTrigger>Options</AccordionTrigger>
 							<AccordionContent className="space-y-2">
-								<Alert variant={"default"}>
-									<InfoIcon />
-									<AlertTitle>Extra Payment</AlertTitle>
-									<AlertDescription>
-										{`Extra payments help you pay off your loan faster and save on interest. You can split extra funds between your mortgage and investing. Set start/end months to control when extra payments apply; use -1 to pay until the loan ends.`}
-									</AlertDescription>
-								</Alert>
+								<ExtraPaymentInfoHoverCard>
+									<div className="flex items-center gap-2 bg-muted rounded p-1">
+										<InfoIcon className="h-4- w-4" />
+										<p className="text-primary">Extra Payment</p>
+									</div>
+								</ExtraPaymentInfoHoverCard>
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 									<FormField
 										control={form.control}

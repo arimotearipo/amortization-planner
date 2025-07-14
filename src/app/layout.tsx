@@ -44,11 +44,11 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<MortgageProvider>
-						<main>{children}</main>
+						<main className="h-screen">{children}</main>
+						<Footer />
 					</MortgageProvider>
 				</ThemeProvider>
 				<Toaster theme="system" richColors />
-				<Footer />
 			</body>
 		</html>
 	)

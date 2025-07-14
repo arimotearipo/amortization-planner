@@ -7,7 +7,6 @@ import {
 	DrawerFooter,
 	DrawerHeader,
 	DrawerTitle,
-	DrawerTrigger,
 } from "@components/ui/drawer"
 import { Form, FormField, FormLabel, FormMessage } from "@components/ui/form"
 import { Input } from "@components/ui/input"
@@ -17,7 +16,6 @@ import type React from "react"
 import type { ReactNode } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { set } from "zod"
 import {
 	type MortgageTermsInputs,
 	mortgageTermsInputsSchema,

@@ -1,7 +1,14 @@
 "use client"
 
 import { Button } from "@components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card"
+import {
+	Drawer,
+	DrawerContent,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from "@components/ui/drawer"
 import { Form, FormField, FormLabel, FormMessage } from "@components/ui/form"
 import { Input } from "@components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -10,17 +17,11 @@ import type React from "react"
 import type { ReactNode } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { ModeToggle } from "@/components/mode-toggle"
+import { set } from "zod"
 import {
 	type MortgageTermsInputs,
 	mortgageTermsInputsSchema,
 } from "@/components/models"
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "@/components/ui/accordion"
 import {
 	HoverCard,
 	HoverCardContent,
@@ -67,8 +68,13 @@ function ExtraPaymentInfoHoverCard({ children }: { children: ReactNode }) {
 }
 
 export function MortgageTermsForm() {
-	const { setMortgageTerms, setAmortizationDetails, setSubmitted } =
-		useMortgage()
+	const {
+		setMortgageTerms,
+		setAmortizationDetails,
+		setSubmitted,
+		openMortgageTermsForm,
+		setOpenMortgageTermsForm,
+	} = useMortgage()
 
 	const form = useForm<MortgageTermsInputs>({
 		resolver: zodResolver(mortgageTermsInputsSchema),
@@ -111,6 +117,7 @@ export function MortgageTermsForm() {
 		const amortizationDetails = calculateAmortizationSchedule(data)
 		setAmortizationDetails(amortizationDetails)
 		setSubmitted(true)
+		setOpenMortgageTermsForm(false)
 	})
 
 	const handleLoanTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,79 +139,143 @@ export function MortgageTermsForm() {
 		setAmortizationDetails(amortizationDetails)
 	}
 
+	// return (
+
+	// )
 	return (
-		<Form {...form}>
-			<Card className="w-full max-w-none sm:max-w-md lg:max-w-sm lg:h-full">
-				<CardHeader>
-					<CardTitle>Mortgage Terms</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-1">
-					<FormField
-						control={form.control}
-						name="principalLoanAmount"
-						render={({ field }) => (
-							<div className="space-y-1">
-								<FormLabel>Loan Amount</FormLabel>
-								<Input
-									{...field}
-									type="number"
-									onChange={(e) => field.onChange(Number(e.target.value))}
-								/>
-								<FormMessage />
-							</div>
-						)}
-					/>
+		<Drawer
+			open={openMortgageTermsForm}
+			onOpenChange={setOpenMortgageTermsForm}
+		>
+			<DrawerContent>
+				<DrawerHeader>
+					<DrawerTitle>Mortgage Terms</DrawerTitle>
+				</DrawerHeader>
 
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-						<FormField
-							control={form.control}
-							name="loanTermYears"
-							render={({ field }) => (
-								<div className="space-y-1">
-									<FormLabel>Loan Term (Years)</FormLabel>
-									<Input
-										{...field}
-										type="number"
-										onChange={handleLoanTermChange}
-									/>
-									<FormMessage />
-								</div>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="annualInterestRate"
-							render={({ field }) => (
-								<div className="space-y-1">
-									<FormLabel>Annual Interest Rate (%)</FormLabel>
-									<Input
-										{...field}
-										type="number"
-										onChange={(e) => field.onChange(Number(e.target.value))}
-									/>
-									<FormMessage />
-								</div>
-							)}
-						/>
-					</div>
-
-					<Accordion type="single" collapsible>
-						<AccordionItem value="options">
-							<AccordionTrigger>Options</AccordionTrigger>
-							<AccordionContent className="space-y-2">
-								<ExtraPaymentInfoHoverCard>
-									<div className="flex items-center gap-2 bg-muted rounded p-1">
-										<InfoIcon className="h-4- w-4" />
-										<p className="text-primary">Extra Payment</p>
+				<Form {...form}>
+					<div className="grid grid-cols-12 space-x-1">
+						<div className="col-span-3 space-y-2">
+							<FormField
+								control={form.control}
+								name="principalLoanAmount"
+								render={({ field }) => (
+									<div className="space-y-1">
+										<FormLabel>Loan Amount</FormLabel>
+										<Input
+											{...field}
+											type="number"
+											onChange={(e) => field.onChange(Number(e.target.value))}
+										/>
+										<FormMessage />
 									</div>
-								</ExtraPaymentInfoHoverCard>
-								<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+								)}
+							/>
+
+							<FormField
+								control={form.control}
+								name="loanTermYears"
+								render={({ field }) => (
+									<div className="space-y-1">
+										<FormLabel>Loan Term (Years)</FormLabel>
+										<Input
+											{...field}
+											type="number"
+											onChange={handleLoanTermChange}
+										/>
+										<FormMessage />
+									</div>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="annualInterestRate"
+								render={({ field }) => (
+									<div className="space-y-1">
+										<FormLabel>Annual Interest Rate (%)</FormLabel>
+										<Input
+											{...field}
+											type="number"
+											onChange={(e) => field.onChange(Number(e.target.value))}
+										/>
+										<FormMessage />
+									</div>
+								)}
+							/>
+						</div>
+
+						<div className="col-span-3 space-y-2">
+							<FormField
+								control={form.control}
+								name="extraPayment"
+								render={({ field }) => (
+									<div className="space-y-1">
+										<FormLabel>
+											Extra Payment{" "}
+											<ExtraPaymentInfoHoverCard>
+												<InfoIcon size={14} />
+											</ExtraPaymentInfoHoverCard>
+										</FormLabel>
+
+										<Input
+											{...field}
+											type="number"
+											onChange={(e) => field.onChange(Number(e.target.value))}
+										/>
+										<FormMessage />
+									</div>
+								)}
+							/>
+
+							<FormField
+								control={form.control}
+								name="extraPaymentIncrement"
+								render={({ field }) => (
+									<div className="space-y-1">
+										<FormLabel>Extra Payment Increment</FormLabel>
+										<Input
+											{...field}
+											type="number"
+											onChange={(e) => field.onChange(Number(e.target.value))}
+										/>
+										<FormMessage />
+									</div>
+								)}
+							/>
+
+							<FormField
+								control={form.control}
+								name="extraPaymentIncrementFrequency"
+								render={({ field }) => (
+									<div className="space-y-1">
+										<FormLabel>Extra Payment Increment Frequency</FormLabel>
+										<RadioGroup
+											value={field.value}
+											onValueChange={field.onChange}
+											className="flex flex-col sm:flex-row flex-wrap gap-2 items-center h-9"
+										>
+											{ExtraPaymentIncrementFrequency.map((f) => (
+												<div key={f} className="flex items-center gap-3">
+													<RadioGroupItem value={f} id={f} />
+													<Label htmlFor={f} className="capitalize">
+														{f}
+													</Label>
+												</div>
+											))}
+										</RadioGroup>
+									</div>
+								)}
+							/>
+						</div>
+
+						{!!form.watch("extraPayment") && (
+							<>
+								<div className="col-span-3 space-y-2">
 									<FormField
 										control={form.control}
-										name="extraPayment"
+										name="extraPaymentStartMonth"
 										render={({ field }) => (
 											<div className="space-y-1">
-												<FormLabel>Extra Payment</FormLabel>
+												<FormLabel>Extra Payment Start Month</FormLabel>
 												<Input
 													{...field}
 													type="number"
@@ -219,10 +290,28 @@ export function MortgageTermsForm() {
 
 									<FormField
 										control={form.control}
-										name="extraPaymentIncrement"
+										name="extraPaymentEndMonth"
 										render={({ field }) => (
 											<div className="space-y-1">
-												<FormLabel>Extra Payment Increment</FormLabel>
+												<FormLabel>Extra Payment End Month</FormLabel>
+												<Input
+													{...field}
+													type="number"
+													onChange={(e) =>
+														field.onChange(Number(e.target.value))
+													}
+												/>
+												<FormMessage />
+											</div>
+										)}
+									/>
+
+									<FormField
+										control={form.control}
+										name="investmentReturnRate"
+										render={({ field }) => (
+											<div className="space-y-1">
+												<FormLabel>Investment Return Rate (%)</FormLabel>
 												<Input
 													{...field}
 													type="number"
@@ -236,141 +325,54 @@ export function MortgageTermsForm() {
 									/>
 								</div>
 
-								<FormField
-									control={form.control}
-									name="extraPaymentIncrementFrequency"
-									render={({ field }) => (
-										<div className="space-y-1">
-											<FormLabel>Extra Payment Increment Frequency</FormLabel>
-											<RadioGroup
-												value={field.value}
-												onValueChange={field.onChange}
-												className="flex flex-col sm:flex-row flex-wrap gap-2"
-											>
-												{ExtraPaymentIncrementFrequency.map((f) => (
-													<div key={f} className="flex items-center gap-3">
-														<RadioGroupItem value={f} id={f} />
-														<Label htmlFor={f} className="capitalize">
-															{f}
-														</Label>
-													</div>
-												))}
-											</RadioGroup>
-										</div>
-									)}
-								/>
-
-								{!!form.watch("extraPayment") && (
-									<>
-										<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-											<FormField
-												control={form.control}
-												name="extraPaymentStartMonth"
-												render={({ field }) => (
-													<div className="space-y-1">
-														<FormLabel>Extra Payment Start Month</FormLabel>
-														<Input
-															{...field}
-															type="number"
-															onChange={(e) =>
-																field.onChange(Number(e.target.value))
-															}
-														/>
-														<FormMessage />
-													</div>
-												)}
-											/>
-
-											<FormField
-												control={form.control}
-												name="extraPaymentEndMonth"
-												render={({ field }) => (
-													<div className="space-y-1">
-														<FormLabel>Extra Payment End Month</FormLabel>
-														<Input
-															{...field}
-															type="number"
-															onChange={(e) =>
-																field.onChange(Number(e.target.value))
-															}
-														/>
-														<FormMessage />
-													</div>
-												)}
-											/>
-										</div>
-
-										<FormField
-											control={form.control}
-											name="investmentReturnRate"
-											render={({ field }) => (
-												<div className="space-y-1">
-													<FormLabel>Investment Return Rate (%)</FormLabel>
-													<Input
+								<div className="col-span-3 space-y-2">
+									<FormField
+										control={form.control}
+										name="extraPaymentSplitRatio"
+										render={({ field }) => (
+											<>
+												<FormLabel>
+													Extra Payment Split Ratio for Investment (%)
+												</FormLabel>
+												<Label className="text-sm text-muted-foreground">
+													This is the percentage of the extra payment that will
+													be used to pay down the principal. The rest will be
+													invested
+												</Label>
+												<div>
+													<span>
+														Principal Payment: {Math.round(field.value * 100)}%
+													</span>
+													<Slider
 														{...field}
-														type="number"
-														onChange={(e) =>
-															field.onChange(Number(e.target.value))
-														}
+														min={0}
+														max={1}
+														step={0.01}
+														value={[field.value]}
+														onValueChange={handleRatioChange}
 													/>
-													<FormMessage />
+													<span>
+														Investment: {Math.round((1 - field.value) * 100)}%
+													</span>
 												</div>
-											)}
-										/>
-
-										<FormField
-											control={form.control}
-											name="extraPaymentSplitRatio"
-											render={({ field }) => (
-												<>
-													<FormLabel>
-														Extra Payment Split Ratio for Investment (%)
-													</FormLabel>
-													<Label className="text-sm text-muted-foreground">
-														This is the percentage of the extra payment that
-														will be used to pay down the principal. The rest
-														will be invested
-													</Label>
-													<div>
-														<span>
-															Principal Payment: {Math.round(field.value * 100)}
-															%
-														</span>
-														<Slider
-															{...field}
-															min={0}
-															max={1}
-															step={0.01}
-															value={[field.value]}
-															onValueChange={handleRatioChange}
-														/>
-														<span>
-															Investment: {Math.round((1 - field.value) * 100)}%
-														</span>
-													</div>
-												</>
-											)}
-										/>
-									</>
-								)}
-							</AccordionContent>
-						</AccordionItem>
-					</Accordion>
-
-					<div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-2">
-						<Button
-							onClick={handleSubmitForm}
-							type="button"
-							className="w-full sm:w-auto"
-						>
-							Calculate
-						</Button>
-						<div className="flex justify-center sm:justify-end">
-							<ModeToggle />
-						</div>
+											</>
+										)}
+									/>
+								</div>
+							</>
+						)}
 					</div>
-				</CardContent>
-			</Card>
-		</Form>
+				</Form>
+				<DrawerFooter>
+					<Button
+						onClick={handleSubmitForm}
+						type="button"
+						className="w-full sm:w-auto"
+					>
+						Calculate
+					</Button>
+				</DrawerFooter>
+			</DrawerContent>
+		</Drawer>
 	)
 }

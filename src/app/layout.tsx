@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { Footer } from "@/components/footer"
+import { Header } from "@/components/header"
 import { Toaster } from "@/components/ui/sonner"
 import { MortgageProvider } from "@/context/mortgate-context"
 import { ThemeProvider } from "@/context/theme-context"
@@ -47,12 +48,13 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
+					<Header />
 					<MortgageProvider>
-						<main className="flex-1">{children}</main>
+						<main className="flex-">{children}</main>
 					</MortgageProvider>
+					<Footer />
 				</ThemeProvider>
 				<Toaster theme="system" richColors />
-				<Footer />
 			</body>
 		</html>
 	)

@@ -12,6 +12,8 @@ type MortgageContextType = {
 	setAmortizationDetails: (details: AmortizationDetails) => void
 	submitted: boolean
 	setSubmitted: (submitted: boolean) => void
+	openMortgageTermsForm: boolean
+	setOpenMortgageTermsForm: (open: boolean) => void
 }
 
 const MortgageContext = createContext<MortgageContextType | undefined>(
@@ -24,6 +26,7 @@ export const MortgageProvider = ({
 	children: React.ReactNode
 }) => {
 	const [submitted, setSubmitted] = useState(false)
+	const [openMortgageTermsForm, setOpenMortgageTermsForm] = useState(true)
 
 	const [mortgageTerms, setMortgageTerms] = useState<MortgageTermsInputs>({
 		principalLoanAmount: 0,
@@ -55,6 +58,8 @@ export const MortgageProvider = ({
 				setAmortizationDetails,
 				submitted,
 				setSubmitted,
+				openMortgageTermsForm,
+				setOpenMortgageTermsForm,
 			}}
 		>
 			{children}

@@ -1,6 +1,6 @@
 <!-- filepath: /home/ari/code/amortization-planner/public/favicon.svg -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#36f7d1" stroke="#000" stroke-width="2"/>
+  <rect width="32" height="32" rx="6" fill="#36f7d1" stroke-width="2"/>
   <path d="M8 18v7h5v-5h6v5h5v-7l-8-7-8 7z" fill="#fff" stroke="#000" stroke-width="0.2"/>
   <path d="M4 18l12-11 12 11" stroke="#fff" stroke-width="2" fill="none"/>
 </svg>

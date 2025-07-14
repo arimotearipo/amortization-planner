@@ -31,7 +31,7 @@ export function MortgageSummary() {
 	const netProfit = totalInvestmentEarned - totalInterest
 
 	return (
-		<Card className="w-full max-w-none sm:max-w-md lg:max-w-sm lg:h-full animate-in fade-in duration-1000">
+		<Card className="w-full animate-in fade-in duration-1000">
 			<CardHeader>
 				<CardTitle>Mortgage Summary</CardTitle>
 			</CardHeader>

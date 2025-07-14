@@ -1,18 +1,25 @@
-import { MortgageSummary } from "@/components/mortgage-summary"
-import { MortgageTable } from "@/components/mortgage-table"
+"use client"
+
+import MortgageDetails from "@/components/mortgage-details"
 import { MortgageTermsForm } from "@/components/mortgage-terms-form"
+import { Button } from "@/components/ui/button"
+import { useMortgage } from "@/context/mortgate-context"
 
 export default function Home() {
+	const { setOpenMortgageTermsForm } = useMortgage()
 	return (
-		<div className="flex flex-col lg:flex-row min-h-full space-y-4 lg:space-y-0 lg:space-x-1 p-1 sm:p-1 lg:p-1">
-			<div className="w-full lg:w-auto lg:flex-shrink-0">
-				<MortgageTermsForm />
+		<div className="flex flex-col min-h-full">
+			<div className="w-full">
+				<MortgageDetails />
 			</div>
-			<div className="w-full lg:w-auto lg:flex-shrink-0">
-				<MortgageSummary />
-			</div>
-			<div className="w-full lg:flex-1 lg:overflow-hidden">
-				<MortgageTable />
+			<MortgageTermsForm />
+			<div className="flex justify-center mt-4">
+				<Button
+					className="btn btn-primary"
+					onClick={() => setOpenMortgageTermsForm(true)}
+				>
+					Edit Mortgage Terms
+				</Button>
 			</div>
 		</div>
 	)

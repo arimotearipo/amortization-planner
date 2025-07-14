@@ -35,7 +35,11 @@ export default function RootLayout({
 				<link rel="icon" href="/favicon.svg" />
 			</head>
 			<body
-				className={cn(geistSans.variable, geistMono.variable, `antialiased`)}
+				className={cn(
+					geistSans.variable,
+					geistMono.variable,
+					`antialiased flex flex-col min-h-screen`,
+				)}
 			>
 				<ThemeProvider
 					attribute="class"
@@ -44,11 +48,11 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<MortgageProvider>
-						<main className="h-screen">{children}</main>
-						<Footer />
+						<main className="flex-1">{children}</main>
 					</MortgageProvider>
 				</ThemeProvider>
 				<Toaster theme="system" richColors />
+				<Footer />
 			</body>
 		</html>
 	)

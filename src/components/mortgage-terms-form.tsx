@@ -34,13 +34,13 @@ import { calculateAmortizationSchedule } from "@/lib/amortization"
 import { ExtraPaymentIncrementFrequency } from "@/types"
 
 function getDefaultValues(): MortgageTermsInputs {
-	const loanTermYears = 0
+	const loanTermYears = 35
 	const extraPaymentEndMonth = loanTermYears > 0 ? loanTermYears * 12 - 1 : 0
 	return {
-		principalLoanAmount: 0,
+		principalLoanAmount: 490000,
 		loanTermYears,
-		annualInterestRate: 0,
-		extraPayment: 0,
+		annualInterestRate: 3.8,
+		extraPayment: 1000,
 		extraPaymentIncrement: 0,
 		extraPaymentIncrementFrequency: "yearly",
 		extraPaymentStartMonth: 0,

@@ -36,7 +36,7 @@ export function MortgageSummary() {
 				<CardTitle>Mortgage Summary</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<dl className="space-y-2 text-gray-700 dark:text-gray-300">
+				<dl className="grid grid-cols-4 space-y-2 text-gray-700 dark:text-gray-300">
 					<div>
 						<dt className="col-span-2 text-sm font-medium text-gray-500">
 							Monthly Payment

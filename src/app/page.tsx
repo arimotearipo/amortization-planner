@@ -8,12 +8,12 @@ import { useMortgage } from "@/context/mortgate-context"
 export default function Home() {
 	const { setOpenMortgageTermsForm } = useMortgage()
 	return (
-		<div className="flex flex-col min-h-full">
+		<div className="flex flex-col flex-1 min-h-0">
 			<div className="w-full">
 				<MortgageDetails />
 			</div>
 			<MortgageTermsForm />
-			<div className="flex justify-center mt-4">
+			<div className="flex flex-col flex-1 min-h-0 justify-end">
 				<Button
 					className="btn btn-primary"
 					onClick={() => setOpenMortgageTermsForm(true)}

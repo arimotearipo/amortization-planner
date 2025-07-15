@@ -1,6 +1,6 @@
 export function Footer() {
 	return (
-		<footer className="fixed bottom-0 z-50 w-full text-center py-1 text-sm text-muted-foreground border-t border-border">
+		<footer className="w-full text-center py-1 text-sm text-muted-foreground border-t border-border">
 			<span>
 				Created by Wan Nor Adzahari &middot; wnadzahari@gmail.com |{" "}
 				<a

@@ -151,7 +151,7 @@ export function MortgageTermsForm() {
 				</DrawerHeader>
 
 				<Form {...form}>
-					<div className="grid grid-cols-12 space-x-1">
+					<div className="grid grid-cols-1 overflow-auto lg:grid-cols-12 space-x-1 px-2">
 						<div className="col-span-3 space-y-2">
 							<FormField
 								control={form.control}

@@ -50,7 +50,9 @@ export default function RootLayout({
 				>
 					<Header />
 					<MortgageProvider>
-						<main className="flex-">{children}</main>
+						<main className="flex flex-col flex-1 min-h-0 px-2">
+							{children}
+						</main>
 					</MortgageProvider>
 					<Footer />
 				</ThemeProvider>

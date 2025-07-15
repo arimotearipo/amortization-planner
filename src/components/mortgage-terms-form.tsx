@@ -4,6 +4,7 @@ import { Button } from "@components/ui/button"
 import {
 	Drawer,
 	DrawerContent,
+	DrawerDescription,
 	DrawerFooter,
 	DrawerHeader,
 	DrawerTitle,
@@ -32,6 +33,8 @@ import { useMortgage } from "@/context/mortgate-context"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
 import { ExtraPaymentIncrementFrequency } from "@/types"
 
+const ICON_SIZE = 14
+
 function getDefaultValues(): MortgageTermsInputs {
 	const loanTermYears = 35
 	const extraPaymentEndMonth = loanTermYears > 0 ? loanTermYears * 12 - 1 : 0
@@ -59,6 +62,49 @@ function ExtraPaymentInfoHoverCard({ children }: { children: ReactNode }) {
 					the life of the loan. You can specify the amount, frequency, and how
 					much of the extra payment goes towards the principal versus
 					investments.
+				</p>
+			</HoverCardContent>
+		</HoverCard>
+	)
+}
+
+function StartMonthInfoHoverCard({
+	children,
+	endMonth,
+}: {
+	children: ReactNode
+	endMonth: number
+}) {
+	return (
+		<HoverCard>
+			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
+			<HoverCardContent className="w-80 bg-primary">
+				<p className="text-xs text-primary-foreground">
+					The start month is the month when the extra payments begin. The end
+					month is the month when the extra payments stop. It must be between 0
+					(inclusive) and {endMonth} (inclusive).
+				</p>
+			</HoverCardContent>
+		</HoverCard>
+	)
+}
+
+function EndMonthInfoHoverCard({
+	children,
+	startMonth,
+	endMonth,
+}: {
+	children: ReactNode
+	startMonth: number
+	endMonth: number
+}) {
+	return (
+		<HoverCard>
+			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
+			<HoverCardContent className="w-80 bg-primary">
+				<p className="text-xs text-primary-foreground">
+					The end month is the month when the extra payments stop. It must be
+					between {startMonth} (inclusive) and {endMonth} (inclusive).
 				</p>
 			</HoverCardContent>
 		</HoverCard>
@@ -148,6 +194,7 @@ export function MortgageTermsForm() {
 			<DrawerContent>
 				<DrawerHeader>
 					<DrawerTitle>Mortgage Terms</DrawerTitle>
+					<DrawerDescription></DrawerDescription>
 				</DrawerHeader>
 
 				<Form {...form}>
@@ -210,7 +257,7 @@ export function MortgageTermsForm() {
 										<FormLabel>
 											Extra Payment{" "}
 											<ExtraPaymentInfoHoverCard>
-												<InfoIcon size={14} />
+												<InfoIcon size={ICON_SIZE} />
 											</ExtraPaymentInfoHoverCard>
 										</FormLabel>
 
@@ -273,7 +320,14 @@ export function MortgageTermsForm() {
 										name="extraPaymentStartMonth"
 										render={({ field }) => (
 											<div className="space-y-1">
-												<FormLabel>Extra Payment Start Month</FormLabel>
+												<FormLabel>
+													Extra Payment Start Month{" "}
+													<StartMonthInfoHoverCard
+														endMonth={form.watch("loanTermYears") * 12 - 1}
+													>
+														<InfoIcon size={ICON_SIZE} />
+													</StartMonthInfoHoverCard>
+												</FormLabel>
 												<Input
 													{...field}
 													type="number"
@@ -291,7 +345,15 @@ export function MortgageTermsForm() {
 										name="extraPaymentEndMonth"
 										render={({ field }) => (
 											<div className="space-y-1">
-												<FormLabel>Extra Payment End Month</FormLabel>
+												<FormLabel>
+													Extra Payment End Month{" "}
+													<EndMonthInfoHoverCard
+														startMonth={form.watch("extraPaymentStartMonth")}
+														endMonth={form.watch("extraPaymentEndMonth")}
+													>
+														<InfoIcon size={ICON_SIZE} />
+													</EndMonthInfoHoverCard>
+												</FormLabel>
 												<Input
 													{...field}
 													type="number"

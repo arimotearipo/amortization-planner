@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { Footer } from "@/components/footer"
@@ -21,7 +21,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
 	title: "Amortization Planner",
 	description: "Plan how to pay off your mortgage with ease",
-	viewport: "width=device-width, initial-scale=1",
+}
+
+export const viewport: Viewport = {
+	width: "device-width",
+	initialScale: 1,
 }
 
 export default function RootLayout({
@@ -32,7 +36,6 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="/favicon.svg" />
 			</head>
 			<body

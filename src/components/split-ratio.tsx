@@ -1,33 +1,47 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { useMortgage } from "@/context/mortgate-context"
+import { useDebounce } from "@/hooks/useDebounce"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
 
 export function SplitRatio() {
 	const { setMortgageTerms, mortgageTerms, setAmortizationDetails, submitted } =
 		useMortgage()
+	const [ratio, setRatio] = useState<number>(0.5)
+	const debouncedSplitRatio = useDebounce(ratio, 500)
+
+	// Only update mortgage terms and amortization when debounced value changes
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Adding other values will cause the calculation to run before the mortgage terms are set which can lead to reading null values and thus crashing the app
+	useEffect(() => {
+		if (
+			typeof debouncedSplitRatio === "number" &&
+			mortgageTerms.principalLoanAmount &&
+			submitted
+		) {
+			const updatedMorgageTerms = {
+				...mortgageTerms,
+				extraPaymentSplitRatio: debouncedSplitRatio,
+			}
+			setMortgageTerms(updatedMorgageTerms)
+			const updatedSchedule = calculateAmortizationSchedule(updatedMorgageTerms)
+			setAmortizationDetails(updatedSchedule)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [debouncedSplitRatio])
 
 	if (!mortgageTerms.principalLoanAmount || !submitted) {
 		return null
 	}
 
-	const handleRatioChange = (value: number[]) => {
-		const splitRatio = value[0]
+	const principalPercentage = Math.round(ratio * 100)
+	const investmentPercentage = Math.round((1 - ratio) * 100)
 
-		setMortgageTerms({ ...mortgageTerms, extraPaymentSplitRatio: splitRatio })
-
-		const amortizationDetails = calculateAmortizationSchedule(mortgageTerms)
-		setAmortizationDetails(amortizationDetails)
+	const handleSplitRatioChange = (value: number[]) => {
+		setRatio(value[0])
 	}
-
-	const principalPercentage = Math.round(
-		mortgageTerms.extraPaymentSplitRatio * 100,
-	)
-	const investmentPercentage = Math.round(
-		(1 - mortgageTerms.extraPaymentSplitRatio) * 100,
-	)
 
 	return (
 		<div className="w-full max-w-2xl mx-auto space-y-4">
@@ -56,16 +70,11 @@ export function SplitRatio() {
 						min={0}
 						max={1}
 						step={0.01}
-						value={[mortgageTerms.extraPaymentSplitRatio]}
-						onValueChange={handleRatioChange}
+						value={[ratio]}
+						onValueChange={handleSplitRatioChange}
 						className="w-full"
 					/>
 				</div>
-
-				{/* <div className="flex items-center justify-between text-xs text-muted-foreground">
-					<span>0% Principal</span>
-					<span>100% Principal</span>
-				</div> */}
 			</div>
 		</div>
 	)

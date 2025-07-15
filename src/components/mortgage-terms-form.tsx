@@ -175,12 +175,6 @@ export function MortgageTermsForm() {
 	const handleRatioChange = (value: number[]) => {
 		const splitRatio = value[0]
 		form.setValue("extraPaymentSplitRatio", splitRatio)
-
-		const values = form.getValues()
-		setMortgageTerms(values)
-
-		const amortizationDetails = calculateAmortizationSchedule(values)
-		setAmortizationDetails(amortizationDetails)
 	}
 
 	// return (

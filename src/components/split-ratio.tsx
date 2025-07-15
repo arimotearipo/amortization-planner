@@ -10,7 +10,10 @@ import { calculateAmortizationSchedule } from "@/lib/amortization"
 export function SplitRatio() {
 	const { setMortgageTerms, mortgageTerms, setAmortizationDetails, submitted } =
 		useMortgage()
-	const [ratio, setRatio] = useState<number>(0.5)
+
+	const [ratio, setRatio] = useState<number>(
+		mortgageTerms.extraPaymentSplitRatio,
+	)
 	const debouncedSplitRatio = useDebounce(ratio, 500)
 
 	// Only update mortgage terms and amortization when debounced value changes
@@ -32,6 +35,14 @@ export function SplitRatio() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [debouncedSplitRatio])
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: they're unnecessary here
+	useEffect(() => {
+		if (mortgageTerms.extraPaymentSplitRatio !== ratio) {
+			setRatio(mortgageTerms.extraPaymentSplitRatio)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [mortgageTerms.extraPaymentSplitRatio])
+
 	if (!mortgageTerms.principalLoanAmount || !submitted) {
 		return null
 	}
@@ -50,18 +61,18 @@ export function SplitRatio() {
 					Extra Payment Split Ratio
 				</Label>
 				<Label className="text-sm text-muted-foreground">
-					Choose how to split your extra payment between principal and
-					investment
+					Play around with the slider to see how spreading your extra payment
+					between principal and investment affects your amortization rate.
 				</Label>
 			</div>
 
 			<div className="space-y-4">
 				<div className="flex items-center justify-between text-sm font-medium">
-					<span className="text-blue-600">
-						Principal Payment: {principalPercentage}%
-					</span>
 					<span className="text-green-600">
 						Investment: {investmentPercentage}%
+					</span>
+					<span className="text-blue-600">
+						Principal Payment: {principalPercentage}%
 					</span>
 				</div>
 

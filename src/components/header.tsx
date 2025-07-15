@@ -5,9 +5,9 @@ export function Header() {
 	return (
 		<header className="w-full border-b">
 			<div className="grid grid-cols-3 p-1">
-				<div className="col-span-1 col-start-2 flex justify-center items-center gap-2">
+				<div className="col-span-2 md:col-span-1 col-start-1 md:col-start-2 flex justify-center items-center gap-2">
 					<Image src="/favicon.svg" alt="Logo" width={32} height={32} />
-					<h1 className="text-xl font-semibold tracking-tight text-secondary-foreground">
+					<h1 className="text-base md:text-lg font-semibold tracking-tight text-secondary-foreground">
 						Amortization Planner
 					</h1>
 				</div>

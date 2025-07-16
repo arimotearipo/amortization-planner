@@ -8,22 +8,15 @@ import { useDebounce } from "@/hooks/useDebounce"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
 
 export function SplitRatio() {
-	const { setMortgageTerms, mortgageTerms, setAmortizationDetails, submitted } =
-		useMortgage()
+	const { setMortgageTerms, mortgageTerms, setAmortizationDetails, submitted } = useMortgage()
 
-	const [ratio, setRatio] = useState<number>(
-		mortgageTerms.extraPaymentSplitRatio,
-	)
+	const [ratio, setRatio] = useState<number>(mortgageTerms.extraPaymentSplitRatio)
 	const debouncedSplitRatio = useDebounce(ratio, 500)
 
 	// Only update mortgage terms and amortization when debounced value changes
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Adding other values will cause the calculation to run before the mortgage terms are set which can lead to reading null values and thus crashing the app
 	useEffect(() => {
-		if (
-			typeof debouncedSplitRatio === "number" &&
-			mortgageTerms.principalLoanAmount &&
-			submitted
-		) {
+		if (typeof debouncedSplitRatio === "number" && mortgageTerms.principalLoanAmount && submitted) {
 			const updatedMorgageTerms = {
 				...mortgageTerms,
 				extraPaymentSplitRatio: debouncedSplitRatio,
@@ -57,23 +50,17 @@ export function SplitRatio() {
 	return (
 		<div className="w-full max-w-2xl mx-auto space-y-4">
 			<div>
-				<Label className="text-base font-medium">
-					Extra Payment Split Ratio
-				</Label>
+				<Label className="text-base font-medium">Extra Payment Split Ratio</Label>
 				<Label className="text-sm text-muted-foreground">
-					Play around with the slider to see how spreading your extra payment
-					between principal and investment affects your amortization rate.
+					Play around with the slider to see how spreading your extra payment between principal and investment affects
+					your amortization rate.
 				</Label>
 			</div>
 
 			<div className="space-y-4">
 				<div className="flex items-center justify-between text-sm font-medium">
-					<span className="text-green-600">
-						Investment: {investmentPercentage}%
-					</span>
-					<span className="text-blue-600">
-						Principal Payment: {principalPercentage}%
-					</span>
+					<span className="text-green-600">Investment: {investmentPercentage}%</span>
+					<span className="text-blue-600">Principal Payment: {principalPercentage}%</span>
 				</div>
 
 				<div className="px-2">

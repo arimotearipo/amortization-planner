@@ -16,15 +16,9 @@ type MortgageContextType = {
 	setOpenMortgageTermsForm: (open: boolean) => void
 }
 
-const MortgageContext = createContext<MortgageContextType | undefined>(
-	undefined,
-)
+const MortgageContext = createContext<MortgageContextType | undefined>(undefined)
 
-export const MortgageProvider = ({
-	children,
-}: {
-	children: React.ReactNode
-}) => {
+export const MortgageProvider = ({ children }: { children: React.ReactNode }) => {
 	const [submitted, setSubmitted] = useState(false)
 	const [openMortgageTermsForm, setOpenMortgageTermsForm] = useState(true)
 
@@ -41,13 +35,12 @@ export const MortgageProvider = ({
 		investmentReturnRate: 5,
 	})
 
-	const [amortizationDetails, setAmortizationDetails] =
-		useState<AmortizationDetails>({
-			schedule: [],
-			totalPaid: 0,
-			totalInterest: 0,
-			totalInvestmentEarned: 0,
-		})
+	const [amortizationDetails, setAmortizationDetails] = useState<AmortizationDetails>({
+		schedule: [],
+		totalPaid: 0,
+		totalInterest: 0,
+		totalInvestmentEarned: 0,
+	})
 
 	return (
 		<MortgageContext.Provider

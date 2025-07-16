@@ -14,16 +14,13 @@ export function MortgageSummary() {
 		return null
 	}
 
-	const { schedule, totalPaid, totalInterest, totalInvestmentEarned } =
-		amortizationDetails
+	const { schedule, totalPaid, totalInterest, totalInvestmentEarned } = amortizationDetails
 
 	const { extraPayment } = mortgageTerms
 
 	const endingYear = getOrdinalSuffix(Math.ceil(schedule.length / 12))
 
-	const crossoverIndex = schedule.findIndex(
-		(p) => p.investmentGrowth >= p.remainingBalance,
-	)
+	const crossoverIndex = schedule.findIndex((p) => p.investmentGrowth >= p.remainingBalance)
 
 	const crossoverYear = getOrdinalSuffix(Math.floor(crossoverIndex / 12) + 1)
 	const crossoverMonth = getMonthName((crossoverIndex % 12) + 1)
@@ -38,44 +35,29 @@ export function MortgageSummary() {
 			<CardContent>
 				<dl className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 space-y-2 text-gray-700 dark:text-gray-300">
 					<div>
-						<dt className="col-span-2 text-sm font-medium text-gray-500">
-							Monthly Payment
-						</dt>
+						<dt className="col-span-2 text-sm font-medium text-gray-500">Monthly Payment</dt>
 						<dd className="col-span-2 text-lg font-bold text-green-700 mb-2">
 							{schedule[0].paymentAmount.toLocaleString()}
 						</dd>
 					</div>
 					<div>
-						<dt className="col-span-2 text-sm font-medium text-gray-500">
-							Total Paid
-						</dt>
-						<dd className="col-span-2 text-lg font-bold text-green-700 mb-2">
-							{totalPaid.toLocaleString()}
-						</dd>
+						<dt className="col-span-2 text-sm font-medium text-gray-500">Total Paid</dt>
+						<dd className="col-span-2 text-lg font-bold text-green-700 mb-2">{totalPaid.toLocaleString()}</dd>
 					</div>
 					<div>
-						<dt className="col-span-2 text-sm font-medium text-gray-500">
-							Total Interest Paid
-						</dt>
-						<dd className="col-span-2 text-lg font-bold text-red-700">
-							{totalInterest.toLocaleString()}
-						</dd>
+						<dt className="col-span-2 text-sm font-medium text-gray-500">Total Interest Paid</dt>
+						<dd className="col-span-2 text-lg font-bold text-red-700">{totalInterest.toLocaleString()}</dd>
 					</div>
 					<div>
 						<dt className="col-span-2 text-sm font-medium text-gray-500">
 							Total Investment Earned (by {endingYear} year)
 						</dt>
-						<dd className="col-span-2 text-lg font-bold text-green-700">
-							{totalInvestmentEarned.toLocaleString()}
-						</dd>
+						<dd className="col-span-2 text-lg font-bold text-green-700">{totalInvestmentEarned.toLocaleString()}</dd>
 					</div>
 					<div className="colspan-1 md:col-span-2 lg:col-span-4">
 						<dt className="text-sm font-medium text-gray-500">
 							Your nett profit at the end of the mortgage
-							<span className="text-xs">
-								{" "}
-								(Investment Earned - Interest Paid)
-							</span>
+							<span className="text-xs"> (Investment Earned - Interest Paid)</span>
 						</dt>
 						<dd className="text-lg">
 							<span className="font-bold text-primary">{`${totalInvestmentEarned.toLocaleString()} - ${totalInterest.toLocaleString()} = `}</span>
@@ -92,17 +74,15 @@ export function MortgageSummary() {
 				</dl>
 				{!!extraPayment && (
 					<p className="text-xs sm:text-sm col-span-1 md:col-span-2 lg:col-span-4">
-						With the extra payments you've made, you can expect to fully
-						amortize your mortgage by the{" "}
+						With the extra payments you've made, you can expect to fully amortize your mortgage by the{" "}
 						<span className="font-bold text-primary">{endingYear} year</span>
 					</p>
 				)}
 				{crossoverIndex >= 0 && totalInvestmentEarned > 0 && (
 					<p className="text-xs sm:text-sm">
 						Your investment will cover your remaining balance in{" "}
-						<span className="font-bold text-primary">{crossoverMonth}</span> of
-						the <span className="font-bold text-primary">{crossoverYear}</span>{" "}
-						year
+						<span className="font-bold text-primary">{crossoverMonth}</span> of the{" "}
+						<span className="font-bold text-primary">{crossoverYear}</span> year
 					</p>
 				)}
 

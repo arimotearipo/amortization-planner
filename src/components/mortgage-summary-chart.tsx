@@ -1,23 +1,11 @@
-import {
-	CartesianGrid,
-	LabelList,
-	ResponsiveContainer,
-	Scatter,
-	ScatterChart,
-	Tooltip,
-	XAxis,
-	YAxis,
-} from "recharts"
+import { CartesianGrid, LabelList, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from "recharts"
 
 type MortgageSummaryChartProps = {
 	endingYear: number
 	crossoverYear: number
 }
 
-export function MortgageSummaryChart({
-	crossoverYear,
-	endingYear,
-}: MortgageSummaryChartProps) {
+export function MortgageSummaryChart({ crossoverYear, endingYear }: MortgageSummaryChartProps) {
 	const data = [
 		{ y: crossoverYear, label: "Crossover Point", x: 0.5, fill: "#90EE90" }, // light blue
 		{ y: endingYear, label: "End of Mortgage", x: 1.5, fill: "#87CEEB" }, // light green

@@ -38,24 +38,11 @@ export default function RootLayout({
 			<head>
 				<link rel="icon" href="/favicon.svg" />
 			</head>
-			<body
-				className={cn(
-					geistSans.variable,
-					geistMono.variable,
-					`antialiased flex flex-col min-h-screen`,
-				)}
-			>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
+			<body className={cn(geistSans.variable, geistMono.variable, `antialiased flex flex-col min-h-screen`)}>
+				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
 					<Header />
 					<MortgageProvider>
-						<main className="flex flex-col flex-1 min-h-0 px-2">
-							{children}
-						</main>
+						<main className="flex flex-col flex-1 min-h-0 px-2">{children}</main>
 					</MortgageProvider>
 					<Footer />
 				</ThemeProvider>

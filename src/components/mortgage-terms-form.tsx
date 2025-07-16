@@ -17,15 +17,8 @@ import type React from "react"
 import type { ReactNode } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import {
-	type MortgageTermsInputs,
-	mortgageTermsInputsSchema,
-} from "@/components/models"
-import {
-	HoverCard,
-	HoverCardContent,
-	HoverCardTrigger,
-} from "@/components/ui/hover-card"
+import { type MortgageTermsInputs, mortgageTermsInputsSchema } from "@/components/models"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
@@ -58,31 +51,22 @@ function ExtraPaymentInfoHoverCard({ children }: { children: ReactNode }) {
 			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
 			<HoverCardContent className="w-80 bg-primary">
 				<p className="text-xs text-primary-foreground">
-					Extra payments can significantly reduce the total interest paid over
-					the life of the loan. You can specify the amount, frequency, and how
-					much of the extra payment goes towards the principal versus
-					investments.
+					Extra payments can significantly reduce the total interest paid over the life of the loan. You can specify the
+					amount, frequency, and how much of the extra payment goes towards the principal versus investments.
 				</p>
 			</HoverCardContent>
 		</HoverCard>
 	)
 }
 
-function StartMonthInfoHoverCard({
-	children,
-	endMonth,
-}: {
-	children: ReactNode
-	endMonth: number
-}) {
+function StartMonthInfoHoverCard({ children, endMonth }: { children: ReactNode; endMonth: number }) {
 	return (
 		<HoverCard>
 			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
 			<HoverCardContent className="w-80 bg-primary">
 				<p className="text-xs text-primary-foreground">
-					The start month is the month when the extra payments begin. The end
-					month is the month when the extra payments stop. It must be between 0
-					(inclusive) and {endMonth} (inclusive).
+					The start month is the month when the extra payments begin. The end month is the month when the extra payments
+					stop. It must be between 0 (inclusive) and {endMonth} (inclusive).
 				</p>
 			</HoverCardContent>
 		</HoverCard>
@@ -103,8 +87,8 @@ function EndMonthInfoHoverCard({
 			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
 			<HoverCardContent className="w-80 bg-primary">
 				<p className="text-xs text-primary-foreground">
-					The end month is the month when the extra payments stop. It must be
-					between {startMonth} (inclusive) and {endMonth} (inclusive).
+					The end month is the month when the extra payments stop. It must be between {startMonth} (inclusive) and{" "}
+					{endMonth} (inclusive).
 				</p>
 			</HoverCardContent>
 		</HoverCard>
@@ -112,13 +96,8 @@ function EndMonthInfoHoverCard({
 }
 
 export function MortgageTermsForm() {
-	const {
-		setMortgageTerms,
-		setAmortizationDetails,
-		setSubmitted,
-		openMortgageTermsForm,
-		setOpenMortgageTermsForm,
-	} = useMortgage()
+	const { setMortgageTerms, setAmortizationDetails, setSubmitted, openMortgageTermsForm, setOpenMortgageTermsForm } =
+		useMortgage()
 
 	const form = useForm<MortgageTermsInputs>({
 		resolver: zodResolver(mortgageTermsInputsSchema),
@@ -128,10 +107,7 @@ export function MortgageTermsForm() {
 	const maxMonthIndex = form.watch("loanTermYears") * 12 - 1
 
 	const handleSubmitForm = form.handleSubmit((data) => {
-		if (
-			data.extraPaymentStartMonth < 0 ||
-			data.extraPaymentStartMonth > maxMonthIndex
-		) {
+		if (data.extraPaymentStartMonth < 0 || data.extraPaymentStartMonth > maxMonthIndex) {
 			const errorMessage = `Extra payment start month must be between 0 (inclusive) and ${maxMonthIndex} (inclusive)`
 			toast.error(errorMessage)
 			form.setError("extraPaymentStartMonth", {
@@ -141,10 +117,7 @@ export function MortgageTermsForm() {
 			return
 		}
 
-		if (
-			data.extraPaymentEndMonth > maxMonthIndex ||
-			data.extraPaymentEndMonth < data.extraPaymentStartMonth
-		) {
+		if (data.extraPaymentEndMonth > maxMonthIndex || data.extraPaymentEndMonth < data.extraPaymentStartMonth) {
 			const errorMessage = `Extra payment end month must be between ${data.extraPaymentStartMonth} (inclusive) and ${maxMonthIndex} (inclusive)`
 			toast.error(errorMessage)
 			form.setError("extraPaymentEndMonth", {
@@ -181,10 +154,7 @@ export function MortgageTermsForm() {
 
 	// )
 	return (
-		<Drawer
-			open={openMortgageTermsForm}
-			onOpenChange={setOpenMortgageTermsForm}
-		>
+		<Drawer open={openMortgageTermsForm} onOpenChange={setOpenMortgageTermsForm}>
 			<DrawerContent>
 				<DrawerHeader>
 					<DrawerTitle>Mortgage Terms</DrawerTitle>
@@ -200,11 +170,7 @@ export function MortgageTermsForm() {
 								render={({ field }) => (
 									<div className="space-y-1">
 										<FormLabel>Loan Amount</FormLabel>
-										<Input
-											{...field}
-											type="number"
-											onChange={(e) => field.onChange(Number(e.target.value))}
-										/>
+										<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
 										<FormMessage />
 									</div>
 								)}
@@ -216,11 +182,7 @@ export function MortgageTermsForm() {
 								render={({ field }) => (
 									<div className="space-y-1">
 										<FormLabel>Loan Term (Years)</FormLabel>
-										<Input
-											{...field}
-											type="number"
-											onChange={handleLoanTermChange}
-										/>
+										<Input {...field} type="number" onChange={handleLoanTermChange} />
 										<FormMessage />
 									</div>
 								)}
@@ -231,11 +193,7 @@ export function MortgageTermsForm() {
 								render={({ field }) => (
 									<div className="space-y-1">
 										<FormLabel>Annual Interest Rate (%)</FormLabel>
-										<Input
-											{...field}
-											type="number"
-											onChange={(e) => field.onChange(Number(e.target.value))}
-										/>
+										<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
 										<FormMessage />
 									</div>
 								)}
@@ -255,11 +213,7 @@ export function MortgageTermsForm() {
 											</ExtraPaymentInfoHoverCard>
 										</FormLabel>
 
-										<Input
-											{...field}
-											type="number"
-											onChange={(e) => field.onChange(Number(e.target.value))}
-										/>
+										<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
 										<FormMessage />
 									</div>
 								)}
@@ -271,11 +225,7 @@ export function MortgageTermsForm() {
 								render={({ field }) => (
 									<div className="space-y-1">
 										<FormLabel>Extra Payment Increment</FormLabel>
-										<Input
-											{...field}
-											type="number"
-											onChange={(e) => field.onChange(Number(e.target.value))}
-										/>
+										<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
 										<FormMessage />
 									</div>
 								)}
@@ -316,19 +266,11 @@ export function MortgageTermsForm() {
 											<div className="space-y-1">
 												<FormLabel>
 													Extra Payment Start Month{" "}
-													<StartMonthInfoHoverCard
-														endMonth={form.watch("loanTermYears") * 12 - 1}
-													>
+													<StartMonthInfoHoverCard endMonth={form.watch("loanTermYears") * 12 - 1}>
 														<InfoIcon size={ICON_SIZE} />
 													</StartMonthInfoHoverCard>
 												</FormLabel>
-												<Input
-													{...field}
-													type="number"
-													onChange={(e) =>
-														field.onChange(Number(e.target.value))
-													}
-												/>
+												<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
 												<FormMessage />
 											</div>
 										)}
@@ -348,13 +290,7 @@ export function MortgageTermsForm() {
 														<InfoIcon size={ICON_SIZE} />
 													</EndMonthInfoHoverCard>
 												</FormLabel>
-												<Input
-													{...field}
-													type="number"
-													onChange={(e) =>
-														field.onChange(Number(e.target.value))
-													}
-												/>
+												<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
 												<FormMessage />
 											</div>
 										)}
@@ -366,13 +302,7 @@ export function MortgageTermsForm() {
 										render={({ field }) => (
 											<div className="space-y-1">
 												<FormLabel>Investment Return Rate (%)</FormLabel>
-												<Input
-													{...field}
-													type="number"
-													onChange={(e) =>
-														field.onChange(Number(e.target.value))
-													}
-												/>
+												<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
 												<FormMessage />
 											</div>
 										)}
@@ -385,18 +315,13 @@ export function MortgageTermsForm() {
 										name="extraPaymentSplitRatio"
 										render={({ field }) => (
 											<>
-												<FormLabel>
-													Extra Payment Split Ratio for Investment (%)
-												</FormLabel>
+												<FormLabel>Extra Payment Split Ratio for Investment (%)</FormLabel>
 												<Label className="text-sm text-muted-foreground">
-													This is the percentage of the extra payment that will
-													be used to pay down the principal. The rest will be
-													invested
+													This is the percentage of the extra payment that will be used to pay down the principal. The
+													rest will be invested
 												</Label>
 												<div>
-													<span>
-														Principal Payment: {Math.round(field.value * 100)}%
-													</span>
+													<span>Principal Payment: {Math.round(field.value * 100)}%</span>
 													<Slider
 														{...field}
 														min={0}
@@ -405,9 +330,7 @@ export function MortgageTermsForm() {
 														value={[field.value]}
 														onValueChange={handleRatioChange}
 													/>
-													<span>
-														Investment: {Math.round((1 - field.value) * 100)}%
-													</span>
+													<span>Investment: {Math.round((1 - field.value) * 100)}%</span>
 												</div>
 											</>
 										)}
@@ -418,11 +341,7 @@ export function MortgageTermsForm() {
 					</div>
 				</Form>
 				<DrawerFooter>
-					<Button
-						onClick={handleSubmitForm}
-						type="button"
-						className="w-full sm:w-auto"
-					>
+					<Button onClick={handleSubmitForm} type="button" className="w-full sm:w-auto">
 						Calculate
 					</Button>
 				</DrawerFooter>

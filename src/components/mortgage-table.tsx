@@ -1,19 +1,9 @@
 "use client"
 
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHeader,
-	TableRow,
-} from "@components/ui/table"
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "@components/ui/table"
 import type { ReactNode } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-	HoverCard,
-	HoverCardContent,
-	HoverCardTrigger,
-} from "@/components/ui/hover-card"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useMortgage } from "@/context/mortgate-context"
 import { getMonthName } from "@/lib/get-month-name"
@@ -31,13 +21,7 @@ function FullSpanRow({ children }: { children: React.ReactNode }) {
 	)
 }
 
-function CrossoverPointHoverCard({
-	children,
-	isCrossoverPoint,
-}: {
-	children: ReactNode
-	isCrossoverPoint: boolean
-}) {
+function CrossoverPointHoverCard({ children, isCrossoverPoint }: { children: ReactNode; isCrossoverPoint: boolean }) {
 	if (!isCrossoverPoint) {
 		return <>{children}</>
 	}
@@ -47,9 +31,8 @@ function CrossoverPointHoverCard({
 			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
 			<HoverCardContent className="w-80 bg-primary">
 				<p className="text-xs text-primary-foreground">
-					This is the point where your investment growth surpasses your
-					remaining mortgage balance. After this point, you could potentially
-					pay off your mortgage using your investment growth.
+					This is the point where your investment growth surpasses your remaining mortgage balance. After this point,
+					you could potentially pay off your mortgage using your investment growth.
 				</p>
 			</HoverCardContent>
 		</HoverCard>
@@ -65,9 +48,7 @@ export function MortgageTable() {
 
 	const { schedule } = amortizationDetails
 
-	const crossoverPoint = schedule.findIndex(
-		(p) => p.investmentGrowth >= p.remainingBalance,
-	)
+	const crossoverPoint = schedule.findIndex((p) => p.investmentGrowth >= p.remainingBalance)
 
 	return (
 		<Card className="w-full animate-in fade-in duration-1000">
@@ -79,27 +60,13 @@ export function MortgageTable() {
 					<Table>
 						<TableHeader className="sticky top-0 bg-secondary">
 							<TableRow>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
-									Payment Number
-								</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
-									Payment Amount
-								</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
-									Principal Paid
-								</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
-									Interest Paid
-								</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
-									Extra Payment
-								</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
-									Remaining Balance
-								</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">
-									Investment Growth
-								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Payment Number</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Payment Amount</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Principal Paid</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Interest Paid</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Extra Payment</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Remaining Balance</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Investment Growth</TableCell>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
@@ -112,9 +79,7 @@ export function MortgageTable() {
 
 								if ((payment.paymentNumber - 1) % 12 === 0) {
 									const year = Math.floor((payment.paymentNumber - 1) / 12) + 1
-									rows.push(
-										<FullSpanRow key={`year-${year}`}>Year {year}</FullSpanRow>,
-									)
+									rows.push(<FullSpanRow key={`year-${year}`}>Year {year}</FullSpanRow>)
 								}
 
 								rows.push(
@@ -125,14 +90,10 @@ export function MortgageTable() {
 										<TableRow
 											key={payment.paymentNumber}
 											className={cn({
-												"bg-green-400 text-black font-bold hover:bg-green-300":
-													index === crossoverPoint,
+												"bg-green-400 text-black font-bold hover:bg-green-300": index === crossoverPoint,
 											})}
 										>
-											<TableCell className="text-xs sm:text-sm min-w-[120px]">
-												{payment.paymentNumber} -{" "}
-												{getMonthName(payment.paymentNumber)}
-											</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">#{payment.paymentNumber}</TableCell>
 											<TableCell className="text-xs sm:text-sm min-w-[120px]">
 												{payment.paymentAmount.toLocaleString()}
 											</TableCell>
@@ -149,8 +110,7 @@ export function MortgageTable() {
 												{payment.remainingBalance.toLocaleString()}
 											</TableCell>
 											<TableCell className="text-xs sm:text-sm min-w-[120px]">
-												{payment.investmentGrowth?.toLocaleString() ??
-													"undefined"}
+												{payment.investmentGrowth?.toLocaleString() ?? "undefined"}
 											</TableCell>
 										</TableRow>
 									</CrossoverPointHoverCard>,

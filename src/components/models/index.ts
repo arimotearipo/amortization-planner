@@ -9,9 +9,7 @@ export const mortgageTermsInputsSchema = z.object({
 	extraPaymentEndMonth: z.number().int(),
 	extraPayment: z.number().min(0).optional(),
 	extraPaymentIncrement: z.number().min(0).optional(),
-	extraPaymentIncrementFrequency: z
-		.enum(ExtraPaymentIncrementFrequency)
-		.optional(),
+	extraPaymentIncrementFrequency: z.enum(ExtraPaymentIncrementFrequency).optional(),
 	investmentReturnRate: z.number().min(0).max(100),
 	extraPaymentSplitRatio: z.number().min(0).max(1),
 })

@@ -14,10 +14,7 @@ export default function Home() {
 			</div>
 			<MortgageTermsForm />
 			<div className="flex flex-col flex-1 min-h-0 justify-end">
-				<Button
-					className="btn btn-primary"
-					onClick={() => setOpenMortgageTermsForm(true)}
-				>
+				<Button className="btn btn-primary" onClick={() => setOpenMortgageTermsForm(true)}>
 					Edit Mortgage Terms
 				</Button>
 			</div>

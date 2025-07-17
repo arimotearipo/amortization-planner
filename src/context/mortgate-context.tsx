@@ -26,13 +26,7 @@ export const MortgageProvider = ({ children }: { children: React.ReactNode }) =>
 		principalLoanAmount: 0,
 		loanTermYears: 0,
 		annualInterestRate: 0,
-		extraPayment: 0,
-		extraPaymentIncrement: 0,
-		extraPaymentIncrementFrequency: "monthly",
-		extraPaymentEndMonth: -1,
-		extraPaymentStartMonth: 0,
-		extraPaymentSplitRatio: 0.5,
-		investmentReturnRate: 5,
+		investmentReturnRate: 0,
 	})
 
 	const [amortizationDetails, setAmortizationDetails] = useState<AmortizationDetails>({

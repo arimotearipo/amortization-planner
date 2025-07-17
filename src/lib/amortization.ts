@@ -1,97 +1,16 @@
 import type { MortgageTermsInputs } from "@/components/models"
-import type { AmortizationDetails, Payment } from "@/types"
+import type { AmortizationDetails, ExtraPayment, PaymentItem } from "@/types"
 
-function getExtraPayments(mortgageArgs: MortgageTermsInputs): number[] {
-	const {
-		loanTermYears,
-		extraPayment = 0,
-		extraPaymentIncrement = 0,
-		extraPaymentIncrementFrequency = "monthly",
-		extraPaymentStartMonth = 0,
-		extraPaymentEndMonth = -1,
-		extraPaymentSplitRatio = 0.5,
-	} = mortgageArgs
-
-	if (extraPayment <= 0) {
-		return []
-	}
-
-	const extraPayments = []
-	const totalMonths = loanTermYears * 12
-
-	let currentExtraPayment = extraPayment * extraPaymentSplitRatio
-	for (let i = 0; i < totalMonths; i++) {
-		if (extraPaymentEndMonth >= 0 && i >= extraPaymentEndMonth) {
-			break // Stop adding extra payments after the end month
-		}
-
-		if (i < extraPaymentStartMonth) {
-			extraPayments.push(0) // No extra payment before the start month
-			continue
-		}
-
-		if (extraPaymentIncrementFrequency === "monthly") {
-			currentExtraPayment += extraPaymentIncrement * extraPaymentSplitRatio
-		}
-
-		if (extraPaymentIncrementFrequency === "yearly" && (i + 1) % 12 === 0) {
-			currentExtraPayment += extraPaymentIncrement * extraPaymentSplitRatio
-		}
-
-		extraPayments.push(currentExtraPayment)
-	}
-
-	return extraPayments
-}
-
-function calculateInvestmentGrowthAtEachMonth(mortgageArgs: MortgageTermsInputs): number[] {
-	const { extraPaymentSplitRatio, loanTermYears, investmentReturnRate } = mortgageArgs
-
-	const n = loanTermYears * 12
+function calculateInvestmentGrowthAtEachMonth(investmentReturnRate: number, extraPayments: ExtraPayment[]): number[] {
 	const r = investmentReturnRate / 12 / 100
 
-	// Get the monthly contributions for investment (portion not used for extra payment)
-	// The value returned by getExtraPayments is already factored with extraPaymentSplitRatio.
-	// So, use it directly as the investment contributions.
-
-	// Reconstruct the total extra payment for each month (before split)
-	const {
-		extraPayment = 0,
-		extraPaymentIncrement = 0,
-		extraPaymentIncrementFrequency = "monthly",
-		extraPaymentStartMonth = 0,
-		extraPaymentEndMonth = -1,
-	} = mortgageArgs
-
-	let currentExtraPayment = extraPayment
-	const totalExtraPayments: number[] = []
-	for (let i = 0; i < n; i++) {
-		if (extraPaymentEndMonth >= 0 && i >= extraPaymentEndMonth) {
-			break
-		}
-		if (i < extraPaymentStartMonth) {
-			totalExtraPayments.push(0)
-			continue
-		}
-		if (extraPaymentIncrementFrequency === "monthly") {
-			currentExtraPayment += extraPaymentIncrement
-		}
-		if (extraPaymentIncrementFrequency === "yearly" && (i + 1) % 12 === 0) {
-			currentExtraPayment += extraPaymentIncrement
-		}
-		totalExtraPayments.push(currentExtraPayment)
-	}
-
-	// Now, investment portion is (1 - extraPaymentSplitRatio) of total extra payment
-	const investmentContributions = totalExtraPayments.map((p) => p * (1 - (extraPaymentSplitRatio ?? 0.5)))
-
 	const accumulatedGrowths: number[] = []
-	for (let month = 0; month < n; month++) {
+	for (let n = 0; n < extraPayments.length; n++) {
 		let sum = 0
-		for (let i = 0; i <= month; i++) {
-			const monthlyInvestment = investmentContributions[i] || 0
-			const periods = month - i
-			sum += monthlyInvestment * (1 + r) ** periods
+		for (let k = 0; k <= n; k++) {
+			const extraPayment = extraPayments[k]
+			const portionToInvest = (1 - extraPayment.splitRatio) * extraPayment.amount
+			sum += portionToInvest * (1 + r) ** (n - k)
 		}
 		accumulatedGrowths.push(Number(sum.toFixed(2)))
 	}
@@ -99,8 +18,11 @@ function calculateInvestmentGrowthAtEachMonth(mortgageArgs: MortgageTermsInputs)
 	return accumulatedGrowths
 }
 
-function calculateAmortizationSchedule(mortgageArgs: MortgageTermsInputs): AmortizationDetails {
-	const { loanTermYears, annualInterestRate, principalLoanAmount } = mortgageArgs
+export function calculateAmortizationSchedule(
+	mortgageTerms: MortgageTermsInputs,
+	extraPayments: ExtraPayment[],
+): AmortizationDetails {
+	const { loanTermYears, annualInterestRate, principalLoanAmount, investmentReturnRate } = mortgageTerms
 
 	/**
 	 * Calculate monthly payment using PMT formula:
@@ -121,11 +43,9 @@ function calculateAmortizationSchedule(mortgageArgs: MortgageTermsInputs): Amort
 
 	let remainingBalance = principalLoanAmount
 
-	const schedule: Payment[] = []
+	const schedule: PaymentItem[] = []
 
-	const extraPayments = getExtraPayments(mortgageArgs)
-
-	const investmentGrowthsAtEachMonth = calculateInvestmentGrowthAtEachMonth(mortgageArgs)
+	const investmentGrowthsAtEachMonth = calculateInvestmentGrowthAtEachMonth(investmentReturnRate, extraPayments)
 
 	for (let month = 1; month <= numberOfPayments; month++) {
 		if (remainingBalance <= 0) {
@@ -141,7 +61,7 @@ function calculateAmortizationSchedule(mortgageArgs: MortgageTermsInputs): Amort
 		const thisMonthExtraPayment = extraPayments[month - 1] || 0
 
 		// Update remaining balance
-		const totalPrincipalPaid = principalPaid + thisMonthExtraPayment
+		const totalPrincipalPaid = principalPaid + thisMonthExtraPayment.amount
 		remainingBalance -= totalPrincipalPaid
 
 		schedule.push({
@@ -150,7 +70,7 @@ function calculateAmortizationSchedule(mortgageArgs: MortgageTermsInputs): Amort
 			totalPrincipalPaid: Number(totalPrincipalPaid.toFixed(2)),
 			interestPaid: Number(interestPaid.toFixed(2)),
 			remainingBalance: Number(Math.max(0, remainingBalance).toFixed(2)), // Prevent negative balance due to rounding
-			extraPayment: Number(thisMonthExtraPayment.toFixed(2)),
+			extraPayment: Number(thisMonthExtraPayment.amount.toFixed(2)),
 			investmentGrowth: investmentGrowthsAtEachMonth[month - 1],
 		})
 	}
@@ -166,5 +86,3 @@ function calculateAmortizationSchedule(mortgageArgs: MortgageTermsInputs): Amort
 		totalInvestmentEarned,
 	}
 }
-
-export { calculateAmortizationSchedule, type Payment }

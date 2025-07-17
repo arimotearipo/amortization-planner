@@ -1,4 +1,19 @@
-export type Payment = {
+// this represents the inputs for advance extra payment
+export type PaymentBlock = {
+	amount: number
+	startMonth: number
+	endMonth: number
+	splitRatio: number // portion to go towards principal payment
+}
+
+export type ExtraPayment = {
+	month: number
+	amount: number
+	splitRatio: number // portion to go towards principal payment
+}
+
+// this represents one row in the payment schedule table
+export type PaymentItem = {
 	paymentNumber: number
 	paymentAmount: number
 	totalPrincipalPaid: number
@@ -9,7 +24,7 @@ export type Payment = {
 }
 
 export type AmortizationDetails = {
-	schedule: Payment[]
+	schedule: PaymentItem[]
 	totalPaid: number
 	totalInterest: number
 	totalInvestmentEarned: number

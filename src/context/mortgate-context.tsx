@@ -6,6 +6,8 @@ import type { MortgageTermsInputs } from "@/components/models"
 import type { AmortizationDetails } from "@/types"
 
 type MortgageContextType = {
+	isAdvanced: boolean
+	setIsAdvanced: (isAdvanced: boolean) => void
 	mortgageTerms: MortgageTermsInputs
 	setMortgageTerms: (details: MortgageTermsInputs) => void
 	amortizationDetails: AmortizationDetails
@@ -19,6 +21,7 @@ type MortgageContextType = {
 const MortgageContext = createContext<MortgageContextType | undefined>(undefined)
 
 export const MortgageProvider = ({ children }: { children: React.ReactNode }) => {
+	const [isAdvanced, setIsAdvanced] = useState(false)
 	const [submitted, setSubmitted] = useState(false)
 	const [openMortgageTermsForm, setOpenMortgageTermsForm] = useState(true)
 
@@ -27,6 +30,15 @@ export const MortgageProvider = ({ children }: { children: React.ReactNode }) =>
 		loanTermYears: 0,
 		annualInterestRate: 0,
 		investmentReturnRate: 0,
+		// use the basic extra payment schema as default
+		extraPayment: {
+			startMonth: 0,
+			endMonth: 0,
+			amount: 0,
+			increment: 0,
+			incrementFrequency: "monthly",
+			extraPaymentSplitRatio: 0,
+		},
 	})
 
 	const [amortizationDetails, setAmortizationDetails] = useState<AmortizationDetails>({
@@ -43,6 +55,8 @@ export const MortgageProvider = ({ children }: { children: React.ReactNode }) =>
 				setMortgageTerms,
 				amortizationDetails,
 				setAmortizationDetails,
+				isAdvanced,
+				setIsAdvanced,
 				submitted,
 				setSubmitted,
 				openMortgageTermsForm,

@@ -22,64 +22,64 @@ export function BasicExtraPayment() {
 		form.setValue("extraPayment.extraPaymentSplitRatio", splitRatio)
 	}
 
+	const maxYearIndex = form.watch("loanTermYears") * 12 - 1
+
 	return (
 		<Form {...form}>
-			<div className="col-span-3 grid grid-cols-3 gap-4 animate-in fade-in duration-500">
-				<div className="col-span-3 grid grid-cols-3 gap-4">
-					<FormField
-						control={form.control}
-						name="extraPayment.amount"
-						render={({ field }) => (
-							<div className="space-y-1">
-								<FormLabel>
-									Extra Payment{" "}
-									<ExtraPaymentFormInfoHoverCard>
-										<InfoIcon size={ICON_SIZE} />
-									</ExtraPaymentFormInfoHoverCard>
-								</FormLabel>
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-4 animate-in fade-in duration-500">
+				<FormField
+					control={form.control}
+					name="extraPayment.amount"
+					render={({ field }) => (
+						<div className="space-y-1">
+							<FormLabel>
+								Extra Payment{" "}
+								<ExtraPaymentFormInfoHoverCard>
+									<InfoIcon size={ICON_SIZE} />
+								</ExtraPaymentFormInfoHoverCard>
+							</FormLabel>
 
-								<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
-								<FormMessage />
-							</div>
-						)}
-					/>
+							<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
+							<FormMessage />
+						</div>
+					)}
+				/>
 
-					<FormField
-						control={form.control}
-						name="extraPayment.increment"
-						render={({ field }) => (
-							<div className="space-y-1">
-								<FormLabel>Extra Payment Increment</FormLabel>
-								<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
-								<FormMessage />
-							</div>
-						)}
-					/>
+				<FormField
+					control={form.control}
+					name="extraPayment.increment"
+					render={({ field }) => (
+						<div className="space-y-1">
+							<FormLabel>Extra Payment Increment</FormLabel>
+							<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
+							<FormMessage />
+						</div>
+					)}
+				/>
 
-					<FormField
-						control={form.control}
-						name="extraPayment.incrementFrequency"
-						render={({ field }) => (
-							<div className="space-y-1">
-								<FormLabel>Extra Payment Increment Frequency</FormLabel>
-								<RadioGroup
-									value={field.value}
-									onValueChange={field.onChange}
-									className="flex flex-col sm:flex-row flex-wrap gap-2 items-center h-9"
-								>
-									{ExtraPaymentIncrementFrequency.map((f) => (
-										<div key={f} className="flex items-center gap-3">
-											<RadioGroupItem value={f} id={f} />
-											<Label htmlFor={f} className="capitalize">
-												{f}
-											</Label>
-										</div>
-									))}
-								</RadioGroup>
-							</div>
-						)}
-					/>
-				</div>
+				<FormField
+					control={form.control}
+					name="extraPayment.incrementFrequency"
+					render={({ field }) => (
+						<div className="space-y-1">
+							<FormLabel>Extra Payment Increment Frequency</FormLabel>
+							<RadioGroup
+								value={field.value}
+								onValueChange={field.onChange}
+								className="flex flex-col sm:flex-row flex-wrap gap-2 items-center h-9"
+							>
+								{ExtraPaymentIncrementFrequency.map((f) => (
+									<div key={f} className="flex items-center gap-3">
+										<RadioGroupItem value={f} id={f} />
+										<Label htmlFor={f} className="capitalize">
+											{f}
+										</Label>
+									</div>
+								))}
+							</RadioGroup>
+						</div>
+					)}
+				/>
 
 				<FormField
 					control={form.control}
@@ -112,7 +112,12 @@ export function BasicExtraPayment() {
 									<InfoIcon size={ICON_SIZE} />
 								</EndMonthFormInfoHoverCard>
 							</FormLabel>
-							<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
+							<Input
+								{...field}
+								type="number"
+								onChange={(e) => field.onChange(Number(e.target.value))}
+								placeholder={`Max ${maxYearIndex}`}
+							/>
 							<FormMessage />
 						</div>
 					)}
@@ -122,7 +127,7 @@ export function BasicExtraPayment() {
 					control={form.control}
 					name="extraPayment.extraPaymentSplitRatio"
 					render={({ field }) => (
-						<div className="col-span-3 space-y-1">
+						<div className="col-span-1 lg:col-span-3 space-y-1">
 							<FormLabel>Extra Payment Split Ratio for Investment (%)</FormLabel>
 							<Label className="text-sm text-muted-foreground">
 								This is the percentage of the extra payment that will be used to pay down the principal. The rest will

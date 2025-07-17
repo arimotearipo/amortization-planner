@@ -2,7 +2,7 @@
  * the goal here is to produce array of Payment for both generatePaymentBlocksBasic and generatePaymentBlocksAdvance
  */
 
-import { basicExtraPaymentSchema, type MortgageTermsInputs } from "@/components/models"
+import { advanceExtraPaymentSchema, basicExtraPaymentSchema, type MortgageTermsInputs } from "@/components/models"
 import type { ExtraPayment } from "@/types"
 
 const EMPTY_PAYMENT: ExtraPayment = {
@@ -56,4 +56,42 @@ export function generatePaymentBlocksBasic(inputs: MortgageTermsInputs): ExtraPa
 }
 
 // to be used for generating payment blocks if user selects "Advance Extra Payment" option
-export function generatePaymentBlocksAdvance(inputs: MortgageTermsInputs) {}
+export function generatePaymentBlocksAdvance(inputs: MortgageTermsInputs): ExtraPayment[] {
+	if (!inputs.extraPayment) {
+		return []
+	}
+
+	const parsed = advanceExtraPaymentSchema.safeParse(inputs.extraPayment)
+	if (!parsed.success) {
+		return []
+	}
+
+	const { loanTermYears } = inputs
+	const { paymentBlocks } = parsed.data
+
+	const spreadedPaymentBlocks: ExtraPayment[] = []
+	for (const block of paymentBlocks) {
+		for (let month = block.startMonth; month < block.endMonth; month++) {
+			spreadedPaymentBlocks.push({
+				month,
+				amount: block.amount,
+				splitRatio: block.splitRatio,
+			})
+		}
+	}
+
+	const totalMonths = loanTermYears * 12
+	// fullPaymentBlocks will contain the full payment blocks for each month from 0 to LOAN_DURATION
+	const fullPaymentBlocks: ExtraPayment[] = [] // this is what we returns
+	for (let month = 0; month < totalMonths; month++) {
+		const foundPayment = spreadedPaymentBlocks.find((p) => month === p.month)
+
+		if (!foundPayment) {
+			fullPaymentBlocks.push({ ...EMPTY_PAYMENT, month })
+		} else {
+			fullPaymentBlocks.push(foundPayment)
+		}
+	}
+
+	return fullPaymentBlocks
+}

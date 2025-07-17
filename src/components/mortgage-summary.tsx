@@ -3,7 +3,6 @@
 import { MortgageSummaryChart } from "@/components/mortgage-summary-chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useMortgage } from "@/context/mortgate-context"
-import { getMonthName } from "@/lib/get-month-name"
 import { getOrdinalSuffix } from "@/lib/get-ordinal-suffix"
 import { cn } from "@/lib/utils"
 
@@ -23,7 +22,7 @@ export function MortgageSummary() {
 	const crossoverIndex = schedule.findIndex((p) => p.investmentGrowth >= p.remainingBalance)
 
 	const crossoverYear = getOrdinalSuffix(Math.floor(crossoverIndex / 12) + 1)
-	const crossoverMonth = getMonthName((crossoverIndex % 12) + 1)
+	const crossoverMonth = getOrdinalSuffix((crossoverIndex % 12) + 1)
 
 	const netProfit = totalInvestmentEarned - totalInterest
 
@@ -81,8 +80,8 @@ export function MortgageSummary() {
 				{crossoverIndex >= 0 && totalInvestmentEarned > 0 && (
 					<p className="text-xs sm:text-sm">
 						Your investment will cover your remaining balance in{" "}
-						<span className="font-bold text-primary">{crossoverMonth}</span> of the{" "}
-						<span className="font-bold text-primary">{crossoverYear}</span> year
+						<span className="font-bold text-primary">{crossoverMonth} month</span> of the{" "}
+						<span className="font-bold text-primary">{crossoverYear} year</span>
 					</p>
 				)}
 

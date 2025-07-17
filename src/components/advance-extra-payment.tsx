@@ -159,7 +159,7 @@ export function AdvanceExtraPayment() {
 					</div>
 					<div className="w-full rounded bg-muted/50 p-2">
 						<div className="text-base font-semibold mb-2">Payment Blocks</div>
-						<ScrollArea className="w-full h-[200px]">
+						<ScrollArea className="w-full h-auto">
 							{fields.length === 0 ? (
 								<div className="text-muted-foreground text-xs">No payment blocks added yet.</div>
 							) : (

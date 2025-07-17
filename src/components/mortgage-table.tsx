@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useMortgage } from "@/context/mortgate-context"
-import { getMonthName } from "@/lib/get-month-name"
 import { cn } from "@/lib/utils"
 
 const COL_COUNT = 7

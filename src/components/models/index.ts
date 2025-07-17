@@ -29,6 +29,30 @@ export const mortgageTermsInputsSchema = z.object({
 	extraPayment: z.union([basicExtraPaymentSchema, advanceExtraPaymentSchema]).optional(),
 })
 
-export type MortgageTermsInputs = z.infer<typeof mortgageTermsInputsSchema>
+// export type MortgageTermsInputs = z.infer<typeof mortgageTermsInputsSchema>
 export type BasicExtraPaymentInputs = z.infer<typeof basicExtraPaymentSchema>
 export type AdvanceExtraPaymentInputs = z.infer<typeof advanceExtraPaymentSchema>
+
+export type MortgageTermsInputs = {
+	principalLoanAmount: number
+	loanTermYears: number
+	annualInterestRate: number
+	investmentReturnRate: number
+	extraPayment:
+		| {
+				startMonth: number
+				endMonth: number
+				amount: number
+				increment: number
+				incrementFrequency: "monthly" | "yearly"
+				extraPaymentSplitRatio: number
+		  }
+		| {
+				paymentBlocks: {
+					amount: number
+					startMonth: number
+					endMonth: number
+					splitRatio: number
+				}[]
+		  }
+}

@@ -51,8 +51,6 @@ export function AdvanceExtraPayment() {
 	})
 
 	const handleAddBlock = form.handleSubmit((newBlock) => {
-		console.log("Adding block:", newBlock)
-
 		// Validation: startMonth of current block >= endMonth of previous block
 		if (fields.length > 0) {
 			const prevEndMonth = formContext.getValues(`extraPayment.paymentBlocks.${fields.length - 1}.endMonth`)
@@ -74,146 +72,150 @@ export function AdvanceExtraPayment() {
 
 	const reversedFields = [...fields].reverse()
 
+	const maxYearIndex = formContext.watch("loanTermYears") * 12 - 1
+
 	return (
 		<Form {...form}>
-			<div className="col-span-3 animate-in fade-in duration-500">
-				<div className="text-base font-semibold mb-2">Add Payment Block</div>
-				<div className="grid grid-cols-5 gap-2">
-					<FormField
-						control={form.control}
-						name="amount"
-						render={({ field }) => (
-							<div className="flex flex-col">
-								<FormLabel className="text-xs mb-1">Amount</FormLabel>
-								<Input {...field} onChange={(e) => field.onChange(Number(e.target.value))} placeholder="Amount" />
-								<FormMessage />
-							</div>
-						)}
-					/>
-
-					<FormField
-						control={form.control}
-						name="startMonth"
-						render={({ field }) => (
-							<div className="flex flex-col">
-								<Label htmlFor="startMonth" className="text-xs mb-1">
-									Start Month (inclusive)
-								</Label>
-								<Input
-									{...field}
-									onChange={(e) => field.onChange(Number(e.target.value))}
-									placeholder="Start month index"
-								/>
-								<FormMessage />
-							</div>
-						)}
-					/>
-
-					<FormField
-						control={form.control}
-						name="endMonth"
-						render={({ field }) => (
-							<div className="flex flex-col">
-								<FormLabel className="text-xs mb-1">End Month (exclusive)</FormLabel>
-								<Input
-									{...field}
-									onChange={(e) => field.onChange(Number(e.target.value))}
-									placeholder="End month index"
-								/>
-								<FormMessage />
-							</div>
-						)}
-					/>
-
-					<FormField
-						control={form.control}
-						name="splitRatio"
-						render={({ field }) => (
-							<div className="flex flex-col">
-								<Label htmlFor="endMonth" className="text-xs mb-1">
-									Ratio between Principal and Investment
-								</Label>
+			<div className="flex flex-col animate-in fade-in duration-500">
+				<div className="w-full">Add Payment Block</div>
+				<div className="flex flex-col lg:flex-row w-full gap-2">
+					<div className="w-full">
+						<FormField
+							control={form.control}
+							name="amount"
+							render={({ field }) => (
 								<div className="flex flex-col">
-									<span className="text-sm">{`Principal Payment ${Math.round(field.value * 100)}%`}</span>
-									<Slider
-										min={0}
-										max={1}
-										step={0.01}
-										value={[field.value]}
-										onValueChange={(value) => form.setValue("splitRatio", value[0])}
-										className="col-span-8"
-									/>
-									<span className="text-sm">{`Investment Payment ${Math.round((1 - field.value) * 100)}%`}</span>
+									<FormLabel className="text-xs mb-1">Amount</FormLabel>
+									<Input {...field} onChange={(e) => field.onChange(Number(e.target.value))} placeholder="Amount" />
+									<FormMessage />
 								</div>
-							</div>
-						)}
-					/>
+							)}
+						/>
 
-					<div className="flex items-center justify-center">
-						<Button type="submit" size="sm" onClick={handleAddBlock}>
-							<Plus size={16} />
-							Add
-						</Button>
+						<FormField
+							control={form.control}
+							name="startMonth"
+							render={({ field }) => (
+								<div className="flex flex-col">
+									<Label htmlFor="startMonth" className="text-xs mb-1">
+										Start Month (inclusive)
+									</Label>
+									<Input
+										{...field}
+										onChange={(e) => field.onChange(Number(e.target.value))}
+										placeholder="Start month index"
+									/>
+									<FormMessage />
+								</div>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
+							name="endMonth"
+							render={({ field }) => (
+								<div className="flex flex-col">
+									<FormLabel className="text-xs mb-1">End Month (exclusive)</FormLabel>
+									<Input
+										{...field}
+										onChange={(e) => field.onChange(Number(e.target.value))}
+										placeholder={`Max ${maxYearIndex}`}
+									/>
+									<FormMessage />
+								</div>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
+							name="splitRatio"
+							render={({ field }) => (
+								<div className="flex flex-col">
+									<Label htmlFor="endMonth" className="text-xs mb-1">
+										Ratio between Principal and Investment
+									</Label>
+									<div className="flex flex-col">
+										<span className="text-sm">{`Principal Payment ${Math.round(field.value * 100)}%`}</span>
+										<Slider
+											min={0}
+											max={1}
+											step={0.01}
+											value={[field.value]}
+											onValueChange={(value) => form.setValue("splitRatio", value[0])}
+											className="col-span-8"
+										/>
+										<span className="text-sm">{`Investment Payment ${Math.round((1 - field.value) * 100)}%`}</span>
+									</div>
+								</div>
+							)}
+						/>
+
+						<div className="flex items-center justify-center">
+							<Button type="submit" size="sm" onClick={handleAddBlock} className="w-full">
+								<Plus size={16} />
+								Add
+							</Button>
+						</div>
 					</div>
-				</div>
-				<div className="p-2 rounded border bg-muted/50">
-					<div className="text-base font-semibold mb-2">Payment Blocks</div>
-					<ScrollArea className="w-full h-[200px]">
-						{fields.length === 0 ? (
-							<div className="text-muted-foreground text-xs">No payment blocks added yet.</div>
-						) : (
-							<div className="flex flex-col gap-2">
-								{reversedFields.map((field, reversedIndex) => {
-									const index = fields.length - 1 - reversedIndex
+					<div className="w-full rounded bg-muted/50 p-2">
+						<div className="text-base font-semibold mb-2">Payment Blocks</div>
+						<ScrollArea className="w-full h-[200px]">
+							{fields.length === 0 ? (
+								<div className="text-muted-foreground text-xs">No payment blocks added yet.</div>
+							) : (
+								<div className="flex flex-col gap-2">
+									{reversedFields.map((field, reversedIndex) => {
+										const index = fields.length - 1 - reversedIndex
 
-									const principalPortion = (
-										formContext.getValues(`extraPayment.paymentBlocks.${index}.splitRatio`) * 100
-									).toFixed(2)
+										const principalPortion = (
+											formContext.getValues(`extraPayment.paymentBlocks.${index}.splitRatio`) * 100
+										).toFixed(2)
 
-									const investmentPortion = (
-										(1 - formContext.getValues(`extraPayment.paymentBlocks.${index}.splitRatio`)) *
-										100
-									).toFixed(2)
+										const investmentPortion = (
+											(1 - formContext.getValues(`extraPayment.paymentBlocks.${index}.splitRatio`)) *
+											100
+										).toFixed(2)
 
-									return (
-										<div
-											key={field.id}
-											className="flex flex-row items-center gap-2 border rounded px-2 py-1 bg-background"
-										>
-											<span className="font-semibold text-primary text-xs">#{fields.length - reversedIndex}</span>
-											<span className="text-xs">
-												<span className="font-bold">Amount:</span>{" "}
-												{formContext.watch(`extraPayment.paymentBlocks.${index}.amount`)}
-											</span>
-											<span className="text-xs">
-												<span className="font-bold">Start:</span>{" "}
-												{formContext.watch(`extraPayment.paymentBlocks.${index}.startMonth`)}
-											</span>
-											<span className="text-xs">
-												<span className="font-bold">End:</span>{" "}
-												{formContext.watch(`extraPayment.paymentBlocks.${index}.endMonth`)}
-											</span>
-											<span className="text-xs">
-												<span className="font-bold">Split Ratio:</span> Principal: {principalPortion}%, Investment:{" "}
-												{investmentPortion}%
-											</span>
-											{index === fields.length - 1 && (
-												<Button
-													variant="destructive"
-													size="sm"
-													type="button"
-													className="px-2 py-1 ml-auto"
-													onClick={() => remove(index)}
-												>
-													<X />
-												</Button>
-											)}
-										</div>
-									)
-								})}
-							</div>
-						)}
-					</ScrollArea>
+										return (
+											<div
+												key={field.id}
+												className="flex flex-row items-center gap-2 border rounded px-2 py-1 bg-background"
+											>
+												<span className="font-semibold text-primary text-xs">#{fields.length - reversedIndex}</span>
+												<span className="text-xs">
+													<span className="font-bold">Amount:</span>{" "}
+													{formContext.watch(`extraPayment.paymentBlocks.${index}.amount`)}
+												</span>
+												<span className="text-xs">
+													<span className="font-bold">Start:</span>{" "}
+													{formContext.watch(`extraPayment.paymentBlocks.${index}.startMonth`)}
+												</span>
+												<span className="text-xs">
+													<span className="font-bold">End:</span>{" "}
+													{formContext.watch(`extraPayment.paymentBlocks.${index}.endMonth`)}
+												</span>
+												<span className="text-xs">
+													<span className="font-bold">Split Ratio:</span> Principal: {principalPortion}%, Investment:{" "}
+													{investmentPortion}%
+												</span>
+												{index === fields.length - 1 && (
+													<Button
+														variant="destructiveGhost"
+														size="xs"
+														type="button"
+														className="px-2 ml-auto"
+														onClick={() => remove(index)}
+													>
+														<X className="h-2 w-2" />
+													</Button>
+												)}
+											</div>
+										)
+									})}
+								</div>
+							)}
+						</ScrollArea>
+					</div>
 				</div>
 			</div>
 		</Form>

@@ -5,16 +5,22 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } f
 import { Form, FormField, FormLabel, FormMessage } from "@components/ui/form"
 import { Input } from "@components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { AdvanceExtraPayment } from "@/components/advance-extra-payment"
 import { BasicExtraPayment } from "@/components/basic-extra-payment"
-import { type MortgageTermsInputs, mortgageTermsInputsSchema } from "@/components/models"
+import {
+	advanceExtraPaymentSchema,
+	basicExtraPaymentSchema,
+	type MortgageTermsInputs,
+	mortgageTermsInputsSchema,
+} from "@/components/models"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { useMortgage } from "@/context/mortgate-context"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
-import { generatePaymentBlocksBasic } from "@/lib/paymentBlocks"
+import { generatePaymentBlocksAdvance, generatePaymentBlocksBasic } from "@/lib/paymentBlocks"
+import type { ExtraPayment } from "@/types"
 
 function getDefaultValues(): MortgageTermsInputs {
 	const loanTermYears = 35
@@ -35,56 +41,35 @@ function getDefaultValues(): MortgageTermsInputs {
 }
 
 export function MortgageTermsForm() {
-	const [isAdvanced, setIsAdvanced] = useState(false)
-	const { openMortgageTermsForm, setOpenMortgageTermsForm, setAmortizationDetails, setMortgageTerms, setSubmitted } =
-		useMortgage()
+	const {
+		openMortgageTermsForm,
+		setOpenMortgageTermsForm,
+		setAmortizationDetails,
+		setMortgageTerms,
+		setSubmitted,
+		isAdvanced,
+		setIsAdvanced,
+	} = useMortgage()
+
+	const dynamicSchema = useMemo(() => {
+		return mortgageTermsInputsSchema.extend({
+			extraPayment: isAdvanced ? advanceExtraPaymentSchema : basicExtraPaymentSchema,
+		})
+	}, [isAdvanced])
 
 	const form = useForm<MortgageTermsInputs>({
-		resolver: zodResolver(mortgageTermsInputsSchema),
+		resolver: zodResolver(dynamicSchema),
 		defaultValues: getDefaultValues(),
 	})
 
-	// const maxMonthIndex = form.watch("loanTermYears") * 12 - 1
-
-	// const handleSubmitForm = form.handleSubmit((data) => {
-	// 	if (data.extraPaymentStartMonth < 0 || data.extraPaymentStartMonth > maxMonthIndex) {
-	// 		const errorMessage = `Extra payment start month must be between 0 (inclusive) and ${maxMonthIndex} (inclusive)`
-	// 		toast.error(errorMessage)
-	// 		form.setError("extraPaymentStartMonth", {
-	// 			type: "manual",
-	// 			message: errorMessage,
-	// 		})
-	// 		return
-	// 	}
-
-	// 	if (data.extraPaymentEndMonth > maxMonthIndex || data.extraPaymentEndMonth < data.extraPaymentStartMonth) {
-	// 		const errorMessage = `Extra payment end month must be between ${data.extraPaymentStartMonth} (inclusive) and ${maxMonthIndex} (inclusive)`
-	// 		toast.error(errorMessage)
-	// 		form.setError("extraPaymentEndMonth", {
-	// 			type: "manual",
-	// 			message: errorMessage,
-	// 		})
-	// 		return
-	// 	}
-
-	// 	console.log("Form submitted with data:", data)
-
-	// 	const newMortgageTerms = {
-	// 		...mortgageTerms,
-	// 		extraPayment: data,
-	// 	}
-
-	// 	setMortgageTerms({ ...mortgageTerms, extraPayment: data })
-	// 	toast.success("Amortization rates calculated successfully")
-
-	// 	const amortizationDetails = calculateAmortizationSchedule(newMortgageTerms)
-	// 	setAmortizationDetails(amortizationDetails)
-	// 	setSubmitted(true)
-	// 	setOpenMortgageTermsForm(false)
-	// })
-
 	const handleSubmitForm = form.handleSubmit((data) => {
-		const paymentBlocks = generatePaymentBlocksBasic(data)
+		let paymentBlocks: ExtraPayment[] = []
+
+		if (isAdvanced) {
+			paymentBlocks = generatePaymentBlocksAdvance(data)
+		} else {
+			paymentBlocks = generatePaymentBlocksBasic(data)
+		}
 
 		const amortizationDetails = calculateAmortizationSchedule(data, paymentBlocks)
 
@@ -104,8 +89,8 @@ export function MortgageTermsForm() {
 
 				<Form {...form}>
 					{/* Base mortgage terms */}
-					<div className="flex flex-col gap-4">
-						<div className="flex flex-row w-full gap-4">
+					<div className="flex flex-col gap-4 overflow-auto">
+						<div className="flex flex-col lg:flex-row w-full gap-4">
 							<FormField
 								control={form.control}
 								name="principalLoanAmount"
@@ -154,9 +139,9 @@ export function MortgageTermsForm() {
 							/>
 						</div>
 
-						<div className="grid grid-cols-3 gap-4">
-							<div className="col-span-3 space-y-1">
-								<Label>Extra Payment</Label>
+						<div className="space-y-2">
+							<div className="space-y-1">
+								<Label>Extra Payment Mode</Label>
 								<div className="flex flex-row items-center gap-2 text-sm">
 									<span>Basic</span>
 									<Switch checked={isAdvanced} onCheckedChange={setIsAdvanced} />

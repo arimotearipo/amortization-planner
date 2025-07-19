@@ -1,4 +1,4 @@
-import type { MortgageTermsInputs } from "@/components/models"
+import type { MortgageTermsInputs } from "@/models"
 import type { AmortizationDetails, ExtraPayment, PaymentItem } from "@/types"
 
 function calculateInvestmentGrowthAtEachMonth(investmentReturnRate: number, extraPayments: ExtraPayment[]): number[] {

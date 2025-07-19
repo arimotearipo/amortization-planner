@@ -2,7 +2,7 @@
  * the goal here is to produce array of Payment for both generatePaymentBlocksBasic and generatePaymentBlocksAdvance
  */
 
-import { advanceExtraPaymentSchema, basicExtraPaymentSchema, type MortgageTermsInputs } from "@/components/models"
+import { advanceExtraPaymentSchema, basicExtraPaymentSchema, type MortgageTermsInputs } from "@/models"
 import type { ExtraPayment } from "@/types"
 
 const EMPTY_PAYMENT: ExtraPayment = {
@@ -13,7 +13,7 @@ const EMPTY_PAYMENT: ExtraPayment = {
 
 // to be used for generating payment blocks if user selects "Basic Extra Payment" option
 export function generatePaymentBlocksBasic(inputs: MortgageTermsInputs): ExtraPayment[] {
-	if (!inputs.extraPayment) {
+	if (Object.keys(inputs.extraPayment || {}).length === 0) {
 		return []
 	}
 
@@ -47,7 +47,8 @@ export function generatePaymentBlocksBasic(inputs: MortgageTermsInputs): ExtraPa
 			currentAmount += increment
 		}
 
-		if (incrementFrequency === "yearly" && month % 12 === 0) {
+		// increase the amount just before the next year
+		if (incrementFrequency === "yearly" && (month + 1) % 12 === 0) {
 			currentAmount += increment
 		}
 	}

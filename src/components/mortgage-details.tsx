@@ -1,6 +1,6 @@
 import { MortgageSummary } from "@/components/mortgage-summary"
 import { MortgageTable } from "@/components/mortgage-table"
-// import { SplitRatio } from "@/components/split-ratio"
+import { SplitRatio } from "@/components/split-ratio"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function MortgageDetails() {
@@ -10,7 +10,7 @@ export default function MortgageDetails() {
 				<TabsTrigger value="mortgage-details">Mortgage Details</TabsTrigger>
 				<TabsTrigger value="payment-schedule">Payment Schedule</TabsTrigger>
 			</TabsList>
-			{/* <SplitRatio /> */}
+			<SplitRatio />
 			<TabsContent value="mortgage-details">
 				<MortgageSummary />
 			</TabsContent>

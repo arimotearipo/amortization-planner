@@ -9,17 +9,17 @@ import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { AdvanceExtraPayment } from "@/components/advance-extra-payment"
 import { BasicExtraPayment } from "@/components/basic-extra-payment"
-import {
-	advanceExtraPaymentSchema,
-	basicExtraPaymentSchema,
-	type MortgageTermsInputs,
-	mortgageTermsInputsSchema,
-} from "@/components/models"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { useMortgage } from "@/context/mortgate-context"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
 import { generatePaymentBlocksAdvance, generatePaymentBlocksBasic } from "@/lib/paymentBlocks"
+import {
+	advanceExtraPaymentSchema,
+	basicExtraPaymentSchema,
+	type MortgageTermsInputs,
+	mortgageTermsInputsSchema,
+} from "@/models"
 import type { ExtraPayment } from "@/types"
 
 function getDefaultValues(): MortgageTermsInputs {
@@ -28,14 +28,36 @@ function getDefaultValues(): MortgageTermsInputs {
 		principalLoanAmount: 490000,
 		loanTermYears,
 		annualInterestRate: 3.8,
-		investmentReturnRate: 0,
+		investmentReturnRate: 5,
+		// extraPayment: {
+		// 	amount: 1000,
+		// 	increment: 0,
+		// 	incrementFrequency: "yearly",
+		// 	startMonth: 0,
+		// 	endMonth: loanTermYears > 0 ? loanTermYears * 12 - 1 : 0,
+		// 	extraPaymentSplitRatio: 0.5, // Default split ratio for extra payments
+		// },
 		extraPayment: {
-			amount: 1000,
-			increment: 0,
-			incrementFrequency: "yearly",
-			startMonth: 0,
-			endMonth: loanTermYears > 0 ? loanTermYears * 12 - 1 : 0,
-			extraPaymentSplitRatio: 0.5, // Default split ratio for extra payments
+			paymentBlocks: [
+				{
+					startMonth: 0,
+					endMonth: 119,
+					amount: 200,
+					splitRatio: 0.5,
+				},
+				{
+					startMonth: 0,
+					endMonth: 120,
+					amount: 239,
+					splitRatio: 0.5,
+				},
+				{
+					startMonth: 0,
+					endMonth: 240,
+					amount: 359,
+					splitRatio: 0.5,
+				},
+			],
 		},
 	}
 }

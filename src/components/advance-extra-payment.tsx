@@ -2,13 +2,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Plus, X } from "lucide-react"
 import { useFieldArray, useForm, useFormContext } from "react-hook-form"
 import z from "zod"
-import type { MortgageTermsInputs } from "@/components/models"
 import { Button } from "@/components/ui/button"
 import { Form, FormField, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Slider } from "@/components/ui/slider"
+import type { MortgageTermsInputs } from "@/models"
 import type { PaymentBlock } from "@/types"
 
 const paymentBlockSchema = z
@@ -45,6 +45,8 @@ export function AdvanceExtraPayment() {
 
 	const formContext = useFormContext<MortgageTermsInputs>()
 
+	const maxMonths = formContext.watch("loanTermYears") * 12
+
 	const { fields, remove, append } = useFieldArray({
 		control: formContext.control,
 		name: "extraPayment.paymentBlocks",
@@ -62,11 +64,17 @@ export function AdvanceExtraPayment() {
 			}
 		}
 
+		const gap = newBlock.endMonth - newBlock.startMonth
+		let nextEndMonth = newBlock.endMonth + gap
+		if (nextEndMonth > maxMonths) {
+			nextEndMonth = maxMonths
+		}
+
 		append(newBlock)
 		form.reset({
 			amount: newBlock.amount, // Keep the same amount for the next block
 			startMonth: newBlock.endMonth + 1, // Reset start month to next month
-			endMonth: newBlock.endMonth + 2, // Reset end month to next month
+			endMonth: nextEndMonth, // Reset end month to next month
 		})
 	})
 
@@ -131,8 +139,10 @@ export function AdvanceExtraPayment() {
 							name="splitRatio"
 							render={({ field }) => (
 								<div className="flex flex-col">
-									<Label htmlFor="endMonth" className="text-xs mb-1">
-										Ratio between Principal and Investment
+									<FormLabel className="text-xs mb-1">Extra Payment Split Ratio for Investment (%)</FormLabel>
+									<Label className="text-xs text-muted-foreground">
+										This is the percentage of the extra payment that will be used to pay down the principal. The rest
+										will be invested.
 									</Label>
 									<div className="flex flex-col">
 										<span className="text-sm">{`Principal Payment ${Math.round(field.value * 100)}%`}</span>

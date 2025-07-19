@@ -5,13 +5,13 @@ import {
 	ExtraPaymentFormInfoHoverCard,
 	StartMonthFormInfoHoverCard,
 } from "@/components/hover-cards"
-import type { MortgageTermsInputs } from "@/components/models"
 import { Form, FormField, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { ICON_SIZE } from "@/consts"
+import type { MortgageTermsInputs } from "@/models"
 import { ExtraPaymentIncrementFrequency } from "@/types"
 
 export function BasicExtraPayment() {
@@ -131,7 +131,7 @@ export function BasicExtraPayment() {
 							<FormLabel>Extra Payment Split Ratio for Investment (%)</FormLabel>
 							<Label className="text-sm text-muted-foreground">
 								This is the percentage of the extra payment that will be used to pay down the principal. The rest will
-								be invested
+								be invested.
 							</Label>
 							<div>
 								<span>Principal Payment: {Math.round(field.value * 100)}%</span>

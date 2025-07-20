@@ -21,7 +21,7 @@ type MortgageContextType = {
 const MortgageContext = createContext<MortgageContextType | undefined>(undefined)
 
 export const MortgageProvider = ({ children }: { children: React.ReactNode }) => {
-	const [isAdvanced, setIsAdvanced] = useState(true) // default to advanced mode
+	const [isAdvanced, setIsAdvanced] = useState(false) // default to basic mode
 	const [submitted, setSubmitted] = useState(false)
 	const [openMortgageTermsForm, setOpenMortgageTermsForm] = useState(true)
 

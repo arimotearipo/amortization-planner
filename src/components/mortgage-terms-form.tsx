@@ -29,36 +29,36 @@ function getDefaultValues(): MortgageTermsInputs {
 		loanTermYears,
 		annualInterestRate: 3.8,
 		investmentReturnRate: 5,
-		// extraPayment: {
-		// 	amount: 1000,
-		// 	increment: 0,
-		// 	incrementFrequency: "yearly",
-		// 	startMonth: 0,
-		// 	endMonth: loanTermYears > 0 ? loanTermYears * 12 - 1 : 0,
-		// 	extraPaymentSplitRatio: 0.5, // Default split ratio for extra payments
-		// },
 		extraPayment: {
-			paymentBlocks: [
-				{
-					startMonth: 0,
-					endMonth: 119,
-					amount: 200,
-					splitRatio: 0.5,
-				},
-				{
-					startMonth: 0,
-					endMonth: 120,
-					amount: 239,
-					splitRatio: 0.5,
-				},
-				{
-					startMonth: 0,
-					endMonth: 240,
-					amount: 359,
-					splitRatio: 0.5,
-				},
-			],
+			amount: 0,
+			increment: 0,
+			incrementFrequency: "yearly",
+			startMonth: 0,
+			endMonth: loanTermYears > 0 ? loanTermYears * 12 - 1 : 0,
+			extraPaymentSplitRatio: 0.5, // Default split ratio for extra payments
 		},
+		// extraPayment: {
+		// 	paymentBlocks: [
+		// 		{
+		// 			startMonth: 0,
+		// 			endMonth: 119,
+		// 			amount: 200,
+		// 			splitRatio: 0.5,
+		// 		},
+		// 		{
+		// 			startMonth: 0,
+		// 			endMonth: 120,
+		// 			amount: 239,
+		// 			splitRatio: 0.5,
+		// 		},
+		// 		{
+		// 			startMonth: 0,
+		// 			endMonth: 240,
+		// 			amount: 359,
+		// 			splitRatio: 0.5,
+		// 		},
+		// 	],
+		// },
 	}
 }
 

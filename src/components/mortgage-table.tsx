@@ -8,7 +8,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useMortgage } from "@/context/mortgate-context"
 import { cn } from "@/lib/utils"
 
-const COL_COUNT = 7
+const COL_COUNT = 9
 
 function FullSpanRow({ children }: { children: React.ReactNode }) {
 	return (
@@ -58,22 +58,20 @@ export function MortgageTable() {
 				<ScrollArea className="h-[50vh]">
 					<Table>
 						<TableHeader className="sticky top-0 bg-secondary">
-							<TableRow>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Payment Number</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Payment Amount</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Principal Paid</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Interest Paid</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Extra Payment</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Remaining Balance</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm min-w-[120px]">Investment Growth</TableCell>
+							<TableRow className="[&>*]:whitespace-normal">
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Payment Number</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Starting Balance</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Payment Amount</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Principal Paid</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Extra Payment to Principal</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Interest Paid</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Remaining Balance</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Investment Contribution</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Investment Growth</TableCell>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
 							{schedule.map((payment, index) => {
-								if (payment.remainingBalance <= 0) {
-									return null
-								}
-
 								const rows = []
 
 								if ((payment.paymentNumber - 1) % 12 === 0) {
@@ -92,7 +90,10 @@ export function MortgageTable() {
 												"bg-green-400 text-black font-bold hover:bg-green-300": index === crossoverPoint,
 											})}
 										>
-											<TableCell className="text-xs sm:text-sm min-w-[120px]">#{payment.paymentNumber}</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">#{payment.paymentNumber + 1}</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">
+												{payment.startingBalance.toLocaleString()}
+											</TableCell>
 											<TableCell className="text-xs sm:text-sm min-w-[120px]">
 												{payment.paymentAmount.toLocaleString()}
 											</TableCell>
@@ -100,13 +101,16 @@ export function MortgageTable() {
 												{payment.totalPrincipalPaid.toLocaleString()}
 											</TableCell>
 											<TableCell className="text-xs sm:text-sm min-w-[120px]">
+												{payment.extraPaymentToPrincipal.toLocaleString()}
+											</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">
 												{payment.interestPaid.toLocaleString()}
 											</TableCell>
 											<TableCell className="text-xs sm:text-sm min-w-[120px]">
-												{payment.extraPayment.toLocaleString()}
+												{payment.remainingBalance.toLocaleString()}
 											</TableCell>
 											<TableCell className="text-xs sm:text-sm min-w-[120px]">
-												{payment.remainingBalance.toLocaleString()}
+												{payment.investmentContribution?.toLocaleString() ?? "undefined"}
 											</TableCell>
 											<TableCell className="text-xs sm:text-sm min-w-[120px]">
 												{payment.investmentGrowth?.toLocaleString() ?? "undefined"}

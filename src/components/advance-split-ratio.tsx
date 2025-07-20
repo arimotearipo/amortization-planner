@@ -8,15 +8,19 @@ import { useDebounce } from "@/hooks/useDebounce"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
 import { generatePaymentBlocksAdvance } from "@/lib/paymentBlocks"
 import type { AdvanceExtraPaymentInputs } from "@/models"
+import type { PaymentBlock } from "@/types"
 
 type SplitRatioProps = {
 	splitRatio: number
 	onRatioChange: (blockNumber: number, ratio: number) => void
 	blockNumber: number
+	amount: number
+	startMonth: number
+	endMonth: number
 }
 
 // render individual split ratio item
-function SplitRatioItem({ splitRatio, onRatioChange, blockNumber }: SplitRatioProps) {
+function SplitRatioItem({ splitRatio, onRatioChange, blockNumber, amount, startMonth, endMonth }: SplitRatioProps) {
 	const principalPercentage = Math.round(splitRatio * 100)
 	const investmentPercentage = Math.round((1 - splitRatio) * 100)
 
@@ -27,6 +31,11 @@ function SplitRatioItem({ splitRatio, onRatioChange, blockNumber }: SplitRatioPr
 	return (
 		<div>
 			<span className="text-sm">Block #{blockNumber + 1}</span>
+			<div className="flex flex-row gap-x-2">
+				<span className="text-xs">Amount: {amount}</span>
+				<span className="text-xs">Start Month: {startMonth}</span>
+				<span className="text-xs">End Month: {endMonth}</span>
+			</div>
 			<div className="flex items-center justify-between text-xs font-medium lg:gap-x-4">
 				<span className="text-green-600">Investment: {investmentPercentage}%</span>
 				<span className="text-blue-600">Principal Payment: {principalPercentage}%</span>
@@ -47,17 +56,15 @@ function SplitRatioItem({ splitRatio, onRatioChange, blockNumber }: SplitRatioPr
 }
 
 type AdvanceSplitRatioProps = {
-	splitRatios: {
-		splitRatio: number
-		id: string
-	}[]
+	paymentBlocks: PaymentBlock[]
 }
 
-export function AdvanceSplitRatio({ splitRatios }: AdvanceSplitRatioProps) {
+export function AdvanceSplitRatio({ paymentBlocks }: AdvanceSplitRatioProps) {
 	const { mortgageTerms, setAmortizationDetails } = useMortgage()
-	const [ratios, setRatios] = useState(splitRatios)
+	const [ratios, setRatios] = useState(paymentBlocks.map((block) => block.splitRatio))
 	const debouncedRatios = useDebounce(ratios, 500)
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: we only strictly want to run this when the ratios change
 	useEffect(() => {
 		const newExtraPayment = {
 			...mortgageTerms.extraPayment,
@@ -65,7 +72,7 @@ export function AdvanceSplitRatio({ splitRatios }: AdvanceSplitRatioProps) {
 
 		newExtraPayment.paymentBlocks = newExtraPayment.paymentBlocks.map((blocks, idx) => ({
 			...blocks,
-			splitRatio: ratios[idx].splitRatio ?? blocks.splitRatio,
+			splitRatio: ratios[idx] ?? blocks.splitRatio,
 		}))
 
 		const newMortgageTermsInputs = {
@@ -81,7 +88,7 @@ export function AdvanceSplitRatio({ splitRatios }: AdvanceSplitRatioProps) {
 	const handleSplitRatioChange = (blockNumber: number, newRatio: number) => {
 		setRatios((prev) => {
 			const updated = [...prev]
-			updated[blockNumber].splitRatio = newRatio
+			updated[blockNumber] = newRatio
 			return updated
 		})
 	}
@@ -96,12 +103,15 @@ export function AdvanceSplitRatio({ splitRatios }: AdvanceSplitRatioProps) {
 				</Label>
 			</div>
 			<div className="flex flex-col lg:flex-row space-y-1 w-full justify-around">
-				{ratios.map((splitRatio, index) => (
+				{paymentBlocks.map((block, index) => (
 					<SplitRatioItem
-						key={splitRatio.id}
+						key={`${block.startMonth}-${block.endMonth}`}
 						onRatioChange={handleSplitRatioChange}
-						splitRatio={splitRatio.splitRatio}
+						splitRatio={ratios[index]}
 						blockNumber={index}
+						amount={block.amount}
+						startMonth={block.startMonth}
+						endMonth={block.endMonth}
 					/>
 				))}
 			</div>

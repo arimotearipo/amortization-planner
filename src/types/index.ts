@@ -15,11 +15,13 @@ export type ExtraPayment = {
 // this represents one row in the payment schedule table
 export type PaymentItem = {
 	paymentNumber: number
+	startingBalance: number
 	paymentAmount: number
 	totalPrincipalPaid: number
 	interestPaid: number
 	remainingBalance: number
-	extraPayment: number
+	extraPaymentToPrincipal: number
+	investmentContribution: number
 	investmentGrowth: number
 }
 

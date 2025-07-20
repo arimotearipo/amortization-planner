@@ -1,3 +1,4 @@
+import { toDecimal } from "@/lib/to-decimal"
 import type { MortgageTermsInputs } from "@/models"
 import type { AmortizationDetails, ExtraPayment, PaymentItem } from "@/types"
 
@@ -12,7 +13,7 @@ function calculateInvestmentGrowthAtEachMonth(investmentReturnRate: number, extr
 			const portionToInvest = (1 - extraPayment.splitRatio) * extraPayment.amount
 			sum += portionToInvest * (1 + r) ** (n - k)
 		}
-		accumulatedGrowths.push(Number(sum.toFixed(2)))
+		accumulatedGrowths.push(toDecimal(sum))
 	}
 
 	return accumulatedGrowths
@@ -47,37 +48,55 @@ export function calculateAmortizationSchedule(
 
 	const investmentGrowthsAtEachMonth = calculateInvestmentGrowthAtEachMonth(investmentReturnRate, extraPayments)
 
-	for (let month = 1; month <= numberOfPayments; month++) {
+	for (let month = 0; month < numberOfPayments; month++) {
 		if (remainingBalance <= 0) {
 			break
 		}
 
+		// capture the starting balance for this month
+		const startingBalance = remainingBalance
+
 		// Calculate interest for this month
-		const interestPaid = Number((remainingBalance * monthlyInterestRate).toFixed(2))
+		const interestPaid = toDecimal(remainingBalance * monthlyInterestRate)
 
 		// Calculate principal for this month
-		const principalPaid = Number((monthlyPayment - interestPaid).toFixed(2))
+		let principalPaid = toDecimal(monthlyPayment - interestPaid)
 
-		const thisMonthExtraPayment = extraPayments[month - 1] || 0
+		// If the principal paid exceeds the remaining balance, adjust it
+		if (principalPaid > remainingBalance) {
+			principalPaid = remainingBalance
+		}
+
+		const thisMonthSplitRatio = extraPayments[month]?.splitRatio || 0
+		const thisMonthExtraPaymentToPrincipal = extraPayments[month].amount * thisMonthSplitRatio || 0
+		const thisMonthInvestmentContribution = extraPayments[month].amount * (1 - thisMonthSplitRatio) || 0
+
+		let totalPrincipalPaid = principalPaid + thisMonthExtraPaymentToPrincipal
+
+		if (totalPrincipalPaid > remainingBalance) {
+			totalPrincipalPaid = remainingBalance
+			principalPaid = Math.max(0, totalPrincipalPaid - thisMonthExtraPaymentToPrincipal)
+		}
 
 		// Update remaining balance
-		const totalPrincipalPaid = principalPaid + thisMonthExtraPayment.amount
 		remainingBalance -= totalPrincipalPaid
 
 		schedule.push({
 			paymentNumber: month,
-			paymentAmount: Number(monthlyPayment.toFixed(2)),
-			totalPrincipalPaid: Number(totalPrincipalPaid.toFixed(2)),
-			interestPaid: Number(interestPaid.toFixed(2)),
-			remainingBalance: Number(Math.max(0, remainingBalance).toFixed(2)), // Prevent negative balance due to rounding
-			extraPayment: Number(thisMonthExtraPayment.amount.toFixed(2)),
-			investmentGrowth: investmentGrowthsAtEachMonth[month - 1],
+			startingBalance: toDecimal(startingBalance),
+			paymentAmount: toDecimal(monthlyPayment),
+			totalPrincipalPaid: toDecimal(totalPrincipalPaid),
+			interestPaid: toDecimal(interestPaid),
+			remainingBalance: toDecimal(Math.max(0, remainingBalance)), // Prevent negative balance due to rounding
+			extraPaymentToPrincipal: toDecimal(thisMonthExtraPaymentToPrincipal),
+			investmentContribution: toDecimal(thisMonthInvestmentContribution),
+			investmentGrowth: toDecimal(investmentGrowthsAtEachMonth[month]),
 		})
 	}
 
-	const totalInterest = Number(schedule.reduce((sum, payment) => sum + payment.interestPaid, 0).toFixed(2))
-	const totalPaid = Number((principalLoanAmount + totalInterest).toFixed(2))
-	const totalInvestmentEarned = Number(investmentGrowthsAtEachMonth[numberOfPayments - 1].toFixed(2))
+	const totalInterest = toDecimal(schedule.reduce((sum, payment) => sum + payment.interestPaid, 0))
+	const totalPaid = toDecimal(principalLoanAmount + totalInterest)
+	const totalInvestmentEarned = toDecimal(investmentGrowthsAtEachMonth[numberOfPayments - 1])
 
 	return {
 		schedule,

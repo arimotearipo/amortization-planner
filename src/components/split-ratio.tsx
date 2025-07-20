@@ -23,11 +23,8 @@ export function SplitRatio() {
 
 	if (parseAdvance.success) {
 		const extraPayment = parseAdvance.data as AdvanceExtraPaymentInputs
-		const allSplitRatios = extraPayment.paymentBlocks.map((block) => ({
-			splitRatio: block.splitRatio,
-			id: Math.random().toString(36).substring(2, 15),
-		}))
-		return <AdvanceSplitRatio splitRatios={allSplitRatios} />
+
+		return <AdvanceSplitRatio paymentBlocks={extraPayment.paymentBlocks} />
 	}
 
 	return null

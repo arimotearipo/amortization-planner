@@ -8,7 +8,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useMortgage } from "@/context/mortgate-context"
 import { cn } from "@/lib/utils"
 
-const COL_COUNT = 9
+const COL_COUNT = 10
 
 function FullSpanRow({ children }: { children: React.ReactNode }) {
 	return (
@@ -64,6 +64,7 @@ export function MortgageTable() {
 								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Payment Amount</TableCell>
 								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Principal Paid</TableCell>
 								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Extra Payment to Principal</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Total Principal Paid</TableCell>
 								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Interest Paid</TableCell>
 								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Remaining Balance</TableCell>
 								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Investment Contribution</TableCell>
@@ -98,10 +99,13 @@ export function MortgageTable() {
 												{payment.paymentAmount.toLocaleString()}
 											</TableCell>
 											<TableCell className="text-xs sm:text-sm min-w-[120px]">
-												{payment.totalPrincipalPaid.toLocaleString()}
+												{payment.principalPaid.toLocaleString()}
 											</TableCell>
 											<TableCell className="text-xs sm:text-sm min-w-[120px]">
 												{payment.extraPaymentToPrincipal.toLocaleString()}
+											</TableCell>
+											<TableCell className="text-xs sm:text-sm min-w-[120px]">
+												{payment.totalPrincipalPaid.toLocaleString()}
 											</TableCell>
 											<TableCell className="text-xs sm:text-sm min-w-[120px]">
 												{payment.interestPaid.toLocaleString()}

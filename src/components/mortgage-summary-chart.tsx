@@ -1,40 +1,87 @@
-import { CartesianGrid, LabelList, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from "recharts"
+"use client"
 
-type MortgageSummaryChartProps = {
-	endingYear: number
-	crossoverYear: number
-}
+import React from "react"
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { useMortgage } from "@/context/mortgate-context"
 
-export function MortgageSummaryChart({ crossoverYear, endingYear }: MortgageSummaryChartProps) {
-	const data = [
-		{ y: crossoverYear, label: "Crossover Point", x: 0.5, fill: "#90EE90" }, // light blue
-		{ y: endingYear, label: "End of Mortgage", x: 1.5, fill: "#87CEEB" }, // light green
-	]
+// Custom tooltip component
+function CustomTooltip({ active, payload, label }: any) {
+	if (!active || !payload || payload.length === 0) return null
 
 	return (
-		<ResponsiveContainer width="100%" height={200}>
-			<ScatterChart margin={{ top: 40, right: 5, bottom: 10, left: 5 }}>
-				<CartesianGrid />
-				<XAxis type="number" dataKey="x" hide />
-				<YAxis type="number" dataKey="y" name="year" />
-				<Tooltip
-					// cursor={{ strokeDasharray: "3 3" }}
-					content={({ active, payload }) => {
-						if (active && payload && payload.length) {
-							const data = payload[0].payload
-							return (
-								<div className="bg-accent p-2 border rounded shadow">
-									<p className="text-primary">{`Year ${data.y} : ${data.label}`}</p>
-								</div>
-							)
-						}
-						return null
-					}}
-				/>
-				<Scatter name="A school" data={data}>
-					<LabelList dataKey="label" position="top" fontSize={10} />
-				</Scatter>
-			</ScatterChart>
-		</ResponsiveContainer>
+		<div className="rounded bg-white dark:bg-gray-900 p-3 shadow-lg border border-gray-200 dark:border-gray-700 text-xs min-w-[160px]">
+			<div className="font-semibold mb-1">Payment #{label}</div>
+			{payload.map((entry: any) => (
+				<div key={entry.dataKey} className="flex justify-between mb-0.5">
+					<span className="capitalize">{entry.name || entry.dataKey}:</span>
+					<span className="font-mono ml-2" style={{ color: entry.color }}>
+						{typeof entry.value === "number" ? entry.value.toLocaleString() : entry.value}
+					</span>
+				</div>
+			))}
+		</div>
+	)
+}
+
+export function MortgageSummaryChart() {
+	const { amortizationDetails } = useMortgage()
+
+	const data = amortizationDetails.schedule.map((item) => ({
+		paymentNumber: item.paymentNumber,
+		totalPrincipalPaid: item.totalPrincipalPaid,
+		interestPaid: item.interestPaid,
+		remainingBalance: item.remainingBalance,
+		investmentGrowth: item.investmentGrowth,
+	}))
+
+	return (
+		<div className="w-full flex flex-col gap-8 mt-6">
+			<div className="w-full overflow-x-auto">
+				<div className="min-w-[350px] sm:min-w-0" style={{ height: 220 }}>
+					<ResponsiveContainer width="100%" height="100%">
+						<LineChart
+							data={data}
+							margin={{
+								top: 5,
+								right: 30,
+								left: 20,
+								bottom: 5,
+							}}
+						>
+							<CartesianGrid />
+							<XAxis dataKey="paymentNumber" />
+							<YAxis />
+							<Tooltip content={<CustomTooltip />} />
+							<Legend />
+							<Line type="linear" dataKey="remainingBalance" stroke="#78C841" name="Remaining Balance" />
+							<Line type="linear" dataKey="investmentGrowth" stroke="#FB4141" name="Investment Growth" />
+						</LineChart>
+					</ResponsiveContainer>
+				</div>
+			</div>
+			<div className="w-full overflow-x-auto">
+				<div className="min-w-[350px] sm:min-w-0" style={{ height: 220 }}>
+					<ResponsiveContainer width="100%" height="100%">
+						<LineChart
+							data={data}
+							margin={{
+								top: 5,
+								right: 30,
+								left: 20,
+								bottom: 5,
+							}}
+						>
+							<CartesianGrid />
+							<XAxis dataKey="paymentNumber" />
+							<YAxis />
+							<Tooltip content={<CustomTooltip />} />
+							<Legend />
+							<Line type="linear" dataKey="totalPrincipalPaid" stroke="#78C841" name="Total Principal Paid" />
+							<Line type="linear" dataKey="interestPaid" stroke="#FB4141" name="Interest Paid" />
+						</LineChart>
+					</ResponsiveContainer>
+				</div>
+			</div>
+		</div>
 	)
 }

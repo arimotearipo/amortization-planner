@@ -68,13 +68,19 @@ export function calculateAmortizationSchedule(
 		}
 
 		const thisMonthSplitRatio = extraPayments[month]?.splitRatio || 0
-		const thisMonthExtraPaymentToPrincipal = extraPayments[month].amount * thisMonthSplitRatio || 0
+		let thisMonthExtraPaymentToPrincipal = extraPayments[month].amount * thisMonthSplitRatio || 0
 		const thisMonthInvestmentContribution = extraPayments[month].amount * (1 - thisMonthSplitRatio) || 0
 
 		let totalPrincipalPaid = principalPaid + thisMonthExtraPaymentToPrincipal
 
 		if (totalPrincipalPaid > remainingBalance) {
 			totalPrincipalPaid = remainingBalance
+			principalPaid = Math.max(0, totalPrincipalPaid - thisMonthExtraPaymentToPrincipal)
+		}
+
+		if (thisMonthExtraPaymentToPrincipal > remainingBalance) {
+			thisMonthExtraPaymentToPrincipal = remainingBalance
+			totalPrincipalPaid = principalPaid + thisMonthExtraPaymentToPrincipal
 			principalPaid = Math.max(0, totalPrincipalPaid - thisMonthExtraPaymentToPrincipal)
 		}
 
@@ -85,6 +91,7 @@ export function calculateAmortizationSchedule(
 			paymentNumber: month,
 			startingBalance: toDecimal(startingBalance),
 			paymentAmount: toDecimal(monthlyPayment),
+			principalPaid: toDecimal(principalPaid),
 			totalPrincipalPaid: toDecimal(totalPrincipalPaid),
 			interestPaid: toDecimal(interestPaid),
 			remainingBalance: toDecimal(Math.max(0, remainingBalance)), // Prevent negative balance due to rounding

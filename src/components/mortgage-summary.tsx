@@ -85,12 +85,7 @@ export function MortgageSummary() {
 					</p>
 				)}
 
-				<div className="mt-4 sm:mt-6">
-					<MortgageSummaryChart
-						endingYear={Math.ceil(schedule.length / 12)}
-						crossoverYear={Math.floor(crossoverIndex / 12) + 1}
-					/>
-				</div>
+				<MortgageSummaryChart />
 			</CardContent>
 		</Card>
 	)

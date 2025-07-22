@@ -30,8 +30,8 @@ function getDefaultValues(): MortgageTermsInputs {
 		annualInterestRate: 3.8,
 		investmentReturnRate: 5,
 		extraPayment: {
-			amount: 0,
-			increment: 0,
+			amount: 1000,
+			increment: 200,
 			incrementFrequency: "yearly",
 			startMonth: 0,
 			endMonth: loanTermYears > 0 ? loanTermYears * 12 - 1 : 0,

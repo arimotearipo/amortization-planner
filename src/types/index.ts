@@ -17,10 +17,11 @@ export type PaymentItem = {
 	paymentNumber: number
 	startingBalance: number
 	paymentAmount: number
-	totalPrincipalPaid: number
+	principalPaid: number // not including extra payment
+	extraPaymentToPrincipal: number
+	totalPrincipalPaid: number // including extra payment
 	interestPaid: number
 	remainingBalance: number
-	extraPaymentToPrincipal: number
 	investmentContribution: number
 	investmentGrowth: number
 }

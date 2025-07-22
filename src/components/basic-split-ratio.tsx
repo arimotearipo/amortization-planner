@@ -19,6 +19,10 @@ export function BasicSplitRatio({ splitRatio }: BasicSplitRatioProps) {
 	const [ratio, setRatio] = useState<number>(splitRatio)
 	const debouncedSplitRatio = useDebounce(ratio, 500)
 
+	useEffect(() => {
+		setRatio(splitRatio)
+	}, [splitRatio])
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Adding other values will cause the calculation to run before the mortgage terms are set which can lead to reading null values and thus crashing the app
 	useEffect(() => {
 		if (typeof debouncedSplitRatio === "number" && mortgageTerms.principalLoanAmount && submitted) {

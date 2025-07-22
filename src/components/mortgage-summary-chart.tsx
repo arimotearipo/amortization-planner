@@ -1,7 +1,6 @@
 "use client"
 
-import React from "react"
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { useMortgage } from "@/context/mortgate-context"
 
 // Custom tooltip component

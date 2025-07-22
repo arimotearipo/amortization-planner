@@ -37,7 +37,7 @@ export function MortgageSummaryChart() {
 	return (
 		<div className="w-full flex flex-col gap-8 mt-6">
 			<div className="w-full overflow-x-auto">
-				<div className="min-w-[350px] sm:min-w-0" style={{ height: 220 }}>
+				<div className="min-w-[350px] sm:min-w-0" style={{ height: 400 }}>
 					<ResponsiveContainer width="100%" height="100%">
 						<LineChart
 							data={data}
@@ -48,19 +48,18 @@ export function MortgageSummaryChart() {
 								bottom: 5,
 							}}
 						>
-							<CartesianGrid />
 							<XAxis dataKey="paymentNumber" />
 							<YAxis />
 							<Tooltip content={<CustomTooltip />} />
 							<Legend />
-							<Line type="linear" dataKey="remainingBalance" stroke="#78C841" name="Remaining Balance" />
-							<Line type="linear" dataKey="investmentGrowth" stroke="#FB4141" name="Investment Growth" />
+							<Line type="monotone" dataKey="remainingBalance" stroke="#78C841" name="Remaining Balance" dot={false} />
+							<Line type="monotone" dataKey="investmentGrowth" stroke="#FB4141" name="Investment Growth" dot={false} />
 						</LineChart>
 					</ResponsiveContainer>
 				</div>
 			</div>
 			<div className="w-full overflow-x-auto">
-				<div className="min-w-[350px] sm:min-w-0" style={{ height: 220 }}>
+				<div className="min-w-[350px] sm:min-w-0" style={{ height: 400 }}>
 					<ResponsiveContainer width="100%" height="100%">
 						<LineChart
 							data={data}
@@ -71,13 +70,18 @@ export function MortgageSummaryChart() {
 								bottom: 5,
 							}}
 						>
-							<CartesianGrid />
 							<XAxis dataKey="paymentNumber" />
 							<YAxis />
 							<Tooltip content={<CustomTooltip />} />
 							<Legend />
-							<Line type="linear" dataKey="totalPrincipalPaid" stroke="#78C841" name="Total Principal Paid" />
-							<Line type="linear" dataKey="interestPaid" stroke="#FB4141" name="Interest Paid" />
+							<Line
+								type="monotone"
+								dataKey="totalPrincipalPaid"
+								stroke="#78C841"
+								name="Total Principal Paid"
+								dot={false}
+							/>
+							<Line type="monotone" dataKey="interestPaid" stroke="#FB4141" name="Interest Paid" dot={false} />
 						</LineChart>
 					</ResponsiveContainer>
 				</div>

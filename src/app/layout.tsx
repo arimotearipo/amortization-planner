@@ -4,6 +4,7 @@ import "./globals.css"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { Toaster } from "@/components/ui/sonner"
+import { AppStatusProvider } from "@/context/app-status-context"
 import { MortgageProvider } from "@/context/mortgate-context"
 import { ThemeProvider } from "@/context/theme-context"
 import { cn } from "@/lib/utils"
@@ -37,13 +38,16 @@ export default function RootLayout({
 		<html lang="en" suppressHydrationWarning>
 			<head>
 				<link rel="icon" href="/favicon.svg" />
+				{/* <script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" /> */}
 			</head>
 			<body className={cn(geistSans.variable, geistMono.variable, `antialiased flex flex-col min-h-screen`)}>
 				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
 					<Header />
-					<MortgageProvider>
-						<main className="flex flex-col flex-1 min-h-0 px-2">{children}</main>
-					</MortgageProvider>
+					<AppStatusProvider>
+						<MortgageProvider>
+							<main className="flex flex-col flex-1 min-h-0 px-2">{children}</main>
+						</MortgageProvider>
+					</AppStatusProvider>
 					<Footer />
 				</ThemeProvider>
 				<Toaster theme="system" richColors />

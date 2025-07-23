@@ -3,10 +3,10 @@ import { MortgageSummaryChart } from "@/components/mortgage-summary-chart"
 import { MortgageTable } from "@/components/mortgage-table"
 import { SplitRatio } from "@/components/split-ratio"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useMortgage } from "@/context/mortgate-context"
+import { useAppStatus } from "@/context/app-status-context"
 
 export default function MortgageDetails() {
-	const { submitted } = useMortgage()
+	const { submitted } = useAppStatus()
 
 	if (!submitted) {
 		return (

@@ -1,13 +1,14 @@
 "use client"
 
-import { MortgageSummaryChart } from "@/components/mortgage-summary-chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAppStatus } from "@/context/app-status-context"
 import { useMortgage } from "@/context/mortgate-context"
 import { getOrdinalSuffix } from "@/lib/get-ordinal-suffix"
 import { cn } from "@/lib/utils"
 
 export function MortgageSummary() {
-	const { amortizationDetails, mortgageTerms, submitted } = useMortgage()
+	const { amortizationDetails, mortgageTerms } = useMortgage()
+	const { submitted } = useAppStatus()
 
 	if (!submitted) {
 		return null

@@ -12,8 +12,6 @@ type MortgageContextType = {
 	setMortgageTerms: (details: MortgageTermsInputs) => void
 	amortizationDetails: AmortizationDetails
 	setAmortizationDetails: (details: AmortizationDetails) => void
-	submitted: boolean
-	setSubmitted: (submitted: boolean) => void
 	openMortgageTermsForm: boolean
 	setOpenMortgageTermsForm: (open: boolean) => void
 }
@@ -57,8 +55,6 @@ export const MortgageProvider = ({ children }: { children: React.ReactNode }) =>
 				setAmortizationDetails,
 				isAdvanced,
 				setIsAdvanced,
-				submitted,
-				setSubmitted,
 				openMortgageTermsForm,
 				setOpenMortgageTermsForm,
 			}}

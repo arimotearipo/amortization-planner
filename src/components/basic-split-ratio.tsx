@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
+import { useAppStatus } from "@/context/app-status-context"
 import { useMortgage } from "@/context/mortgate-context"
 import { useDebounce } from "@/hooks/useDebounce"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
@@ -14,7 +15,8 @@ type BasicSplitRatioProps = {
 }
 
 export function BasicSplitRatio({ splitRatio }: BasicSplitRatioProps) {
-	const { setMortgageTerms, mortgageTerms, setAmortizationDetails, submitted } = useMortgage()
+	const { setMortgageTerms, mortgageTerms, setAmortizationDetails } = useMortgage()
+	const { submitted } = useAppStatus()
 
 	const [ratio, setRatio] = useState<number>(splitRatio)
 	const debouncedSplitRatio = useDebounce(ratio, 500)

@@ -5,6 +5,7 @@ import type { ReactNode } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { useAppStatus } from "@/context/app-status-context"
 import { useMortgage } from "@/context/mortgate-context"
 import { cn } from "@/lib/utils"
 
@@ -39,7 +40,8 @@ function CrossoverPointHoverCard({ children, isCrossoverPoint }: { children: Rea
 }
 
 export function MortgageTable() {
-	const { amortizationDetails, submitted } = useMortgage()
+	const { amortizationDetails } = useMortgage()
+	const { submitted } = useAppStatus()
 
 	if (!submitted) {
 		return null

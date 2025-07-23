@@ -72,7 +72,7 @@ export function generatePaymentBlocksAdvance(inputs: MortgageTermsInputs): Extra
 
 	const spreadedPaymentBlocks: ExtraPayment[] = []
 	for (const block of paymentBlocks) {
-		for (let month = block.startMonth; month < block.endMonth; month++) {
+		for (let month = block.startMonth; month <= block.endMonth; month++) {
 			spreadedPaymentBlocks.push({
 				month,
 				amount: block.amount,

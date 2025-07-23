@@ -5,12 +5,14 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } f
 import { Form, FormField, FormLabel, FormMessage } from "@components/ui/form"
 import { Input } from "@components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { DialogTrigger } from "@radix-ui/react-dialog"
 import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { AdvanceExtraPayment } from "@/components/advance-extra-payment"
 import { BasicExtraPayment } from "@/components/basic-extra-payment"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { useAppStatus } from "@/context/app-status-context"
 import { useMortgage } from "@/context/mortgate-context"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
 import { ADVANCE_DEFAULT_VALUES, BASIC_DEFAULT_VALUES } from "@/lib/config"
@@ -29,10 +31,11 @@ export function MortgageTermsForm() {
 		setOpenMortgageTermsForm,
 		setAmortizationDetails,
 		setMortgageTerms,
-		setSubmitted,
 		isAdvanced,
 		setIsAdvanced,
 	} = useMortgage()
+
+	const { setSubmitted } = useAppStatus()
 
 	const dynamicSchema = useMemo(() => {
 		return mortgageTermsInputsSchema.extend({
@@ -58,8 +61,8 @@ export function MortgageTermsForm() {
 
 		setAmortizationDetails(amortizationDetails)
 		setMortgageTerms(data)
-		setSubmitted(true)
 		setOpenMortgageTermsForm(false)
+		setSubmitted(true)
 	})
 
 	// checked === true is advance mode
@@ -74,6 +77,9 @@ export function MortgageTermsForm() {
 
 	return (
 		<Drawer open={openMortgageTermsForm} onOpenChange={setOpenMortgageTermsForm}>
+			<DialogTrigger asChild>
+				<Button variant="default">Edit Mortgage Terms</Button>
+			</DialogTrigger>
 			<DrawerContent className="px-2">
 				<DrawerHeader>
 					<DrawerTitle>Mortgage Terms</DrawerTitle>

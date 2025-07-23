@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { createContext, useContext, useState } from "react"
+import { IS_ADVANCE } from "@/lib/config"
 import type { MortgageTermsInputs } from "@/models"
 import type { AmortizationDetails } from "@/types"
 
@@ -21,7 +22,7 @@ type MortgageContextType = {
 const MortgageContext = createContext<MortgageContextType | undefined>(undefined)
 
 export const MortgageProvider = ({ children }: { children: React.ReactNode }) => {
-	const [isAdvanced, setIsAdvanced] = useState(false) // default to basic mode
+	const [isAdvanced, setIsAdvanced] = useState(IS_ADVANCE) // default to basic mode
 	const [submitted, setSubmitted] = useState(false)
 	const [openMortgageTermsForm, setOpenMortgageTermsForm] = useState(true)
 

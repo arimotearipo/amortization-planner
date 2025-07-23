@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { useMortgage } from "@/context/mortgate-context"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
+import { IS_ADVANCE } from "@/lib/config"
 import { generatePaymentBlocksAdvance, generatePaymentBlocksBasic } from "@/lib/paymentBlocks"
 import {
 	advanceExtraPaymentSchema,
@@ -25,7 +26,7 @@ import type { ExtraPayment } from "@/types"
 function getDefaultValues(): MortgageTermsInputs {
 	const loanTermYears = 35
 
-	const isAdvance = false
+	const isAdvance = IS_ADVANCE
 
 	return {
 		principalLoanAmount: 490000,

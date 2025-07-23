@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { useMortgage } from "@/context/mortgate-context"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
-import { IS_ADVANCE } from "@/lib/config"
+import { ADVANCE_DEFAULT_VALUES, BASIC_DEFAULT_VALUES } from "@/lib/config"
 import { generatePaymentBlocksAdvance, generatePaymentBlocksBasic } from "@/lib/paymentBlocks"
 import {
 	advanceExtraPaymentSchema,
@@ -22,50 +22,6 @@ import {
 	mortgageTermsInputsSchema,
 } from "@/models"
 import type { ExtraPayment } from "@/types"
-
-function getDefaultValues(): MortgageTermsInputs {
-	const loanTermYears = 35
-
-	const isAdvance = IS_ADVANCE
-
-	return {
-		principalLoanAmount: 490000,
-		loanTermYears,
-		annualInterestRate: 3.8,
-		investmentReturnRate: 5,
-		extraPayment: isAdvance
-			? {
-					paymentBlocks: [
-						{
-							startMonth: 0,
-							endMonth: 119,
-							amount: 200,
-							splitRatio: 0.2,
-						},
-						{
-							startMonth: 0,
-							endMonth: 120,
-							amount: 239,
-							splitRatio: 0.5,
-						},
-						{
-							startMonth: 0,
-							endMonth: 240,
-							amount: 359,
-							splitRatio: 0.76,
-						},
-					],
-				}
-			: {
-					amount: 1000,
-					increment: 200,
-					incrementFrequency: "yearly",
-					startMonth: 0,
-					endMonth: loanTermYears > 0 ? loanTermYears * 12 - 1 : 0,
-					extraPaymentSplitRatio: 0.5, // Default split ratio for extra payments
-				},
-	}
-}
 
 export function MortgageTermsForm() {
 	const {
@@ -86,7 +42,7 @@ export function MortgageTermsForm() {
 
 	const form = useForm<MortgageTermsInputs>({
 		resolver: zodResolver(dynamicSchema),
-		defaultValues: getDefaultValues(),
+		defaultValues: isAdvanced ? ADVANCE_DEFAULT_VALUES : BASIC_DEFAULT_VALUES,
 	})
 
 	const handleSubmitForm = form.handleSubmit((data) => {
@@ -105,6 +61,16 @@ export function MortgageTermsForm() {
 		setSubmitted(true)
 		setOpenMortgageTermsForm(false)
 	})
+
+	// checked === true is advance mode
+	const handleModeChange = (checked: boolean) => {
+		if (checked) {
+			form.reset(ADVANCE_DEFAULT_VALUES)
+		} else {
+			form.reset(BASIC_DEFAULT_VALUES)
+		}
+		setIsAdvanced(checked)
+	}
 
 	return (
 		<Drawer open={openMortgageTermsForm} onOpenChange={setOpenMortgageTermsForm}>
@@ -171,7 +137,7 @@ export function MortgageTermsForm() {
 								<Label>Extra Payment Mode</Label>
 								<div className="flex flex-row items-center gap-2 text-sm">
 									<span>Basic</span>
-									<Switch checked={isAdvanced} onCheckedChange={setIsAdvanced} />
+									<Switch checked={isAdvanced} onCheckedChange={handleModeChange} />
 									<span>Advance</span>
 								</div>
 							</div>

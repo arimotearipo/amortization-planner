@@ -64,10 +64,6 @@ export function AdvanceSplitRatio({ paymentBlocks }: AdvanceSplitRatioProps) {
 	const [ratios, setRatios] = useState(paymentBlocks.map((block) => block.splitRatio))
 	const debouncedRatios = useDebounce(ratios, 500)
 
-	useEffect(() => {
-		setRatios(paymentBlocks.map((block) => block.splitRatio))
-	}, [paymentBlocks])
-
 	// biome-ignore lint/correctness/useExhaustiveDependencies: we only strictly want to run this when the ratios change
 	useEffect(() => {
 		const newExtraPayment = {

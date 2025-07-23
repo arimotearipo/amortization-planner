@@ -7,7 +7,7 @@ import { useMortgage } from "@/context/mortgate-context"
 import { useDebounce } from "@/hooks/useDebounce"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
 import { generatePaymentBlocksBasic } from "@/lib/paymentBlocks"
-import type { BasicExtraPaymentInputs, MortgageTermsInputs } from "@/models"
+import type { MortgageTermsInputs } from "@/models"
 
 type BasicSplitRatioProps = {
 	splitRatio: number

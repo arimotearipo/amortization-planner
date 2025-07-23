@@ -84,8 +84,6 @@ export function MortgageSummary() {
 						<span className="font-bold text-primary">{crossoverYear} year</span>
 					</p>
 				)}
-
-				<MortgageSummaryChart />
 			</CardContent>
 		</Card>
 	)

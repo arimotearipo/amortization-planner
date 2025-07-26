@@ -24,7 +24,8 @@
 			"@context/*": ["./src/context/*"],
 			"@types/*": ["./src/types/*"],
 			"@models/*": ["./src/models/*"],
-			"@hooks/*": ["./src/hooks/*"]
+			"@hooks/*": ["./src/hooks/*"],
+			"@driver/*": ["./src/driver/*"]
 		},
 		"sourceMap": true
 	},

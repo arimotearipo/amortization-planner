@@ -1,4 +1,10 @@
 {
+	"files.watcherExclude": {
+		"**/.next/**": true
+	},
+	"search.exclude": {
+		"**/.next": true
+	},
 	"editor.formatOnSave": true,
 	"editor.linkedEditing": true,
 	"editor.defaultFormatter": "biomejs.biome",

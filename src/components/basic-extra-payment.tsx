@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
-import { ICON_SIZE } from "@/consts"
+import { BASIC_EXTRA_PAYMENT_IDS, ICON_SIZE } from "@/consts"
 import type { MortgageTermsInputs } from "@/models"
 import { ExtraPaymentIncrementFrequency } from "@/types"
 
@@ -31,9 +31,9 @@ export function BasicExtraPayment() {
 					control={form.control}
 					name="extraPayment.amount"
 					render={({ field }) => (
-						<div className="space-y-1">
+						<div className="space-y-1" id={BASIC_EXTRA_PAYMENT_IDS.basicExtraPaymentAmount}>
 							<FormLabel>
-								Extra Payment{" "}
+								Extra Payment
 								<ExtraPaymentFormInfoHoverCard>
 									<InfoIcon size={ICON_SIZE} />
 								</ExtraPaymentFormInfoHoverCard>
@@ -49,7 +49,7 @@ export function BasicExtraPayment() {
 					control={form.control}
 					name="extraPayment.increment"
 					render={({ field }) => (
-						<div className="space-y-1">
+						<div className="space-y-1" id={BASIC_EXTRA_PAYMENT_IDS.basicExtraPaymentIncrement}>
 							<FormLabel>Extra Payment Increment</FormLabel>
 							<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
 							<FormMessage />
@@ -61,7 +61,7 @@ export function BasicExtraPayment() {
 					control={form.control}
 					name="extraPayment.incrementFrequency"
 					render={({ field }) => (
-						<div className="space-y-1">
+						<div className="space-y-1" id={BASIC_EXTRA_PAYMENT_IDS.basicExtraPaymentIncrementFrequency}>
 							<FormLabel>Extra Payment Increment Frequency</FormLabel>
 							<RadioGroup
 								value={field.value}
@@ -85,7 +85,7 @@ export function BasicExtraPayment() {
 					control={form.control}
 					name="extraPayment.startMonth"
 					render={({ field }) => (
-						<div className="space-y-1">
+						<div className="space-y-1" id={BASIC_EXTRA_PAYMENT_IDS.basicExtraPaymentStartMonth}>
 							<FormLabel>
 								Extra Payment Start Month{" "}
 								<StartMonthFormInfoHoverCard endMonth={form.watch("loanTermYears") * 12 - 1}>
@@ -102,7 +102,7 @@ export function BasicExtraPayment() {
 					control={form.control}
 					name="extraPayment.endMonth"
 					render={({ field }) => (
-						<div className="space-y-1">
+						<div className="space-y-1" id={BASIC_EXTRA_PAYMENT_IDS.basicExtraPaymentEndMonth}>
 							<FormLabel>
 								Extra Payment End Month{" "}
 								<EndMonthFormInfoHoverCard
@@ -127,7 +127,10 @@ export function BasicExtraPayment() {
 					control={form.control}
 					name="extraPayment.extraPaymentSplitRatio"
 					render={({ field }) => (
-						<div className="col-span-1 lg:col-span-3 space-y-1">
+						<div
+							className="col-span-1 lg:col-span-3 space-y-1"
+							id={BASIC_EXTRA_PAYMENT_IDS.basicExtraPaymentSplitRatio}
+						>
 							<FormLabel>Extra Payment Split Ratio for Investment (%)</FormLabel>
 							<Label className="text-sm text-muted-foreground">
 								This is the percentage of the extra payment that will be used to pay down the principal. The rest will

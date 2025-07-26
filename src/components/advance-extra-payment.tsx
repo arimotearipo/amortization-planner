@@ -1,5 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { driver } from "driver.js"
 import { Plus, X } from "lucide-react"
+import { useEffect } from "react"
 import { useFieldArray, useForm, useFormContext } from "react-hook-form"
 import z from "zod"
 import { Button } from "@/components/ui/button"
@@ -8,6 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Slider } from "@/components/ui/slider"
+import { ADVANCE_EXTRA_PAYMENT_IDS } from "@/consts"
+import { useDriver } from "@/context/driver-context"
 import type { MortgageTermsInputs } from "@/models"
 import type { PaymentBlock } from "@/types"
 
@@ -31,7 +35,7 @@ const paymentBlockSchema = z
 	})
 
 export function AdvanceExtraPayment() {
-	// Local state for new block
+	const { advanceExtraPaymentDone, setAdvanceExtraPaymentDone } = useDriver()
 
 	const form = useForm<PaymentBlock>({
 		resolver: zodResolver(paymentBlockSchema),
@@ -51,6 +55,80 @@ export function AdvanceExtraPayment() {
 		control: formContext.control,
 		name: "extraPayment.paymentBlocks",
 	})
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: not needed
+	useEffect(() => {
+		if (advanceExtraPaymentDone) {
+			return
+		}
+
+		const driverObj = driver({
+			steps: [
+				{
+					element: `#${ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPayment}`,
+					popover: {
+						title: "Advance Extra Payment",
+						description:
+							"Advance extra payment allows you to strategize your payment in multiple blocks of payment. You can determine the start and end of each block, the amount, and how the extra payment is split between mortgage and investment.",
+					},
+				},
+				{
+					element: `#${ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPaymentAmount}`,
+					popover: {
+						title: "Advance Extra Payment Amount",
+						description:
+							"Enter the extra amount of money you want to fork out each month to pay off your mortgage faster for this particular block. This amount can either be pushed towards reducing your principal or invested.",
+					},
+				},
+				{
+					element: `#${ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPaymentStartMonth}`,
+					popover: {
+						title: "Start Month (inclusive)",
+						description:
+							"Set the start month for this payment block. It is 0 indexed, so 0 means the first month of the mortgage.",
+					},
+				},
+				{
+					element: `#${ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPaymentEndMonth}`,
+					popover: {
+						title: "End Month (exclusive)",
+						description:
+							"Set the end month for this payment block. It is exclusive, meaning no payment will be made in this month and onwards.",
+					},
+				},
+				{
+					element: `#${ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPaymentSplitRatio}`,
+					popover: {
+						title: "Extra Payment Split Ratio for Investment (%)",
+						description:
+							"Set the ratio for how this block of extra payment is split between mortgage and investment. Default is 50-50.",
+					},
+				},
+				{
+					element: `#${ADVANCE_EXTRA_PAYMENT_IDS.addBlockButton}`,
+					popover: {
+						title: "Add Block Button",
+						description: "Click this button to add a new payment block with the specified parameters.",
+					},
+				},
+				{
+					element: `#${ADVANCE_EXTRA_PAYMENT_IDS.blockList}`,
+					popover: {
+						title: "Block List",
+						description:
+							"This is the list of all payment blocks you have added. You can edit or remove them as needed.",
+					},
+				},
+			],
+			onDestroyed: () => {
+				setAdvanceExtraPaymentDone(true)
+			},
+		})
+
+		setTimeout(() => {
+			driverObj.drive()
+		}, 500)
+	}, [advanceExtraPaymentDone])
 
 	const handleAddBlock = form.handleSubmit((newBlock) => {
 		// Validation: startMonth of current block >= endMonth of previous block
@@ -84,7 +162,7 @@ export function AdvanceExtraPayment() {
 
 	return (
 		<Form {...form}>
-			<div className="flex flex-col animate-in fade-in duration-500">
+			<div className="flex flex-col animate-in fade-in duration-500" id={ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPayment}>
 				<div className="w-full">Add Payment Block</div>
 				<div className="flex flex-col lg:flex-row w-full gap-2">
 					<div className="w-full">
@@ -92,7 +170,7 @@ export function AdvanceExtraPayment() {
 							control={form.control}
 							name="amount"
 							render={({ field }) => (
-								<div className="flex flex-col">
+								<div className="flex flex-col" id={ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPaymentAmount}>
 									<FormLabel className="text-xs mb-1">Amount</FormLabel>
 									<Input {...field} onChange={(e) => field.onChange(Number(e.target.value))} placeholder="Amount" />
 									<FormMessage />
@@ -104,7 +182,7 @@ export function AdvanceExtraPayment() {
 							control={form.control}
 							name="startMonth"
 							render={({ field }) => (
-								<div className="flex flex-col">
+								<div className="flex flex-col" id={ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPaymentStartMonth}>
 									<Label htmlFor="startMonth" className="text-xs mb-1">
 										Start Month (inclusive)
 									</Label>
@@ -122,7 +200,7 @@ export function AdvanceExtraPayment() {
 							control={form.control}
 							name="endMonth"
 							render={({ field }) => (
-								<div className="flex flex-col">
+								<div className="flex flex-col" id={ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPaymentEndMonth}>
 									<FormLabel className="text-xs mb-1">End Month (exclusive)</FormLabel>
 									<Input
 										{...field}
@@ -138,7 +216,7 @@ export function AdvanceExtraPayment() {
 							control={form.control}
 							name="splitRatio"
 							render={({ field }) => (
-								<div className="flex flex-col">
+								<div className="flex flex-col" id={ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPaymentSplitRatio}>
 									<FormLabel className="text-xs mb-1">Extra Payment Split Ratio for Investment (%)</FormLabel>
 									<Label className="text-xs text-muted-foreground">
 										This is the percentage of the extra payment that will be used to pay down the principal. The rest
@@ -161,13 +239,19 @@ export function AdvanceExtraPayment() {
 						/>
 
 						<div className="flex items-center justify-center">
-							<Button type="submit" size="sm" onClick={handleAddBlock} className="w-full">
+							<Button
+								type="submit"
+								size="sm"
+								onClick={handleAddBlock}
+								className="w-full"
+								id={ADVANCE_EXTRA_PAYMENT_IDS.addBlockButton}
+							>
 								<Plus size={16} />
 								Add
 							</Button>
 						</div>
 					</div>
-					<div className="w-full rounded bg-muted/50 p-2">
+					<div className="w-full rounded bg-muted/50 p-2" id={ADVANCE_EXTRA_PAYMENT_IDS.blockList}>
 						<div className="text-base font-semibold mb-2">Payment Blocks</div>
 						<ScrollArea className="w-full h-auto">
 							{fields.length === 0 ? (

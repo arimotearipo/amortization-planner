@@ -51,6 +51,8 @@ export function MortgageTable() {
 
 	const crossoverPoint = schedule.findIndex((p) => p.investmentGrowth >= p.remainingBalance)
 
+	console.log("schedule", schedule)
+
 	return (
 		<Card className="w-full animate-in fade-in duration-1000">
 			<CardHeader>
@@ -77,8 +79,8 @@ export function MortgageTable() {
 							{schedule.map((payment, index) => {
 								const rows = []
 
-								if ((payment.paymentNumber - 1) % 12 === 0) {
-									const year = Math.floor((payment.paymentNumber - 1) / 12) + 1
+								if (payment.paymentNumber % 12 === 0) {
+									const year = Math.floor(payment.paymentNumber / 12) + 1
 									rows.push(<FullSpanRow key={`year-${year}`}>Year {year}</FullSpanRow>)
 								}
 

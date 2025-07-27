@@ -9,7 +9,7 @@ function CustomTooltip({ active, payload, label }: any) {
 
 	return (
 		<div className="rounded bg-white dark:bg-gray-900 p-3 shadow-lg border border-gray-200 dark:border-gray-700 text-xs min-w-[160px]">
-			<div className="font-semibold mb-1">Payment #{label}</div>
+			<div className="font-semibold mb-1">Payment #{Number(label) + 1}</div>
 			{payload.map((entry: any) => (
 				<div key={entry.dataKey} className="flex justify-between mb-0.5">
 					<span className="capitalize">{entry.name || entry.dataKey}:</span>

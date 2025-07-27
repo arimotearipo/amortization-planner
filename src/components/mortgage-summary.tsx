@@ -33,7 +33,25 @@ export function MortgageSummary() {
 				<CardTitle>Mortgage Summary</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<dl className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 space-y-2 text-gray-700 dark:text-gray-300">
+				<dl className="grid grid-cols-1 md:grid-cols-4">
+					<div>
+						<dt className="text-sm font-medium text-gray-500">Principal Loan Amount</dt>
+						<dd className="font-bold">{mortgageTerms.principalLoanAmount.toLocaleString()}</dd>
+					</div>
+					<div>
+						<dt className="text-sm font-medium text-gray-500">Annual Interest Rate</dt>
+						<dd className="font-bold">{mortgageTerms.annualInterestRate.toLocaleString()}%</dd>
+					</div>
+					<div>
+						<dt className="text-sm font-medium text-gray-500">Loan Term</dt>
+						<dd className="font-bold">{mortgageTerms.loanTermYears.toLocaleString()} years</dd>
+					</div>
+					<div>
+						<dt className="text-sm font-medium text-gray-500">Investment Return Rate</dt>
+						<dd className="font-bold">{mortgageTerms.investmentReturnRate.toLocaleString()}%</dd>
+					</div>
+				</dl>
+				<dl className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 text-gray-700 dark:text-gray-300">
 					<div>
 						<dt className="col-span-2 text-sm font-medium text-gray-500">Monthly Payment</dt>
 						<dd className="col-span-2 text-lg font-bold text-green-700 mb-2">
@@ -74,7 +92,7 @@ export function MortgageSummary() {
 				</dl>
 				{!!extraPayment && (
 					<p className="text-xs sm:text-sm col-span-1 md:col-span-2 lg:col-span-4">
-						With the extra payments you've made, you can expect to fully amortize your mortgage by the{" "}
+						With the payment plan you've made, you can expect to fully amortize your mortgage by the{" "}
 						<span className="font-bold text-primary">{endingYear} year</span>
 					</p>
 				)}

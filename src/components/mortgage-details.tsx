@@ -18,10 +18,22 @@ export default function MortgageDetails() {
 
 	return (
 		<Tabs className="w-full" defaultValue="mortgage-details">
-			<TabsList className="w-full justify-center gap-2">
-				<TabsTrigger value="mortgage-details">Mortgage Details</TabsTrigger>
-				<TabsTrigger value="payment-schedule">Payment Schedule</TabsTrigger>
-				<TabsTrigger value="payment-charts">Payment Charts</TabsTrigger>
+			<TabsList className="w-full justify-center gap-1 sm:gap-2 h-9 sm:h-10">
+				<TabsTrigger value="mortgage-details" className="text-xs sm:text-sm px-1.5 sm:px-4 min-w-0">
+					<span className="hidden md:inline">Mortgage Details</span>
+					<span className="hidden sm:inline md:hidden">Details</span>
+					<span className="sm:hidden">Info</span>
+				</TabsTrigger>
+				<TabsTrigger value="payment-schedule" className="text-xs sm:text-sm px-1.5 sm:px-4 min-w-0">
+					<span className="hidden md:inline">Payment Schedule</span>
+					<span className="hidden sm:inline md:hidden">Schedule</span>
+					<span className="sm:hidden">Table</span>
+				</TabsTrigger>
+				<TabsTrigger value="payment-charts" className="text-xs sm:text-sm px-1.5 sm:px-4 min-w-0">
+					<span className="hidden md:inline">Payment Charts</span>
+					<span className="hidden sm:inline md:hidden">Charts</span>
+					<span className="sm:hidden">Graph</span>
+				</TabsTrigger>
 			</TabsList>
 			<SplitRatio />
 			<TabsContent value="mortgage-details">

@@ -51,8 +51,6 @@ export function MortgageTable() {
 
 	const crossoverPoint = schedule.findIndex((p) => p.investmentGrowth >= p.remainingBalance)
 
-	console.log("schedule", schedule)
-
 	return (
 		<Card className="w-full animate-in fade-in duration-1000">
 			<CardHeader>

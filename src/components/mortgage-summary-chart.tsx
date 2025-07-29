@@ -46,8 +46,9 @@ export function MortgageSummaryChart() {
 				<div className="w-full text-center">
 					<h3 className="text-primary font-semibold underline">Investment Growth vs Mortgage's Remaining Balance</h3>
 					<p className="text-xs mx-auto max-w-[95%] md:max-w-[50%]">
-						This chart visualizes your amortization rate and investment growth over time. The intersection of the lines
-						indicates the point where you could potentially pay off your mortgage using your investments.
+						This chart compares your mortgage’s remaining balance with the growth of your investments over time. The
+						point where the investment growth line crosses the remaining balance line highlights when your investments
+						could fully pay off your mortgage.
 					</p>
 				</div>
 				<div className="min-w-[350px] sm:min-w-0" style={{ height: 400 }}>
@@ -77,10 +78,9 @@ export function MortgageSummaryChart() {
 						Monthly Payment to Principal vs Monthly Payment to Interest
 					</h3>
 					<p className="text-xs mx-auto max-w-[95%] md:max-w-[50%]">
-						This chart visualize how much the portion of your monthly goes towards reducing your principal and how much
-						goes towards paying interest. If you did not make extra payments, notice how most of your monthly payments
-						goes towards the interest at the beginning of your mortgage and how the portion of your monthly payment that
-						goes towards principal increases over time.
+						This chart shows how each monthly payment is split between principal and interest. Early in your mortgage, a
+						larger portion of your payment goes toward interest, while over time, more of your payment is applied to the
+						principal. If you do not make extra payments, you'll notice this shift as your mortgage progresses.
 					</p>
 				</div>
 				<div className="min-w-[350px] sm:min-w-0" style={{ height: 400 }}>

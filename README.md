@@ -1,6 +1,6 @@
 # Amortization Planner
 
-Amortization Planner is a web-based tool that helps users plan and visualize their loan amortization schedules. If you are planning to get a mortgage, use this tool to get a tool on how you can amortize faster.
+Amortization Planner is a web-based tool that helps users plan and visualize their loan amortization schedules. If you are planning to get a mortgage, use this tool to get a glimpse on how you can amortize faster.
 
 ## Features
 

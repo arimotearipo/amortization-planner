@@ -13,19 +13,19 @@ export const basicExtraPaymentSchema = z.object({
 export const advanceExtraPaymentSchema = z.object({
 	paymentBlocks: z.array(
 		z.object({
-			amount: z.number().min(0),
+			amount: z.number().min(0, { error: "Minimum is 0" }),
 			startMonth: z.number().int(),
 			endMonth: z.number().int(),
-			splitRatio: z.number().min(0).max(1),
+			splitRatio: z.number().min(0, { error: "Minimum is 0" }).max(1, { error: "Maximum is 1" }),
 		}),
 	),
 })
 
 export const mortgageTermsInputsSchema = z.object({
 	principalLoanAmount: z.number().min(1, "Must be greater than 0"),
-	loanTermYears: z.number().int("Must be whole number"),
-	annualInterestRate: z.number().min(0.01).max(100),
-	investmentReturnRate: z.number().min(0).max(100),
+	loanTermYears: z.number().int("Must be whole number").min(1, "Must be greater than 0"),
+	annualInterestRate: z.number().min(0.01, { error: "Minimum is 0.01" }).max(100, { error: "Maximum is 100" }),
+	investmentReturnRate: z.number().min(0, { error: "Minimum is 0" }).max(100, { error: "Maximum is 100" }),
 	extraPayment: z.union([basicExtraPaymentSchema, advanceExtraPaymentSchema]).optional(),
 })
 

@@ -9,7 +9,6 @@ import { DialogTrigger } from "@radix-ui/react-dialog"
 import { driver } from "driver.js"
 import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
-import { set } from "zod"
 import { AdvanceExtraPayment } from "@/components/advance-extra-payment"
 import { BasicExtraPayment } from "@/components/basic-extra-payment"
 import { Label } from "@/components/ui/label"
@@ -90,14 +89,8 @@ export function MortgageTermsForm() {
 						description: "Set the expected return rate on investments.",
 					},
 				},
-				{
-					element: `#${MORTGATE_TERM_IDS.modeSwitch}`,
-					popover: {
-						title: "Extra Payment Mode",
-						description: "Toggle between Basic and Advance modes for extra payments.",
-					},
-				},
-				// step 5: basic extra payment form
+
+				// step 4: basic extra payment form
 				{
 					element: `#${BASIC_EXTRA_PAYMENT_IDS.basicExtraPaymentAmount}`,
 					popover: {
@@ -142,6 +135,14 @@ export function MortgageTermsForm() {
 						title: "Extra Payment Split Ratio",
 						description:
 							"Set the ratio for how the extra payment is split between mortgage and investment. Default is 50-50.",
+					},
+				},
+				// step 11: advance extra payment form
+				{
+					element: `#${MORTGATE_TERM_IDS.modeSwitch}`,
+					popover: {
+						title: "Extra Payment Mode",
+						description: "Toggle between Basic and Advance modes for extra payments.",
 					},
 				},
 			],

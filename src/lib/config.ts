@@ -2,7 +2,7 @@ import type { MortgageTermsInputs } from "@/models"
 
 export const BASIC_DEFAULT_VALUES: MortgageTermsInputs = {
 	principalLoanAmount: 0,
-	loanTermYears: 0,
+	loanTermYears: 1,
 	annualInterestRate: 0,
 	investmentReturnRate: 0,
 	extraPayment: {
@@ -17,7 +17,7 @@ export const BASIC_DEFAULT_VALUES: MortgageTermsInputs = {
 
 export const ADVANCE_DEFAULT_VALUES: MortgageTermsInputs = {
 	principalLoanAmount: 0,
-	loanTermYears: 0,
+	loanTermYears: 1,
 	annualInterestRate: 0,
 	investmentReturnRate: 0,
 	extraPayment: {

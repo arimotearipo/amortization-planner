@@ -1,8 +1,10 @@
+import { SocialMediaShare } from "@/components/social-media-share"
+
 export function Footer() {
 	return (
-		<footer className="w-full text-center py-1 text-sm text-muted-foreground border-t border-border">
+		<footer className="flex flex-col md:flex-row md:items-center md:justify-center gap-x-4 gap-y-1 w-full text-center py-1 px-4 text-sm text-muted-foreground border-t">
+			<span className="block md:inline">Created by Wan Nor Adzahari &middot; wnadzahari@gmail.com </span>
 			<span>
-				Created by Wan Nor Adzahari &middot; wnadzahari@gmail.com |{" "}
 				<a
 					href="https://github.com/arimotearipo"
 					target="_blank"
@@ -30,6 +32,9 @@ export function Footer() {
 					Buy me a coffee
 				</a>
 			</span>
+			<div className="flex items-center justify-center">
+				<SocialMediaShare />
+			</div>
 		</footer>
 	)
 }

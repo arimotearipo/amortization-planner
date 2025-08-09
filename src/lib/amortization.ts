@@ -103,7 +103,7 @@ export function calculateAmortizationSchedule(
 
 	const totalInterest = toDecimal(schedule.reduce((sum, payment) => sum + payment.interestPaid, 0))
 	const totalPaid = toDecimal(principalLoanAmount + totalInterest)
-	const totalInvestmentEarned = toDecimal(investmentGrowthsAtEachMonth[numberOfPayments - 1])
+	const totalInvestmentEarned = toDecimal(schedule.at(-1)?.investmentGrowth || 0)
 
 	return {
 		schedule,

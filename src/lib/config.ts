@@ -1,25 +1,25 @@
 import type { MortgageTermsInputs } from "@/models"
 
 export const BASIC_DEFAULT_VALUES: MortgageTermsInputs = {
-	principalLoanAmount: 490000,
-	loanTermYears: 35,
-	annualInterestRate: 4.5,
-	investmentReturnRate: 5,
+	principalLoanAmount: 0,
+	loanTermYears: 0,
+	annualInterestRate: 0,
+	investmentReturnRate: 0,
 	extraPayment: {
 		startMonth: 0,
-		endMonth: 419,
-		amount: 1000,
-		increment: 200,
+		endMonth: 0,
+		amount: 0,
+		increment: 0,
 		incrementFrequency: "yearly",
 		extraPaymentSplitRatio: 0.5, // Default split ratio for extra payments
 	},
 }
 
 export const ADVANCE_DEFAULT_VALUES: MortgageTermsInputs = {
-	principalLoanAmount: 490000,
-	loanTermYears: 35,
-	annualInterestRate: 3.8,
-	investmentReturnRate: 5,
+	principalLoanAmount: 0,
+	loanTermYears: 0,
+	annualInterestRate: 0,
+	investmentReturnRate: 0,
 	extraPayment: {
 		paymentBlocks: [
 			// {

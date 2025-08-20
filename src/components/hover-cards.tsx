@@ -15,42 +15,6 @@ export function ExtraPaymentInfoHoverCard({ children }: { children: ReactNode })
 	)
 }
 
-export function StartMonthInfoHoverCard({ children, endMonth }: { children: ReactNode; endMonth: number }) {
-	return (
-		<HoverCard>
-			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
-			<HoverCardContent className="w-80 bg-primary">
-				<p className="text-xs text-primary-foreground">
-					The start month is the month when the extra payments begin. The end month is the month when the extra payments
-					stop. It must be between 0 (inclusive) and {endMonth} (inclusive).
-				</p>
-			</HoverCardContent>
-		</HoverCard>
-	)
-}
-
-export function EndMonthInfoHoverCard({
-	children,
-	startMonth,
-	endMonth,
-}: {
-	children: ReactNode
-	startMonth: number
-	endMonth: number
-}) {
-	return (
-		<HoverCard>
-			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
-			<HoverCardContent className="w-80 bg-primary">
-				<p className="text-xs text-primary-foreground">
-					The end month is the month when the extra payments stop. It must be between {startMonth} (inclusive) and{" "}
-					{endMonth} (inclusive).
-				</p>
-			</HoverCardContent>
-		</HoverCard>
-	)
-}
-
 export function ExtraPaymentFormInfoHoverCard({ children }: { children: ReactNode }) {
 	return (
 		<HoverCard>

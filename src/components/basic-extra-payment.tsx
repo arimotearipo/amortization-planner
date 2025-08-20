@@ -108,7 +108,7 @@ export function BasicExtraPayment() {
 								Extra Payment End Month{" "}
 								<EndMonthFormInfoHoverCard
 									startMonth={form.watch("extraPayment.startMonth")}
-									endMonth={form.watch("extraPayment.endMonth")}
+									endMonth={form.watch("loanTermYears") * 12 - 1}
 								>
 									<InfoIcon size={ICON_SIZE} />
 								</EndMonthFormInfoHoverCard>

@@ -20,6 +20,7 @@ import { useMortgage } from "@/context/mortgate-context"
 import { calculateAmortizationSchedule } from "@/lib/amortization"
 import { ADVANCE_DEFAULT_VALUES, BASIC_DEFAULT_VALUES } from "@/lib/config"
 import { generatePaymentBlocksAdvance, generatePaymentBlocksBasic } from "@/lib/paymentBlocks"
+import { toNumber } from "@/lib/to-number"
 import {
 	advanceExtraPaymentSchema,
 	basicExtraPaymentSchema,
@@ -204,7 +205,7 @@ export function MortgageTermsForm() {
 								render={({ field }) => (
 									<div className="space-y-1" id={MORTGATE_TERM_IDS.loanAmount}>
 										<FormLabel>Loan Amount</FormLabel>
-										<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
+										<Input {...field} type="number" onChange={(e) => field.onChange(toNumber(e))} />
 										<FormMessage />
 									</div>
 								)}
@@ -216,7 +217,7 @@ export function MortgageTermsForm() {
 								render={({ field }) => (
 									<div className="space-y-1" id={MORTGATE_TERM_IDS.loanTerm}>
 										<FormLabel>Loan Term (Years)</FormLabel>
-										<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
+										<Input {...field} type="number" onChange={(e) => field.onChange(toNumber(e))} />
 										<FormMessage />
 									</div>
 								)}
@@ -227,7 +228,7 @@ export function MortgageTermsForm() {
 								render={({ field }) => (
 									<div className="space-y-1" id={MORTGATE_TERM_IDS.annualInterestRate}>
 										<FormLabel>Annual Interest Rate (%)</FormLabel>
-										<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
+										<Input {...field} type="number" onChange={(e) => field.onChange(toNumber(e))} />
 										<FormMessage />
 									</div>
 								)}
@@ -239,7 +240,7 @@ export function MortgageTermsForm() {
 								render={({ field }) => (
 									<div className="space-y-1" id={MORTGATE_TERM_IDS.investmentReturnRate}>
 										<FormLabel>Investment Return Rate (%)</FormLabel>
-										<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
+										<Input {...field} type="number" onChange={(e) => field.onChange(toNumber(e))} />
 										<FormMessage />
 									</div>
 								)}

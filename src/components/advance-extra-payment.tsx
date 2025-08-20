@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Slider } from "@/components/ui/slider"
 import { ADVANCE_EXTRA_PAYMENT_IDS } from "@/consts"
 import { useDriver } from "@/context/driver-context"
+import { toNumber } from "@/lib/to-number"
 import type { MortgageTermsInputs } from "@/models"
 import type { PaymentBlock } from "@/types"
 
@@ -172,7 +173,7 @@ export function AdvanceExtraPayment() {
 							render={({ field }) => (
 								<div className="flex flex-col" id={ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPaymentAmount}>
 									<FormLabel className="text-xs mb-1">Amount</FormLabel>
-									<Input {...field} onChange={(e) => field.onChange(Number(e.target.value))} placeholder="Amount" />
+									<Input {...field} onChange={(e) => field.onChange(toNumber(e))} placeholder="Amount" />
 									<FormMessage />
 								</div>
 							)}
@@ -186,11 +187,7 @@ export function AdvanceExtraPayment() {
 									<Label htmlFor="startMonth" className="text-xs mb-1">
 										Start Month (inclusive)
 									</Label>
-									<Input
-										{...field}
-										onChange={(e) => field.onChange(Number(e.target.value))}
-										placeholder="Start month index"
-									/>
+									<Input {...field} onChange={(e) => field.onChange(toNumber(e))} placeholder="Start month index" />
 									<FormMessage />
 								</div>
 							)}
@@ -202,11 +199,7 @@ export function AdvanceExtraPayment() {
 							render={({ field }) => (
 								<div className="flex flex-col" id={ADVANCE_EXTRA_PAYMENT_IDS.advanceExtraPaymentEndMonth}>
 									<FormLabel className="text-xs mb-1">End Month (exclusive)</FormLabel>
-									<Input
-										{...field}
-										onChange={(e) => field.onChange(Number(e.target.value))}
-										placeholder={`Max ${maxYearIndex}`}
-									/>
+									<Input {...field} onChange={(e) => field.onChange(toNumber(e))} placeholder={`Max ${maxYearIndex}`} />
 									<FormMessage />
 								</div>
 							)}

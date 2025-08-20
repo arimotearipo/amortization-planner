@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { BASIC_EXTRA_PAYMENT_IDS, ICON_SIZE } from "@/consts"
+import { toNumber } from "@/lib/to-number"
 import type { MortgageTermsInputs } from "@/models"
 import { ExtraPaymentIncrementFrequency } from "@/types"
 
@@ -39,7 +40,7 @@ export function BasicExtraPayment() {
 								</ExtraPaymentFormInfoHoverCard>
 							</FormLabel>
 
-							<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
+							<Input {...field} type="number" onChange={(e) => field.onChange(toNumber(e))} />
 							<FormMessage />
 						</div>
 					)}
@@ -51,7 +52,7 @@ export function BasicExtraPayment() {
 					render={({ field }) => (
 						<div className="space-y-1" id={BASIC_EXTRA_PAYMENT_IDS.basicExtraPaymentIncrement}>
 							<FormLabel>Extra Payment Increment</FormLabel>
-							<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
+							<Input {...field} type="number" onChange={(e) => field.onChange(toNumber(e))} />
 							<FormMessage />
 						</div>
 					)}
@@ -92,7 +93,7 @@ export function BasicExtraPayment() {
 									<InfoIcon size={ICON_SIZE} />
 								</StartMonthFormInfoHoverCard>
 							</FormLabel>
-							<Input {...field} type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
+							<Input {...field} type="number" onChange={(e) => field.onChange(toNumber(e))} />
 							<FormMessage />
 						</div>
 					)}
@@ -115,7 +116,7 @@ export function BasicExtraPayment() {
 							<Input
 								{...field}
 								type="number"
-								onChange={(e) => field.onChange(Number(e.target.value))}
+								onChange={(e) => field.onChange(toNumber(e))}
 								placeholder={`Max ${maxYearIndex}`}
 							/>
 							<FormMessage />

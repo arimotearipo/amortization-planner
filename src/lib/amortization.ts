@@ -43,50 +43,52 @@ export function calculateAmortizationSchedule(
 		((1 + monthlyInterestRate) ** numberOfPayments - 1)
 
 	let remainingBalance = principalLoanAmount
+	let cumulativeInterest = 0 // Track cumulative interest for better precision
 
 	const schedule: PaymentItem[] = []
-
 	const investmentGrowthsAtEachMonth = calculateInvestmentGrowthAtEachMonth(investmentReturnRate, extraPayments)
 
 	for (let month = 0; month < numberOfPayments; month++) {
-		if (remainingBalance <= 0) {
+		// Using small value instead of 0 to cater for better precision
+		if (remainingBalance <= 0.01) {
 			break
 		}
 
-		// capture the starting balance for this month
 		const startingBalance = remainingBalance
 
-		// Calculate interest for this month
-		const interestPaid = toDecimal(remainingBalance * monthlyInterestRate)
+		// Calculate interest with high precision
+		const interestPaid = remainingBalance * monthlyInterestRate
+		cumulativeInterest += interestPaid
 
-		// Calculate principal for this month
-		let principalPaid = toDecimal(monthlyPayment - interestPaid)
+		// Calculate principal with high precision
+		let principalPaid = monthlyPayment - interestPaid
 
-		// If the principal paid exceeds the remaining balance, adjust it
+		// Handle edge cases with better precision
 		if (principalPaid > remainingBalance) {
 			principalPaid = remainingBalance
 		}
 
+		// Get extra payment details
 		const thisMonthSplitRatio = extraPayments[month]?.splitRatio || 0
-		let thisMonthExtraPaymentToPrincipal = extraPayments[month].amount * thisMonthSplitRatio || 0
-		const thisMonthInvestmentContribution = extraPayments[month].amount * (1 - thisMonthSplitRatio) || 0
+		const extraPaymentAmount = extraPayments[month]?.amount || 0
 
+		let thisMonthExtraPaymentToPrincipal = extraPaymentAmount * thisMonthSplitRatio
+		const thisMonthInvestmentContribution = extraPaymentAmount * (1 - thisMonthSplitRatio)
+
+		// Calculate total principal with high precision
 		let totalPrincipalPaid = principalPaid + thisMonthExtraPaymentToPrincipal
 
+		// Handle remaining balance constraints
 		if (totalPrincipalPaid > remainingBalance) {
 			totalPrincipalPaid = remainingBalance
-			principalPaid = Math.max(0, totalPrincipalPaid - thisMonthExtraPaymentToPrincipal)
+			thisMonthExtraPaymentToPrincipal = Math.max(0, remainingBalance - principalPaid)
+			principalPaid = remainingBalance - thisMonthExtraPaymentToPrincipal
 		}
 
-		if (thisMonthExtraPaymentToPrincipal > remainingBalance) {
-			thisMonthExtraPaymentToPrincipal = remainingBalance
-			totalPrincipalPaid = principalPaid + thisMonthExtraPaymentToPrincipal
-			principalPaid = Math.max(0, totalPrincipalPaid - thisMonthExtraPaymentToPrincipal)
-		}
+		// Update remaining balance with high precision
+		remainingBalance = Math.max(0, remainingBalance - totalPrincipalPaid)
 
-		// Update remaining balance
-		remainingBalance -= totalPrincipalPaid
-
+		// Only apply toDecimal() when storing final values
 		schedule.push({
 			paymentNumber: month,
 			startingBalance: toDecimal(startingBalance),
@@ -94,15 +96,16 @@ export function calculateAmortizationSchedule(
 			principalPaid: toDecimal(principalPaid),
 			totalPrincipalPaid: toDecimal(totalPrincipalPaid),
 			interestPaid: toDecimal(interestPaid),
-			remainingBalance: toDecimal(Math.max(0, remainingBalance)), // Prevent negative balance due to rounding
+			remainingBalance: toDecimal(remainingBalance),
 			extraPaymentToPrincipal: toDecimal(thisMonthExtraPaymentToPrincipal),
 			investmentContribution: toDecimal(thisMonthInvestmentContribution),
 			investmentGrowth: toDecimal(investmentGrowthsAtEachMonth[month]),
 		})
 	}
 
-	const totalInterest = toDecimal(schedule.reduce((sum, payment) => sum + payment.interestPaid, 0))
-	const totalPaid = toDecimal(principalLoanAmount + totalInterest)
+	// Use high precision cumulative interest instead of summing rounded values
+	const totalInterest = toDecimal(cumulativeInterest)
+	const totalPaid = toDecimal(principalLoanAmount + cumulativeInterest)
 	const totalInvestmentEarned = toDecimal(schedule.at(-1)?.investmentGrowth || 0)
 
 	return {

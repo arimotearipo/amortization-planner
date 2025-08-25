@@ -2,6 +2,18 @@
 
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@components/ui/table"
 import type { ReactNode } from "react"
+import {
+	ExtraPaymentToPrincipalTHCard,
+	InterestPaidTHCard,
+	InvestmentContributionTHCard,
+	InvestmentGrowthTHCard,
+	PaymentAmountTHCard,
+	PaymentNumberTHCard,
+	PrincipalPaidTHCard,
+	RemainingBalanceTHCard,
+	StartingBalanceTHCard,
+	TotalPrincipalPaidTHCard,
+} from "@/components/hover-cards"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
@@ -61,16 +73,56 @@ export function MortgageTable() {
 					<Table>
 						<TableHeader className="sticky top-0 bg-secondary">
 							<TableRow className="[&>*]:whitespace-normal">
-								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Payment Number</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Starting Balance</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Payment Amount</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Principal Paid</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Extra Payment to Principal</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Total Principal Paid</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Interest Paid</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Remaining Balance</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Investment Contribution</TableCell>
-								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">Investment Growth</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">
+									<PaymentNumberTHCard>
+										<span>Payment Number</span>
+									</PaymentNumberTHCard>
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">
+									<StartingBalanceTHCard>
+										<span>Starting Balance</span>
+									</StartingBalanceTHCard>
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">
+									<PaymentAmountTHCard>
+										<span>Payment Amount</span>
+									</PaymentAmountTHCard>
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">
+									<PrincipalPaidTHCard>
+										<span>Principal Paid</span>
+									</PrincipalPaidTHCard>
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">
+									<ExtraPaymentToPrincipalTHCard>
+										<span>Extra Payment to Principal</span>
+									</ExtraPaymentToPrincipalTHCard>
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">
+									<TotalPrincipalPaidTHCard>
+										<span>Total Principal Paid</span>
+									</TotalPrincipalPaidTHCard>
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">
+									<InterestPaidTHCard>
+										<span>Interest Paid</span>
+									</InterestPaidTHCard>
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">
+									<RemainingBalanceTHCard>
+										<span>Remaining Balance</span>
+									</RemainingBalanceTHCard>
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">
+									<InvestmentContributionTHCard>
+										<span>Investment Contribution</span>
+									</InvestmentContributionTHCard>
+								</TableCell>
+								<TableCell className="font-bold text-xs sm:text-sm max-w-[80px]">
+									<InvestmentGrowthTHCard>
+										<span>Investment Growth</span>
+									</InvestmentGrowthTHCard>
+								</TableCell>
 							</TableRow>
 						</TableHeader>
 						<TableBody>

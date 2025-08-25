@@ -223,7 +223,7 @@ export function AdvanceExtraPayment() {
 											step={0.01}
 											value={[field.value]}
 											onValueChange={(value) => form.setValue("splitRatio", value[0])}
-											className="col-span-8"
+											className="px-2 sm:px-0 col-span-8"
 										/>
 										<span className="text-sm">{`Investment Payment ${Math.round((1 - field.value) * 100)}%`}</span>
 									</div>

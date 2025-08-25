@@ -74,7 +74,7 @@ export function BasicSplitRatio({ splitRatio }: BasicSplitRatioProps) {
 					<span className="text-blue-600">Principal Payment: {principalPercentage}%</span>
 				</div>
 
-				<div className="px-2">
+				<div className="px-4 md:px-2">
 					<Slider
 						min={0}
 						max={1}

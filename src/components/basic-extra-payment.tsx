@@ -146,6 +146,7 @@ export function BasicExtraPayment() {
 									step={0.01}
 									value={[field.value]}
 									onValueChange={handleRatioChange}
+									className="px-2 sm:px-0"
 								/>
 								<span>Investment: {Math.round((1 - field.value) * 100)}%</span>
 							</div>

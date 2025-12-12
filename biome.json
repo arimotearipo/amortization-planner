@@ -11,13 +11,15 @@
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab",
-		"lineWidth": 120
+		"lineWidth": 120,
+		"includes": ["src/**"]
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
 			"recommended": true
-		}
+		},
+		"includes": ["src/**", "!src/components/ui/*"]
 	},
 	"javascript": {
 		"formatter": {

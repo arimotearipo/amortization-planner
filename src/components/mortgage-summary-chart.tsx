@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: This is what the docs for the recharts say */
 "use client"
 
 import { Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"

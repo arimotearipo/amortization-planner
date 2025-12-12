@@ -1,6 +1,5 @@
 "use client"
 
-import { SocialMediaShare } from "@/components/social-media-share"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAppStatus } from "@/context/app-status-context"
 import { useMortgage } from "@/context/mortgate-context"

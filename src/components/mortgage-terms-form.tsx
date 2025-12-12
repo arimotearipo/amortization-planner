@@ -1,7 +1,14 @@
 "use client"
 
 import { Button } from "@components/ui/button"
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@components/ui/drawer"
+import {
+	Drawer,
+	DrawerContent,
+	DrawerDescription,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from "@components/ui/drawer"
 import { Form, FormField, FormLabel, FormMessage } from "@components/ui/form"
 import { Input } from "@components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -186,9 +193,9 @@ export function MortgageTermsForm() {
 
 	return (
 		<Drawer open={openMortgageTermsForm} onOpenChange={setOpenMortgageTermsForm}>
-			<DialogTrigger asChild>
+			<DrawerTrigger asChild>
 				<Button variant="default">Edit Mortgage Terms</Button>
-			</DialogTrigger>
+			</DrawerTrigger>
 			<DrawerContent className="px-2">
 				<DrawerHeader>
 					<DrawerTitle>Mortgage Terms</DrawerTitle>
